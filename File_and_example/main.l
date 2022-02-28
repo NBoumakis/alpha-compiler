@@ -1,6 +1,7 @@
 %{
 #include <iostream>
 #include <string>
+#include <stack>
 
 enum token_value {
    ALERT,BACKSPACE,ESCAPE,FORMFEED,NEWLINE,RETURN,
@@ -127,13 +128,14 @@ NAMESPACE           "::"
 DOT                 "."
 DOUBLE_DOT          ".."
 
-SPACE [\r \t\v]
+
 STRING \".*(\\)*\"
 LINE_COMMENT "//".*
-BLOCK_COMMENT (\/\*)+(.*)(\*\/)+
+SPACE [\r \t\v]
+BLOCK_COMMENT "/*".*
+
 
 %%
-{SPACE} { std::cout << "Recognised SPACE with value: " << yytext << std::endl; }
 {STRING} {      std::string a(yytext);
                 size_t position;
 
@@ -189,7 +191,28 @@ BLOCK_COMMENT (\/\*)+(.*)(\*\/)+
 {CONST_REAL} { std::cout << "Recognised CONST_REAL with value: " << yytext << std::endl; }
 {CONST_INT} { std::cout << "Recognised CONST_INT with value: " << yytext << std::endl; }
 {LINE_COMMENT} { std::cout << "Recognised LINE_COMMENT with value: " << yytext << std::endl; }
-{BLOCK_COMMENT} { std::cout << "Recognised BLOCK_COMMENT with value: " << yytext << std::endl; }
+
+{BLOCK_COMMENT} {    std::stack<int> stack_s; 
+                     std::string line(yytext);
+                     
+                     for (int i=0; i<line.size(); i++) {
+                        if (line[i]=='/' && line[i+1]=='*'){
+                           stack_s.push(1);
+                        } else if (line[i]=='*' && line[i+1]=='/'){
+                           stack_s.pop();
+                        }
+                        i++;
+                     }
+                     if (!stack_s.empty()){
+                        std::cout << "Block comments " << line << " are not terminating!" << std::endl;
+                     } else{
+                        std::cout << "Recognised BLOCK_COMMENT with value: " << line << std::endl; 
+                     }
+   
+                }
+{SPACE} { std::cout << "Recognised SPACE with value: " << yytext << std::endl; }
+
+
 %%
 
 int main(int argc, char** argv){
