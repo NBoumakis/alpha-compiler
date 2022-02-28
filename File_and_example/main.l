@@ -1,7 +1,6 @@
 %{
 #include <iostream>
 #include <string>
-#include <stack>
 
 enum token_value {
    ALERT,BACKSPACE,ESCAPE,FORMFEED,NEWLINE,RETURN,
@@ -192,18 +191,18 @@ BLOCK_COMMENT "/*".*
 {CONST_INT} { std::cout << "Recognised CONST_INT with value: " << yytext << std::endl; }
 {LINE_COMMENT} { std::cout << "Recognised LINE_COMMENT with value: " << yytext << std::endl; }
 
-{BLOCK_COMMENT} {    std::stack<int> stack_s; 
-                     std::string line(yytext);
+{BLOCK_COMMENT} {    std::string line(yytext);
                      
+                     int open=0,close=0;
                      for (int i=0; i<line.size(); i++) {
                         if (line[i]=='/' && line[i+1]=='*'){
-                           stack_s.push(1);
+                           open++;
                         } else if (line[i]=='*' && line[i+1]=='/'){
-                           stack_s.pop();
+                           close++;
                         }
                         i++;
                      }
-                     if (!stack_s.empty()){
+                     if (open!=close){
                         std::cout << "Block comments " << line << " are not terminating!" << std::endl;
                      } else{
                         std::cout << "Recognised BLOCK_COMMENT with value: " << line << std::endl; 
