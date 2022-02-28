@@ -1,0 +1,21 @@
+"a \?\\\\"
+"a \'\\\\"
+"a \"\\\\"
+"\t\n\babc\tdef\a\e\f\v"
+aifa
+"abcdef \t ab"
+20
+//this is a comment
+19.8 5
+
+ifa==b
+===
+if{} if()
+
+"b \ abc"
+
+
+"\\\"aaa"aaaa"
+"a b c\\\"
+
+/* aaaaa */
