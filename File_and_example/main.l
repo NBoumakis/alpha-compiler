@@ -1,6 +1,22 @@
 %{
 #include <iostream>
 #include <string>
+#include <list>
+
+struct alpha_token_t {
+  unsigned int     numline;
+  unsigned int     numToken;
+  std::string       content;
+  std::string      type;
+  std::string      category;
+  struct alpha_token_t *alpha_yylex;
+
+};
+
+struct alpha_token_t* yylval;
+unsigned int num_of_token = 0;
+unsigned int lineno=1;
+enum Keyword{IF,ELSE};
 
 enum token_value {
    ALERT,BACKSPACE,ESCAPE,FORMFEED,NEWLINE,RETURN,
@@ -65,6 +81,34 @@ std::string enum_to_result(token_value type) {
    }
 }
 
+void append(struct alpha_token_t** head_ref, unsigned int numline,unsigned int numToken,std::string content, std::string type,std::string category) {
+    
+   struct alpha_token_t* new_node = new struct alpha_token_t();
+   
+    
+    struct alpha_token_t *last = *head_ref;
+   
+    new_node->numline = numline; 
+    new_node->numToken = numToken; 
+    new_node->content=content;
+    new_node->type=type;
+    new_node->category=category;
+   
+    new_node->alpha_yylex = NULL; 
+  
+    if (*head_ref == NULL) { 
+        *head_ref = new_node; 
+        return; 
+    } 
+   
+    while (last->alpha_yylex != NULL) {
+        last = last->alpha_yylex; 
+    }
+   
+    last->alpha_yylex = new_node; 
+    return;
+}
+
 %}
 
 /* Flex options */
@@ -72,6 +116,8 @@ std::string enum_to_result(token_value type) {
 %option yylineno
 
 /* Flex macros */
+NEW_LINE        [(\r)(\n)]
+
 /* Identifiers */
 ID              [a-zA-Z][a-zA-Z_0-9]*
 
@@ -129,12 +175,63 @@ DOUBLE_DOT          ".."
 
 
 STRING \".*(\\)*\"
-LINE_COMMENT "//".*
 SPACE [\r \t\v]
+TAB [\t]
+LINE_COMMENT "//".*
 BLOCK_COMMENT "/*".*
 
 
 %%
+{NEW_LINE} { lineno++; }
+
+{ID} { num_of_token++;  append(&yylval,lineno,num_of_token,yytext,"ID",yytext);}
+
+{IF} {if (yyleng > 2) { REJECT; } else { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"KEYWORD","IF"); } }
+{ELSE} {if (yyleng > 4) { REJECT; } else { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"KEYWORD","ELSE"); }}
+{WHILE} {if (yyleng > 5) { REJECT; } else { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"KEYWORD","WHILE"); }}
+{FOR} {if (yyleng > 3) { REJECT; } else { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"KEYWORD","FOR"); }}
+{FUNCTION} {if (yyleng > 8) { REJECT; } else { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"KEYWORD","FUNCTION"); }}
+{RETURN} {if (yyleng > 6) { REJECT; } else { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"KEYWORD","RETURN"); }}
+{BREAK} {if (yyleng > 5) { REJECT; } else { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"KEYWORD","BREAK"); }}
+{CONTINUE} {if (yyleng > 8) { REJECT; } else { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"KEYWORD","CONTINUE"); }}
+{AND} {if (yyleng > 3) { REJECT; } else { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"KEYWORD","AND"); }}
+{OR} {if (yyleng > 2) { REJECT; } else { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"KEYWORD","OR"); }}
+{LOCAL} {if (yyleng > 5) { REJECT; } else { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"KEYWORD","LOCAL"); }}
+{TRUE} {if (yyleng > 4) { REJECT; } else { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"KEYWORD","TRUE"); }}
+{FALSE} {if (yyleng > 5) { REJECT; } else { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"KEYWORD","FALSE"); }}
+{NIL} {if (yyleng > 3) { REJECT; } else { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"KEYWORD","NIL"); }}
+
+{ASSIGN} {if (yyleng > 1) { REJECT; } else { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"OPERATOR","ASSIGN"); }}
+{PLUS} {if (yyleng > 1) { REJECT; } else { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"OPERATOR","PLUS"); }}
+{MINUS} {if (yyleng > 1) { REJECT; } else { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"OPERATOR","MINUS"); }}
+{MUL} {if (yyleng > 1) { REJECT; } else { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"OPERATOR","MUL"); }}
+{DIV} {if (yyleng > 1) { REJECT; } else { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"OPERATOR","DIV"); }}
+{MOD} {if (yyleng > 1) { REJECT; } else { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"OPERATOR","MOD"); }}
+{EQUAL} {if (yyleng > 2) { REJECT; } else { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"OPERATOR","EQUAL"); }}
+{NEQUAL} {if (yyleng > 2) { REJECT; } else { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"OPERATOR","NEQUAL"); }}
+{PLUS_PLUS} {if (yyleng > 2) { REJECT; } else { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"OPERATOR","PLUS_PLUS"); }}
+{MINUS_MINUS} {if (yyleng > 2) { REJECT; } else { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"OPERATOR","MINUS_MINUS"); }}
+{GT} {if (yyleng > 1) { REJECT; } else { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"OPERATOR","GT"); }}
+{LT} {if (yyleng > 1) { REJECT; } else { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"OPERATOR","LT"); }}
+{GE} {if (yyleng > 2) { REJECT; } else { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"OPERATOR","GE"); }}
+{LE} {if (yyleng > 2) { REJECT; } else { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"OPERATOR","LE"); }}
+
+{CONST_INT} { num_of_token++;  append(&yylval,lineno,num_of_token,yytext,"CONST_INT",yytext);}
+{CONST_REAL} { num_of_token++;  append(&yylval,lineno,num_of_token,yytext,"CONST_REAL",yytext); }
+
+{L_CURLY_BRACKET} {if (yyleng > 1) { REJECT; } else { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"PUNCTUATION","L_CURLY_BRACKET");} }
+{R_CURLY_BRACKET} {if (yyleng > 1) { REJECT; } else { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"PUNCTUATION","R_CURLY_BRACKET");} }
+{L_SQUARE_BRACKET} {if (yyleng > 1) {REJECT;} else { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"PUNCTUATION","L_SQUARE_BRACKET");} }
+{R_SQUARE_BRACKET} {if (yyleng > 1) {REJECT;} else { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"PUNCTUATION","R_SQUARE_BRACKET");} }
+{L_PARENTHESIS} { if (yyleng > 1) {REJECT;} else { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"PUNCTUATION","L_PARENTHESIS");}}
+{R_PARENTHESIS} { if (yyleng > 1) {REJECT;} else { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"PUNCTUATION","R_PARENTHESIS");}}
+{SEMICOLON} { if (yyleng > 1) {REJECT;} else { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"PUNCTUATION","SEMICOLON");}}
+{COMMA} { if (yyleng > 1) {REJECT;} else { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"PUNCTUATION","COMMA");}}
+{COLON} { if (yyleng > 1) {REJECT;} else { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"PUNCTUATION","COLON");}}
+{NAMESPACE} { if (yyleng > 2) {REJECT;} else { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"PUNCTUATION","NAMESPACE");}}
+{DOT} { if (yyleng > 1) {REJECT;} else { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"PUNCTUATION","DOT");}}
+{DOUBLE_DOT} { if (yyleng > 1) {REJECT;} else { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"PUNCTUATION","DOUBLE_DOT");}}
+
 {STRING} {      std::string a(yytext);
                 size_t position;
 
@@ -177,20 +274,13 @@ BLOCK_COMMENT "/*".*
                      }
                   }
 
-                  std::cout << "Recognised STRING with value: " << a << std::endl; 
-
+                  num_of_token++; append(&yylval,lineno,num_of_token,a,"STRING",a);
                }
                
          } 
-
-{IF}/[^a-zA-Z] { std::cout << "Recognised IF with value: "<< yytext <<std::endl; } 
-{ID} { std::cout << "Recognised ID with value: "<< yytext <<std::endl; }
-{EQUAL} { std::cout << "Recognised OPERATOR EQUAL with value: "<< yytext <<std::endl; }
-{ASSIGN} { std::cout << "Recognised OPERATOR ASSIGNN with value: "<< yytext <<std::endl; }
-{CONST_REAL} { std::cout << "Recognised CONST_REAL with value: " << yytext << std::endl; }
-{CONST_INT} { std::cout << "Recognised CONST_INT with value: " << yytext << std::endl; }
-{LINE_COMMENT} { std::cout << "Recognised LINE_COMMENT with value: " << yytext << std::endl; }
-
+{SPACE} { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"SPACE",yytext); }
+{TAB} { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"TAB",yytext); }
+{LINE_COMMENT} { num_of_token++; append(&yylval,lineno,num_of_token,yytext,"COMMENT","LINE_COMMENT"); }
 {BLOCK_COMMENT} {    std::string line(yytext);
                      
                      int open=0,close=0;
@@ -205,24 +295,9 @@ BLOCK_COMMENT "/*".*
                      if (open!=close){
                         std::cout << "Block comments " << line << " are not terminating!" << std::endl;
                      } else{
-                        std::cout << "Recognised BLOCK_COMMENT with value: " << line << std::endl; 
+                        num_of_token++; append(&yylval,lineno,num_of_token,line,"COMMENT","BLOCK_COMMENT");
                      }
    
                 }
-{SPACE} { std::cout << "Recognised SPACE with value: " << yytext << std::endl; }
-
 
 %%
-
-int main(int argc, char** argv){
-    if (argc > 1){
-        if (!(yyin = fopen(argv[1], "r"))){
-            fprintf(stderr, "Cannot read file: %s\n", argv[1]);
-            return -1;
-        }
-    } else{
-        yyin = stdin;
-    }
-    yylex();
-    return 0;
-}
