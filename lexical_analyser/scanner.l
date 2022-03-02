@@ -6,8 +6,12 @@
 /* Flex options */
 %option noyywrap
 
+%x str
+
 /* Flex macros */
 /* Keywords */
+ID              [a-zA-Z][a-zA-Z_0-9]*
+
 IF              "if"
 ELSE            "else"
 WHILE           "while"
@@ -41,11 +45,11 @@ GE              ">="
 LE              "<="
 
 /* Identifiers */
-ID              [a-zA-Z][a-zA-Z_0-9]*
+
 
 /* Integers */
 CONST_INT       ([0-9]+)
-CONST_REAL      CONST_INT\.CONST_INT
+CONST_REAL      ([0-9]+)\.([0-9])+
 
 /* Punctuation */
 L_CURLY_BRACKET     "{"
@@ -61,21 +65,56 @@ NAMESPACE           "::"
 DOT                 "."
 DOUBLE_DOT          ".."
 
-
-STRING \".*(\\t)*\"
+STRING \"
 COMMENT "//".*
 SPACE [\r \t\v]
 
 %%
-{IF}/[^a-zA-Z] { 
+    char string_buf[YY_BUF_SIZE];
+    char *string_buf_ptr;
+    int comment_depth;
+
+
+{IF} { 
     std::cout << "Recognised IF with value: "<< yytext <<std::endl;
 }  
 
+{ID} {
+    std::cout << "Identifier " << yytext << std::endl;
+}
 
 {COMMENT} { fprintf(stderr,"Recognised COMMENT with value: %s\n",yytext); }
 {SPACE} {fprintf(stderr,"Recognised SPACE with value: %s\n",yytext); }
 {CONST_INT} {fprintf(stderr,"Recognised CONST_INT with value: %s\n",yytext); }
 {CONST_REAL} {fprintf(stderr,"Recognised CONST_REAL with value: %s\n",yytext); }
+
+\"      string_buf_ptr = string_buf; BEGIN(str);
+
+<str>\"        { /* saw closing quote - all done */
+            BEGIN(INITIAL);
+            *string_buf_ptr = '\0';
+            std::cout<<"\"" <<string_buf << '"' << std:: endl;
+            }
+
+<str>\\n  *string_buf_ptr++ = '\n';
+<str>\\t  *string_buf_ptr++ = '\t';
+<str>\\\"  *string_buf_ptr++ = '"';
+
+<str>\\(.|\n)  *string_buf_ptr++ = yytext[1];
+
+<str>[^\\\"]+        {
+                char *yptr = yytext;
+
+                while ( *yptr )
+                    *string_buf_ptr++ = *yptr++;
+            }
+    
+<str><<EOF>> {
+    std::cout << "EOF in string\n";
+    BEGIN(INITIAL);
+}
+
+
 %%
 
 int main(int argc, char** argv){
