@@ -7,6 +7,7 @@
 %option noyywrap
 
 %x str
+%x multi_cmnt
 
 /* Flex macros */
 /* Keywords */
@@ -114,7 +115,30 @@ SPACE [\r \t\v]
     BEGIN(INITIAL);
 }
 
+"/*"        {
+                comment_depth = 1;
+                BEGIN(multi_cmnt);
+            }
 
+<multi_cmnt>"/*" {
+    ++comment_depth;
+    std::cout<< "Comment depth: " <<comment_depth<<std::endl;
+}
+
+<multi_cmnt>[^(*|/*)]*
+<multi_cmnt>"*"+[^*/]*
+
+<multi_cmnt>"*/" {
+    --comment_depth;
+    if (comment_depth==0) {
+        BEGIN(INITIAL);
+    }
+}
+
+<multi_cmnt><<EOF>> {
+    std::cout << "EOF in comment\n";
+    BEGIN(INITIAL);
+}
 %%
 
 int main(int argc, char** argv){
