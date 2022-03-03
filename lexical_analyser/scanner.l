@@ -1,6 +1,8 @@
 %{
 #include <iostream>
 #include <string>
+
+#define YY_DECL int alpha_yylex(void *yylval)
 %}
 
 /* Flex options */
@@ -73,8 +75,6 @@ SPACE [\r \t\v]
 %%
     char string_buf[YY_BUF_SIZE];
     char *string_buf_ptr;
-    int comment_depth;
-
 
 {IF} { 
     std::cout << "Recognised IF with value: "<< yytext <<std::endl;
@@ -116,29 +116,27 @@ SPACE [\r \t\v]
 }
 
 "/*"        {
-                comment_depth = 1;
-                BEGIN(multi_cmnt);
+                int c, comment_depth = 1;
+                while (c=yyinput()) {
+                    if (c=='*') {
+                        if ((c=yyinput())=='/') {
+                            --comment_depth;
+                            if (comment_depth==0){break;}
+                        } else {
+                            unput(c);
+                        }
+                    } else if(c=='/') {
+                        if ((c=yyinput())=='*') {
+                            ++comment_depth;
+                        } else {
+                            unput(c);
+                        }
+                    }
+                }
+
+                if (comment_depth!=0)
+                    std::cout<< "EOF in comment" <<std::endl;
             }
-
-<multi_cmnt>"/*" {
-    ++comment_depth;
-    std::cout<< "Comment depth: " <<comment_depth<<std::endl;
-}
-
-<multi_cmnt>[^(*|/*)]*
-<multi_cmnt>"*"+[^*/]*
-
-<multi_cmnt>"*/" {
-    --comment_depth;
-    if (comment_depth==0) {
-        BEGIN(INITIAL);
-    }
-}
-
-<multi_cmnt><<EOF>> {
-    std::cout << "EOF in comment\n";
-    BEGIN(INITIAL);
-}
 %%
 
 int main(int argc, char** argv){
