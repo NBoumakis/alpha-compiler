@@ -3,9 +3,10 @@
 #include <list>
 #include <string>
 
-extern int yylex();
+extern int alpha_yylex(void *);
 extern int yylineno;
 extern char *yytext;
+extern FILE *yyin;
 
 void showlist(std::list<struct alpha_token_t *> const a) {
     for (struct alpha_token_t *x : a) {
