@@ -1,8 +1,11 @@
 %{
 #include <iostream>
 #include <string>
+#include "scanner.h"
 
 #define YY_DECL int alpha_yylex(void *yylval)
+
+std::list<alpha_token_t *> token_list;
 %}
 
 /* Flex options */
@@ -77,8 +80,10 @@ SPACE [\r \t\v]
     char string_buf[YY_BUF_SIZE];
     char *string_buf_ptr;
 
-{IF} { 
-    std::cout << "Recognised IF with value: "<< yytext <<std::endl;
+{IF} {
+    alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
+    token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "KEYWORD IF <-enumerated");
+    token->add_token_to_list();
 }  
 
 {ID} {
