@@ -11,10 +11,10 @@ extern FILE *yyin;
 
 void showlist(std::list<struct alpha_token_t *> const a, std::ostream &outfile) {
     for (struct alpha_token_t *x : a) {
-        outfile << x->numline << " :"
-                << "   #" << x->numToken
-                << "   \"" << x->content << "\""
-                << "   " << x->type
+        outfile << x->numline << ":\t\t"
+                << "#" << x->numToken
+                << "\t\t\"" << x->content << "\""
+                << "\t\t\t" << x->type
                 << std::endl;
     }
 }
