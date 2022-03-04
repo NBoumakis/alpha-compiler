@@ -7,6 +7,7 @@
 
 /* Flex options */
 %option noyywrap
+%option yylineno
 
 %x str
 %x multi_cmnt
@@ -90,7 +91,7 @@ SPACE [\r \t\v]
 {CONST_REAL} {fprintf(stderr,"Recognised CONST_REAL with value: %s\n",yytext); }
 
 \"      string_buf_ptr = string_buf; BEGIN(str);
-
+\n {}
 <str>\"        { /* saw closing quote - all done */
             BEGIN(INITIAL);
             *string_buf_ptr = '\0';
