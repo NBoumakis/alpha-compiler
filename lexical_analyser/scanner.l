@@ -1,6 +1,7 @@
 %{
 #include <iostream>
 #include <string>
+#include <stack>
 #include "scanner.h"
 
 #define YY_DECL int alpha_yylex(void *yylval)
@@ -401,25 +402,53 @@ SPACE [\r \t\v]
 }
 
 "/*"        {
-                int c, comment_depth = 1;
+                std::stack<int> cmnt_start_line;
+                cmnt_start_line.push(yyget_lineno());
+
+                int c;
                 while (c=yyinput()) {
                     if (c=='*') {
                         if ((c=yyinput())=='/') {
-                            --comment_depth;
-                            if (comment_depth==0){break;}
+                            int start_line = cmnt_start_line.top();
+                            alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
+
+                            std::string content = std::to_string(start_line) + " - " + std::to_string(yyget_lineno());
+                            if (cmnt_start_line.size()==1) {
+                                std::string type = "COMMENT BLOCK_COMMENT <-enumerated";
+
+                                token = new alpha_token_t(start_line, token_list.size()+1, content, type);
+                            } else {
+                                std::string type = "NESTED COMMENT BLOCK_COMMENT <-enumerated";
+
+                                token = new alpha_token_t(start_line, token_list.size()+1, content, type);
+                            }
+    
+                            token->add_token_to_list();
+
+                            cmnt_start_line.pop();
+
+                            if (cmnt_start_line.empty()){
+                                break;
+                            }
                         } else {
                             unput(c);
                         }
                     } else if(c=='/') {
                         if ((c=yyinput())=='*') {
-                            ++comment_depth;
+                            cmnt_start_line.push(yyget_lineno());
                         } else {
                             unput(c);
                         }
                     }
                 }
 
-                if (comment_depth!=0)
+                if (!cmnt_start_line.empty())
                     std::cout<< "EOF in comment" <<std::endl;
+            }
+
+{COMMENT}   {
+                alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
+                token = new alpha_token_t(yyget_lineno(), token_list.size()+1, "", "COMMENT LINE_COMMENT <-enumerated");
+                token->add_token_to_list();
             }
 %%
