@@ -410,7 +410,7 @@ SPACE [\r \t\v]
             }
     
 <str><<EOF>> {
-    std::cout << "EOF in string\n";
+    std::cerr << "EOF in string\n";
     BEGIN(INITIAL);
 }
 
@@ -456,7 +456,7 @@ SPACE [\r \t\v]
                 }
 
                 if (!cmnt_start_line.empty())
-                    std::cout<< "EOF in comment" <<std::endl;
+                    std::cerr<< "EOF in comment" <<std::endl;
             }
 
 {COMMENT}   {
