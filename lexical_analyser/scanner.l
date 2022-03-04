@@ -85,13 +85,13 @@ SPACE [\r \t\v]
 
 {IF} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
-    token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "   KEYWORD IF <-enumerated");
+    token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "KEYWORD IF <-enumerated");
     token->add_token_to_list();
 } 
 
 {ELSE} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
-    token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), " KEYWORD ELSE <-enumerated");
+    token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "KEYWORD ELSE <-enumerated");
     token->add_token_to_list();
 }
 
