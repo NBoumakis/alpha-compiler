@@ -355,7 +355,7 @@ SPACE [\r \t\v]
 
 {DOUBLE_DOT} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
-    token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "PUNCTUATION L_PARENTHESIS  <-enumerated");
+    token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "PUNCTUATION DOUBLE_DOT  <-enumerated");
     token->add_token_to_list();
 }
 
