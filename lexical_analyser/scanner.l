@@ -371,6 +371,9 @@ SPACE [\r \t\v]
 
 \"      string_buf_ptr = string_buf; BEGIN(str);
 \n {}
+
+{SPACE} {}
+
 <str>\"        { /* saw closing quote - all done */
             BEGIN(INITIAL);
             *string_buf_ptr = '\0';
@@ -464,5 +467,9 @@ SPACE [\r \t\v]
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "UNKNOWN TOKEN");
     token->add_token_to_list();
 }
+
+.   {
+        std::cerr << "Unknown token " << yytext << " in line " << yyget_lineno() <<std::endl;
+    }
 
 %%
