@@ -276,7 +276,7 @@ SPACE [\r \t\v]
 }
 
 {CONST_REAL} {
-    std :: string type = "CONST_REAL ";
+    std::string type = "CONST_REAL ";
     type.append(yytext);
     type.append(" <-real");
 
@@ -360,7 +360,7 @@ SPACE [\r \t\v]
 }
 
 {ID} {
-    std :: string type = "ID \"";
+    std::string type = "ID \"";
     type.append(yytext);
     type.append("\" <-char*");
 
@@ -384,13 +384,13 @@ SPACE [\r \t\v]
             BEGIN(INITIAL);
             *string_buf_ptr = '\0';
         
-            std :: string type = "STRING \"";
+            std::string type = "STRING \"";
             type.append(string_buf);
             type.append("\" <-char*");
             alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
             token = new alpha_token_t(string_line_start, token_list.size()+1, std::string(string_buf), type);
             token->add_token_to_list();
-            }
+        }
 
 <str>\\n  *string_buf_ptr++ = '\n';
 <str>\\t  *string_buf_ptr++ = '\t';
