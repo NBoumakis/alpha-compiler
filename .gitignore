@@ -1,4 +1,5 @@
 lexical_analyser/scanner
 */*.input
+*/*.output
 lexical_analyser/lex.yy.c
 .vscode
