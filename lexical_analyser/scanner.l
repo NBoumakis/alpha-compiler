@@ -264,7 +264,7 @@ SPACE [\r \t\v]
 
 
 {CONST_INT} {
-    std :: string type = "CONST_INT ";
+    std::string type = "CONST_INT ";
     type.append(yytext);
     type.append(" <-integer");
 
@@ -451,4 +451,18 @@ SPACE [\r \t\v]
                 token = new alpha_token_t(yyget_lineno(), token_list.size()+1, "", "COMMENT LINE_COMMENT <-enumerated");
                 token->add_token_to_list();
             }
+
+
+{CONST_INT}[a-zA-Z_] {
+    alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
+    token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "UNKNOWN TOKEN");
+    token->add_token_to_list();
+}
+
+{CONST_REAL}[a-zA-Z_] {
+    alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
+    token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "UNKNOWN TOKEN");
+    token->add_token_to_list();
+}
+
 %%
