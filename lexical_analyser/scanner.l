@@ -7,6 +7,8 @@
 #define YY_DECL int alpha_yylex(void *yylval)
 
 std::list<alpha_token_t *> token_list;
+
+int string_line_start;
 %}
 
 /* Flex options */
@@ -369,7 +371,11 @@ SPACE [\r \t\v]
 
 
 
-\"      string_buf_ptr = string_buf; BEGIN(str);
+\"      {
+            string_buf_ptr = string_buf;
+            string_line_start = yyget_lineno(); 
+            BEGIN(str);
+        }
 \n {}
 
 {SPACE} {}
@@ -382,7 +388,7 @@ SPACE [\r \t\v]
             type.append(string_buf);
             type.append("\" <-char*");
             alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
-            token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(string_buf), type);
+            token = new alpha_token_t(string_line_start, token_list.size()+1, std::string(string_buf), type);
             token->add_token_to_list();
             }
 
