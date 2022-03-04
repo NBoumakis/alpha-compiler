@@ -395,8 +395,12 @@ SPACE [\r \t\v]
 <str>\\n  *string_buf_ptr++ = '\n';
 <str>\\t  *string_buf_ptr++ = '\t';
 <str>\\\"  *string_buf_ptr++ = '"';
+<str>\\\\  *string_buf_ptr++ = '\\';
 
-<str>\\(.|\n)  *string_buf_ptr++ = yytext[1];
+<str>\\(.|\n)  {
+    *string_buf_ptr++ = yytext[1];
+    std::cerr << "Invalid escape character \\" << yytext[1] << " in string"<<std::endl;
+}
 
 <str>[^\\\"]+        {
                 char *yptr = yytext;
