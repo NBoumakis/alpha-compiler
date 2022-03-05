@@ -15,9 +15,7 @@ struct alpha_token_t {
     alpha_token_t(int line, int token, std::string content, std::string type);
     alpha_token_t() {}
 
-    void add_token_to_list() {
-        token_list.push_back(this);
-    }
+    void add_token_to_list();
 };
 
 #endif
