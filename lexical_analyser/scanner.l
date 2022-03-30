@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string>
 #include <stack>
-#include "scanner.h"
+#include "../include/scanner.h"
 
 #define YY_DECL int alpha_yylex(void *yylval)
 
@@ -80,99 +80,125 @@ COMMENT "//".*
 SPACE [\r \t\v]
 
 %%
-    char string_buf[YY_BUF_SIZE];
-    char *string_buf_ptr;
+char string_buf[YY_BUF_SIZE];
+char *string_buf_ptr;
 
+"print" { return print; }
+"input" { return input; }
+"objectmemberkeys" { return objectmemberkeys; }
+"objecttotalmembers" { return objecttotalmembers; }
+"objectcopy" { return objectcopy; }
+"totalarguments" { return totalarguments; }
+"argument" { return argument; }
+"strtonum" { return strtonum; }
+"sqrt" { return sqrt; }
+"cos" { return cos; }
+"sin" { return sin; }
 
 
 {IF} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "KEYWORD IF <-enumerated");
     token->add_token_to_list();
+    return IF; 
 } 
 
 {ELSE} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "KEYWORD ELSE <-enumerated");
     token->add_token_to_list();
+    return ELSE;
 }
 
 {WHILE} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "KEYWORD WHILE <-enumerated");
     token->add_token_to_list();
+    return WHILE;
 }
 
 {FOR} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "KEYWORD FOR <-enumerated");
     token->add_token_to_list();
+    return FOR;
 } 
 
 {FUNCTION} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "KEYWORD FUNCTION <-enumerated");
     token->add_token_to_list();
+    return FUNCTION;
 }
 
 {RETURN} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "KEYWORD RETURN <-enumerated");
     token->add_token_to_list();
+    return RETURN;
 }
 
 {BREAK} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "KEYWORD BREAK <-enumerated");
     token->add_token_to_list();
+    return BREAK; 
 }
 
 {CONTINUE} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "KEYWORD CONTINUE <-enumerated");
     token->add_token_to_list();
+    return CONTINUE; 
 }
 
 {AND} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "KEYWORD AND <-enumerated");
     token->add_token_to_list();
+    return AND; 
 }
 
 {NOT} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "KEYWORD NOT <-enumerated");
     token->add_token_to_list();
+    return NOT;
 }
 
 {OR} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "KEYWORD OR <-enumerated");
     token->add_token_to_list();
+    return OR; 
 }
 
 {LOCAL} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "KEYWORD LOCAL <-enumerated");
     token->add_token_to_list();
+    return LOCAL; 
 }
 
 {TRUE} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "KEYWORD TRUE <-enumerated");
     token->add_token_to_list();
+    return TRUE;
 }
 
 {FALSE} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "KEYWORD FALSE <-enumerated");
     token->add_token_to_list();
+    return FALSE;
 }
 
 {NIL} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "KEYWORD NIL <-enumerated");
     token->add_token_to_list();
+    return NIL;
 }
 
 
@@ -183,84 +209,98 @@ SPACE [\r \t\v]
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "OPERATOR ASSIGN <-enumerated");
     token->add_token_to_list();
+    return ASSIGN;
 }
 
 {PLUS} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "OPERATOR PLUS <-enumerated");
     token->add_token_to_list();
+    return PLUS; 
 }
 
 {MINUS} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "OPERATOR MINUS <-enumerated");
     token->add_token_to_list();
+    return MINUS; 
 }
 
 {MUL} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "OPERATOR MUL<-enumerated");
     token->add_token_to_list();
+    return MUL;
 }
 
 {DIV} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "OPERATOR DIV <-enumerated");
     token->add_token_to_list();
+    return DIV;
 }
 
 {MOD} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "OPERATOR MOD <-enumerated");
     token->add_token_to_list();
+    return MOD; 
 }
 
 {EQUAL} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "OPERATOR EQUAL <-enumerated");
     token->add_token_to_list();
+    return EQUAL;
 }
 
 {NEQUAL} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "OPERATOR NEQUAL <-enumerated");
     token->add_token_to_list();
+    return NEQUAL;
 }
 
 {PLUS_PLUS} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "OPERATOR PLUS_PLUS <-enumerated");
     token->add_token_to_list();
+    return PLUS_PLUS; 
 }
 
 {MINUS_MINUS} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "OPERATOR MINUS_MINUS <-enumerated");
     token->add_token_to_list();
+    return MINUS_MINUS;
 }
 
 {GT} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "OPERATOR GT <-enumerated");
     token->add_token_to_list();
+    return GT;
 }
 
 {LT} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "OPERATOR LT <-enumerated");
     token->add_token_to_list();
+    return LT; 
 }
 
 {GE} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "OPERATOR GE <-enumerated");
     token->add_token_to_list();
+    return GE;
 }
 
 {LE} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "OPERATOR LE <-enumerated");
     token->add_token_to_list();
+    return LE;
 }
 
 
@@ -273,6 +313,8 @@ SPACE [\r \t\v]
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), type);
     token->add_token_to_list();
+     yylval.intValue=atoi(yytext); return intNumber; 
+
 }
 
 {CONST_REAL} {
@@ -283,6 +325,7 @@ SPACE [\r \t\v]
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), type);
     token->add_token_to_list();
+    yylval.realValue=atof(yytext); return realNumber; 
 }
 
 
@@ -291,72 +334,84 @@ SPACE [\r \t\v]
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "PUNCTUATION L_CURLY_BRACKET  <-enumerated");
     token->add_token_to_list();
+    return L_CURLY_BRACKET;
 }
 
 {R_CURLY_BRACKET} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "PUNCTUATION R_CURLY_BRACKET  <-enumerated");
     token->add_token_to_list();
+    return R_CURLY_BRACKET;
 }
 
 {L_SQUARE_BRACKET} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "PUNCTUATION L_SQUARE_BRACKET  <-enumerated");
     token->add_token_to_list();
+    return L_SQUARE_BRACKET;
 }
 
 {R_SQUARE_BRACKET} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "PUNCTUATION R_SQUARE_BRACKET  <-enumerated");
     token->add_token_to_list();
+    return R_SQUARE_BRACKET;
 }
 
 {L_PARENTHESIS} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "PUNCTUATION L_PARENTHESIS  <-enumerated");
     token->add_token_to_list();
+    return L_PARENTHESIS; 
 }
 
 {R_PARENTHESIS} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "PUNCTUATION R_PARENTHESIS  <-enumerated");
     token->add_token_to_list();
+    return R_PARENTHESIS;
 }
 
 {SEMICOLON} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "PUNCTUATION SEMICOLON <-enumerated");
     token->add_token_to_list();
+    return SEMICOLON;
 }
 
 {COMMA} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "PUNCTUATION COMMA  <-enumerated");
     token->add_token_to_list();
+    return COMMA; 
 }
 
 {COLON} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "PUNCTUATION COLON  <-enumerated");
     token->add_token_to_list();
+    return COLON;
 }
 
 {NAMESPACE} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "PUNCTUATION NAMESPACE  <-enumerated");
     token->add_token_to_list();
+    return NAMESPACE; 
 }
 
 {DOT} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "PUNCTUATION DOT  <-enumerated");
     token->add_token_to_list();
+    return DOT; 
 }
 
 {DOUBLE_DOT} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), "PUNCTUATION DOUBLE_DOT  <-enumerated");
     token->add_token_to_list();
+    return DOUBLE_DOT;
 }
 
 {ID} {
@@ -367,6 +422,7 @@ SPACE [\r \t\v]
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
     token = new alpha_token_t(yyget_lineno(), token_list.size()+1, std::string(yytext), type);
     token->add_token_to_list();
+    yylval.stringValue=strdup(yytext); return ID;
 }
 
 
@@ -390,6 +446,8 @@ SPACE [\r \t\v]
             alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
             token = new alpha_token_t(string_line_start, token_list.size()+1, std::string(string_buf), type);
             token->add_token_to_list();
+
+            yylval.stringValue=strdup(yytext); return STRING;
         }
 
 <str>\\n  *string_buf_ptr++ = '\n';
@@ -463,6 +521,7 @@ SPACE [\r \t\v]
                 alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
                 token = new alpha_token_t(yyget_lineno(), token_list.size()+1, "", "COMMENT LINE_COMMENT <-enumerated");
                 token->add_token_to_list();
+                return COMMENT; 
             }
 
 
