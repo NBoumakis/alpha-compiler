@@ -137,3 +137,23 @@ struct assignexprValue {
 
     assignexprType valType;
 };
+
+enum primaryType {
+    LVALUE,
+    CALL,
+    OBJECTDEF,
+    FUNCDEF,
+    CONST
+};
+
+struct primaryValue {
+    union value {
+        struct lvalueValue *lvalueVal;
+        struct callValue *callVal;
+        struct objectdefValue *objectdefVal;
+        struct funcdefValue *funcdefVal;
+        struct constValue *constVal;
+    };
+
+    primaryType valType;
+};
