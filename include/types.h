@@ -123,3 +123,17 @@ struct termValue {
 
     termType valType;
 };
+
+enum assignexprType {
+    LVALUE,
+    EXPR
+};
+
+struct assignexprValue {
+    union value {
+        struct lvalueValue *lvalueVal;
+        struct exprValue *exprVal;
+    };
+
+    assignexprType valType;
+};
