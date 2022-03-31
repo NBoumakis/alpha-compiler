@@ -436,3 +436,16 @@ struct constValue {
 
     constTypes valType;
 };
+
+enum idlistType {
+    id,
+    VOID
+};
+
+struct idlistValue {
+    union value {
+        struct idValue *idVal;
+    };
+
+    idlistType valType;
+};
