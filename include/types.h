@@ -325,3 +325,16 @@ struct objectdefValue {
 
     objectdefType valType;
 };
+
+enum indexedType {
+    INDELEMLIST,
+    VOID
+};
+
+struct indexedValue {
+    union value {
+        struct indelemlistValue *indelemlistVal;
+    };
+
+    indexedType valType;
+};
