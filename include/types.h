@@ -528,3 +528,15 @@ struct forstmtValue{
 
     forstmtType valType;
 };
+
+enum returnstmtType {
+    RET
+};
+
+struct returnstmtValue {
+    union value {
+        struct retValue *retVal;
+    };
+
+    returnstmtType valType;
+};
