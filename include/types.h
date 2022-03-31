@@ -41,3 +41,22 @@ struct stmtValue {
 
     stmtType valType;
 };
+
+enum exprType {
+    ASSIGNEXPR,
+    EXPR,
+    TERM
+};
+
+struct exprValue {
+    union value {
+        struct assignexprValue *assignexprVal;
+        struct exprOPValue {
+            struct exprValue *exprVal;
+            struct opValue *opVal;
+        }; 
+        struct termValue *termVal;
+    };
+
+    exprType valType;
+};
