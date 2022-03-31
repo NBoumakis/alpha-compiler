@@ -209,3 +209,32 @@ struct memberValue {
 
     memberType valTypes;
 };
+
+enum callType{
+    CALL,
+    ELIST,
+    LVALUE,
+    CALLSUFFIX,
+    FUNCDEF
+};
+
+
+struct callValue {
+    union value {
+        struct callELISTValue {
+            struct callValue *callVal;
+            struct elistValue *elistVal;
+        };
+        struct callLVALUEValue{
+            struct lvalueValue *lvalueVal;
+            struct callsuffixValue *callsuffixVAl;
+        };
+        struct callFUNCDEFValue{
+            struct funcdefValue *funcdefVa;
+            struct elistValue *elistVAl;
+        };
+    };
+
+    callType valType;
+
+};
