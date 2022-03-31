@@ -469,3 +469,19 @@ struct idValue {
 
     idType valType;
 };
+
+enum ifstmtType {
+    EXPR,
+    STMT,
+    ELSE
+};
+
+struct ifstmtValue {
+    union value{
+        struct exprValue *valType;
+        struct stmtValue *stmtVal;
+        struct elseValue *elseVal;
+    };
+
+    ifstmtType valType;
+};
