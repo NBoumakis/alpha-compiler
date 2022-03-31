@@ -381,3 +381,17 @@ struct blockValue {
 
     blockType valType;
 };
+
+enum blockstmtType {
+    STMT,
+    BLOCKSTMT
+};
+
+struct blockstmtValue {
+    union value {
+        struct stmtValue *stmtVal;
+        struct blockstmtValue *blockstmtVal;
+    };
+
+    blockstmtType valType;
+};
