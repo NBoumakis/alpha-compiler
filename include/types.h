@@ -60,3 +60,21 @@ struct exprValue {
 
     exprType valType;
 };
+
+struct opValue {
+    union value {
+        std::string PLUS;
+        std::string MINUS;
+        std::string MUL;
+        std::string DIV;
+        std::string MOD;
+        std::string GT;
+        std::string GE;
+        std::string LT;
+        std::string LE;
+        std::string EQUAL;
+        std::string NEQUAL;
+        std::string AND;
+        std::string OR;
+    };
+};
