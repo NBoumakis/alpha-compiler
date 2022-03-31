@@ -485,3 +485,16 @@ struct ifstmtValue {
 
     ifstmtType valType;
 };
+
+enum elseType {
+    STMT,
+    VOID
+};
+
+struct elseValue {
+    union value{
+        struct stmtValue *stmtVal;
+    };
+
+    elseType valType;
+};
