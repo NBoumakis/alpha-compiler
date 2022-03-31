@@ -357,3 +357,15 @@ struct indelemlistValue {
 
     indelemlistType valType;
 };
+
+enum indexedelemType {
+    EXPR
+};
+
+struct indexedelemValue {
+    union value {
+        struct exprValue *exprVal;
+    };
+
+    indexedelemType valType;
+};
