@@ -540,3 +540,16 @@ struct returnstmtValue {
 
     returnstmtType valType;
 };
+
+enum retType {
+    EXPR,
+    VOID
+};
+
+struct retValue{
+    union value {
+        struct exprValue *exprVal;
+    };
+
+    retType valType;
+};
