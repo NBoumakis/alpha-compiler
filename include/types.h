@@ -512,3 +512,19 @@ struct whilestmtValue {
 
     whilestmtType valType;
 };
+
+enum forstmtType {
+    ELIST,
+    EXPR,
+    STMT
+};
+
+struct forstmtValue{
+    union Value {
+        struct elistValue *elistVal;
+        struct exprValue *exprVal;
+        struct stmtValue *stmtVal;
+    };
+
+    forstmtType valType;
+};
