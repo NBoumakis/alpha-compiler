@@ -338,3 +338,22 @@ struct indexedValue {
 
     indexedType valType;
 };
+
+enum indelemlistType {
+    INDEXEDELEM,
+    INDELEMLIST
+};
+
+struct indelemlistValue {
+    union value {
+        struct indelemlistCOMMAValue {
+            struct indexedelemValue *indexedelemVal;
+            struct indelemlistValue *indelemlistVal;
+        };
+        struct indelemlistINDEXEDELEMValue {
+            struct indexedelemValue *indexedelemVal;
+        };
+    };
+
+    indelemlistType valType;
+};
