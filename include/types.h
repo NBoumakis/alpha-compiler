@@ -449,3 +449,23 @@ struct idlistValue {
 
     idlistType valType;
 };
+
+enum idType {
+    ID,
+    id,
+    VOID
+};
+
+struct idValue {
+    union value {
+        struct idCOMMAValue {
+            std::string strVal;
+            struct idValue *idVal;
+        };
+        struct idIDValue {
+            std::string strVal;
+        };         
+    };
+
+    idType valType;
+};
