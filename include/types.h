@@ -498,3 +498,17 @@ struct elseValue {
 
     elseType valType;
 };
+
+enum whilestmtType {
+    EXPR,
+    STMT
+};
+
+struct whilestmtValue {
+    union value {
+        struct exprValue *exprVal;
+        struct stmtValue *stmtVal;
+    };
+
+    whilestmtType valType;
+};
