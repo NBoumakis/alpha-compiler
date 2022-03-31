@@ -417,3 +417,22 @@ struct funcdefValue {
 
     funcdefType valType;
 };
+
+enum constTypes {
+    INT,
+    DOUBLE,
+    STRING,
+    NIL,
+    BOOL
+};
+
+struct constValue {
+    union value {
+        int intVal;
+        double doubleVal;
+        std::string stringVal;
+        bool boolVal;
+    };
+
+    constTypes valType;
+};
