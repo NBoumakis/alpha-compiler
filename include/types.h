@@ -78,3 +78,48 @@ struct opValue {
         std::string OR;
     };
 };
+
+enum termType {
+    EXPR,
+    LVALUE,
+    PRIMARY
+};
+
+struct termValue {
+    union value {
+        struct termEXPRBRACKETSValue {
+            std::string L_PARENTHSESIS;
+            struct exprValue *exprVal;
+            std::string R_PARENTHSESIS;
+        };
+        struct termNOTEXPRValue {
+            std::string NOT;
+            struct exprValue *exprVal;
+        };
+        struct termPLUS_PLUSLVALUEValue {
+            std::string PLUS_PLUS;
+            struct lvalueValue *lvalueVal;
+        };
+        struct termLVALUEPLUS_PLUSValue {
+            struct lvalueValue lvalueVal;
+            std::string PLUS_PLUS;
+        };
+        struct termMINUS_MINUSLVALUEValue {
+            std::string MINUS_MINUS;
+            struct lvalueValue *lvalueVal;
+        };
+        struct termLVALUEMINUS_MINUSValue {
+            struct lvalueValue lvalueVal;
+            std::string MINUS_MINUS;
+        };
+        struct termPRIMARYValue {
+            struct primaryValue *primaryVal;
+        };
+        struct termMINUSValue {
+            std::string MINUS;
+            struct exprValue *exprVal;
+        };
+    };
+
+    termType valType;
+};
