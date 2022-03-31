@@ -1,48 +1,16 @@
 #include <string>
 
-enum ConstTypes {
-    INT,
-    DOUBLE,
-    STRING,
-    BOOL,
-    NIL
+enum programType {
+    STMT,
+    PROGRAM,
+    VOID
 };
 
-struct constValue {
+struct programValue {
     union value {
-        int intVal;
-        double doubleVal;
-        std::string stringVal;
-        bool boolVal;
+        struct stmtValue *stmtVal;
+        struct programValue *programVal;
     };
 
-    ConstTypes valType;
-};
-
-enum lvalueTypes {
-    ID,
-    MEMBER
-};
-
-struct lvalueValue {
-    union value {
-        std::string strVal;
-        struct memberValue memberVal;
-    };
-
-    lvalueTypes valType;
-};
-
-struct memberValue {
-    union value {
-        struct {
-            struct lvalueValue lvalueVal;
-            std::string id;
-        };
-        struct
-        {
-            struct lvalueValue lvalueVal;
-            struct exprValue exprVal;
-        };
-    };
+    programType valType;
 };
