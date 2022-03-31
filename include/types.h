@@ -276,3 +276,15 @@ struct methodcallValue {
 
     methodcallType valType;
 };
+
+enum elistType {
+    EXPROPTRPT
+};
+
+struct elistValue {
+    union value {
+        struct exprOptRptValue *exprOptRptVal;
+    };
+
+    elistType valType;
+};
