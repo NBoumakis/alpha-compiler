@@ -179,3 +179,33 @@ struct lvalueValue {
 
     lvalueType valType;
 };
+
+enum memberType {
+    LVALUE,
+    CALL,
+    ID,
+    EXPR
+};
+
+struct memberValue {
+    union value {
+        struct memberLVALUEDOTValue {
+            struct lvalueValue *lvalueVal;
+            std::string id;
+        };
+        struct memberLVALUEEXPRValue {
+            struct lvalueValue *lvalueVal;
+            struct exprValue *exprVal;
+        };
+        struct memberCALLDOTValue {
+            struct callValue *callVal;
+            std::string id;
+        };
+        struct memberCALLEXPRValue {
+            struct callValue *callVal;
+            struct exprValue *exprVal; 
+        };
+    };
+
+    memberType valTypes;
+};
