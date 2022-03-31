@@ -157,3 +157,25 @@ struct primaryValue {
 
     primaryType valType;
 };
+
+enum lvalueType {
+    ID,
+    MEMBER
+};
+
+struct lvalueValue {
+    union value {
+        std::string strVal;
+        struct lvalueLOCALIDValue {
+            std::string LOCAL;
+            std::string id;
+        };
+        struct lvalueNAMESPACEIDValue {
+            std::string NAMESPACE;
+            std::string id;
+        };
+        struct memberValue *memberVal;
+    };
+
+    lvalueType valType;
+};
