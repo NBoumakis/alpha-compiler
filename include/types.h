@@ -395,3 +395,25 @@ struct blockstmtValue {
 
     blockstmtType valType;
 };
+
+enum funcdefType {
+    ID,
+    IDLIST,
+    BLOCK
+};
+
+struct funcdefValue {
+    union value{
+        struct funcdefIDValue{
+            std::string strVal;
+            struct idlistValue *idlistVal;
+            struct blockValue *blockVal;
+        };
+        struct funcdefNOIDValue{
+            struct idlistValue *idlistVal;
+            struct blockValue *blockVal;
+        };
+    };
+
+    funcdefType valType;
+};
