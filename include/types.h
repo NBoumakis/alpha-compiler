@@ -238,3 +238,15 @@ struct callValue {
     callType valType;
 
 };
+
+enum callsuffixType {
+    NORMCALL,
+    METHODCALL
+};
+
+struct callsuffixValue{
+    union value {
+        struct normcallValue *normcallVal;
+        struct methodcallValue *methodcallVal;
+    };
+};
