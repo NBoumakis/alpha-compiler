@@ -369,3 +369,15 @@ struct indexedelemValue {
 
     indexedelemType valType;
 };
+
+enum blockType{
+    BLOCKSTMT
+};
+
+struct blockValue {
+    union value {
+        struct blockstmtValue *blockstmtVal;
+    };
+
+    blockType valType;
+};
