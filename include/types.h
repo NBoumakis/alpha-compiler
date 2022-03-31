@@ -288,3 +288,21 @@ struct elistValue {
 
     elistType valType;
 };
+
+enum exprOptRptType {
+    EXPR,
+    EXPROPTRPT
+};
+
+struct exprOptRptValue {
+    union value {
+        struct exprOptRptCOMMAValue {
+            struct exprOptRpt *exprOptRptVal;
+        };
+        struct exprOptRptEXPRValue {
+            struct exprValue *exprVal;
+        };
+    };
+
+    exprOptRptType valType;
+};
