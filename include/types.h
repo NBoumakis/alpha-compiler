@@ -250,3 +250,15 @@ struct callsuffixValue{
         struct methodcallValue *methodcallVal;
     };
 };
+
+enum normcallType {
+    ELIST
+};
+
+struct normcallValue {
+    union value {
+        struct elistValue *elistVal;
+    };
+
+    normcallType valType;
+};
