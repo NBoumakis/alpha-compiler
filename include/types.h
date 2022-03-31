@@ -262,3 +262,17 @@ struct normcallValue {
 
     normcallType valType;
 };
+
+enum methodcallType{
+    ID,
+    ELIST
+};
+
+struct methodcallValue {
+    union value {
+        std::string strVal;
+        struct elistValue *elistVal;
+    };
+
+    methodcallType valType;
+};
