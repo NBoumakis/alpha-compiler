@@ -144,12 +144,10 @@ exprOptRpt: expr COMMA exprOptRpt {std::cout << "exprOptRpt expr , exprOptRpt" <
 
 objectdef: L_SQUARE_BRACKET elist R_SQUARE_BRACKET     {std::cout << "objectdef [ elist ]" << std::endl;}
         |  L_SQUARE_BRACKET indexed R_SQUARE_BRACKET {std::cout << "objectdef [ indexed ]" << std::endl;}
-        |  L_SQUARE_BRACKET R_SQUARE_BRACKET          {std::cout << "objectdef [ ]" << std::endl;}
         ;
 
 
 indexed : indelemlist {std::cout << "indexed indelemlist" << std::endl;}
-        | {std::cout << "indexed empty" << std::endl;}
         ;
 
 indelemlist: indexedelem COMMA indelemlist   {std::cout << "indelemlist indexedelem , indelemlist" << std::endl;}
