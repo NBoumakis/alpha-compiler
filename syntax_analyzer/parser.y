@@ -57,9 +57,12 @@
 
 %%
 
-program: stmt program       {std::cout << "Program stmt program" << std::endl;}
-        |
+program: stmtList       {std::cout << "Program stmt program" << std::endl;}
         ;
+
+stmtList: stmtList stmt
+|
+;
 
 stmt:  expr SEMICOLON       {std::cout << "Stmt expr ;" << std::endl;}
         |ifstmt             {std::cout << "Stmt if" << std::endl;}
@@ -158,13 +161,13 @@ indelemlist: indexedelem COMMA indelemlist   {std::cout << "indelemlist indexede
 indexedelem : L_CURLY_BRACKET expr COLON expr R_CURLY_BRACKET {std::cout << "indexedelem { expr ; expr }" << std::endl;}
     ;
 
-block:  L_CURLY_BRACKET blockStmt R_CURLY_BRACKET {std::cout << "block { blockStmt }" << std::endl;}
+block:  L_CURLY_BRACKET stmtList R_CURLY_BRACKET {std::cout << "block { blockStmt }" << std::endl;}
         ;
-
+/*
 blockStmt: stmt blockStmt {std::cout << "blockStmt stmt blockStmt" << std::endl;}
         | {std::cout << "blockStmt empty" << std::endl;}
         ;
-
+*/
 funcdef : FUNCTION ID L_PARENTHESIS idlist R_PARENTHESIS block  {std::cout << "funcdef function id ( idlist ) block" << std::endl;}
         | FUNCTION L_PARENTHESIS idlist R_PARENTHESIS block  {std::cout << "funcdef function ( idlist ) block" << std::endl;}
 
@@ -176,14 +179,15 @@ const : intNumber   {std::cout << "const int" << std::endl;}
         |FALSE      {std::cout << "const false" << std::endl;}
         ;
 
-idlist : id {std::cout << "idlist id" << std::endl;}
+idlist : ID {std::cout << "idlist id" << std::endl;}
+        | idlist COMMA ID
         |
          ;
-
+/*
 id:   ID COMMA id   {std::cout << "id ID, id" << std::endl;}
     | ID            {std::cout << "id ID" << std::endl;}
     ;
-
+*/
 ifstmt : IF L_PARENTHESIS expr R_PARENTHESIS stmt else {std::cout << "ifstmt if ( expr ) stmt else" << std::endl;}
     ;
 
@@ -196,7 +200,7 @@ whilestmt : WHILE L_PARENTHESIS expr R_PARENTHESIS stmt {std::cout << "whilestmt
 forstmt : FOR L_PARENTHESIS elist SEMICOLON expr SEMICOLON elist R_PARENTHESIS stmt {std::cout << "forstmt  for(elist;expr; elist) stmt" << std::endl;}
     ;
 
-returnstmt : RETURN ret {std::cout << "returnstmt return ret" << std::endl; }
+returnstmt : RETURN ret SEMICOLON {std::cout << "returnstmt return ret" << std::endl; }
     ;
 
 ret : expr {std::cout << "ret expr" << std::endl;}
