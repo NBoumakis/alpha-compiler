@@ -39,18 +39,19 @@
 %type <constVal> const
 
 /*Associativity and priority */
-
-%left L_PARENTHESIS R_PARENTHESIS
-%left L_SQUARE_BRACKET R_SQUARE_BRACKET
-%left DOT DOUBLE_DOT
-%right NOT PLUS_PLUS MINUS_MINUS UMINUS
-%left MUL DIV MOD
-%left PLUS MINUS
-%nonassoc GT GE LT LE
-%nonassoc EQUAL NEQUAL
-%left AND
-%left OR
 %right ASSIGN
+%left OR
+%left AND
+%nonassoc EQUAL NEQUAL
+%nonassoc GT GE LT LE
+%left PLUS MINUS
+%left MUL DIV MOD
+%right NOT PLUS_PLUS MINUS_MINUS UMINUS
+%left DOT DOUBLE_DOT
+%left L_SQUARE_BRACKET R_SQUARE_BRACKET
+%left L_PARENTHESIS R_PARENTHESIS
+
+
 
 %start program
 
@@ -73,24 +74,21 @@ stmt:  expr SEMICOLON       {std::cout << "Stmt expr ;" << std::endl;}
         ;
 
 expr:  assignexpr          {std::cout << "Expr <-" << std::endl;}
-        |expr op expr       {std::cout << "Expr op expr" << std::endl;}
+        |expr PLUS expr       {std::cout << "Expr + expr" << std::endl;}
+        |expr MINUS expr       {std::cout << "Expr - expr" << std::endl;}
+        |expr MUL expr       {std::cout << "Expr * expr" << std::endl;}
+        |expr DIV expr       {std::cout << "Expr * expr" << std::endl;}
+        |expr MOD expr       {std::cout << "Expr * expr" << std::endl;}
+        |expr GT expr       {std::cout << "Expr * expr" << std::endl;}
+        |expr GE expr       {std::cout << "Expr * expr" << std::endl;}
+        |expr LT expr       {std::cout << "Expr * expr" << std::endl;}
+        |expr LE expr       {std::cout << "Expr * expr" << std::endl;}
+        |expr EQUAL expr       {std::cout << "Expr * expr" << std::endl;}
+        |expr NEQUAL expr       {std::cout << "Expr * expr" << std::endl;}
+        |expr AND expr       {std::cout << "Expr * expr" << std::endl;}
+        |expr OR expr       {std::cout << "Expr * expr" << std::endl;}
         |term               {std::cout << "Expr term" << std::endl;}
         ;
-
-op:   PLUS   {std::cout << "op +" << std::endl;}
-    | MINUS  {std::cout << "op -" << std::endl;}
-    | MUL    {std::cout << "op *" << std::endl;}
-    | DIV    {std::cout << "op /" << std::endl;}
-    | MOD    {std::cout << "op %" << std::endl;}
-    | GT     {std::cout << "op >" << std::endl;}
-    | GE     {std::cout << "op >=" << std::endl;}
-    | LT     {std::cout << "op <" << std::endl;}
-    | LE     {std::cout << "op <=" << std::endl;}
-    | EQUAL  {std::cout << "op ==" << std::endl;}
-    | NEQUAL {std::cout << "op !=" << std::endl;}
-    | AND    {std::cout << "op and" << std::endl;}
-    | OR     {std::cout << "op or" << std::endl;}
-    ;
 
 term: L_PARENTHESIS expr R_PARENTHESIS {std::cout << "term ( expr )" << std::endl;}
     | NOT expr                         {std::cout << "term !expr" << std::endl;}
