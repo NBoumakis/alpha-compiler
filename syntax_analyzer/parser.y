@@ -86,21 +86,6 @@ expr:  assignexpr          {$$=Manage_expr_assignexpr($1);}
         |term               {$$=Manage_expr_term($1);}
         ;
 
-op:   PLUS   {$$ = $1;}
-    | MINUS  {$$ = $1;}
-    | MUL    {$$ = $1;}
-    | DIV    {$$ = $1;}
-    | MOD    {$$ = $1;}
-    | GT     {$$ = $1;}
-    | GE     {$$ = $1;}
-    | LT     {$$ = $1;}
-    | LE     {$$ = $1;}
-    | EQUAL  {$$ = $1;}
-    | NEQUAL {$$ = $1;}
-    | AND    {$$ = $1;}
-    | OR     {$$ = $1;}
-    ;
-
 term: L_PARENTHESIS expr R_PARENTHESIS {$$ = Manage_term_LPexprRP($2);}
     | NOT expr                         {$$ = Manage_term_notexpr($2);}
     | PLUS_PLUS lvalue                 {$$ = Manage_term_PPlval($2);}
