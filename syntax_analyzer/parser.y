@@ -34,18 +34,17 @@
 %type <constVal> const
 
 /*Associativity and priority */
-
-%left L_PARENTHESIS R_PARENTHESIS
-%left L_SQUARE_BRACKET R_SQUARE_BRACKET
-%left DOT DOUBLE_DOT
-%right NOT PLUS_PLUS MINUS_MINUS UMINUS
-%left MUL DIV MOD
-%left PLUS MINUS
-%nonassoc GT GE LT LE
-%nonassoc EQUAL NEQUAL
-%left AND
-%left OR
 %right ASSIGN
+%left OR
+%left AND
+%nonassoc EQUAL NEQUAL
+%nonassoc GT GE LT LE
+%left PLUS MINUS
+%left MUL DIV MOD
+%right NOT PLUS_PLUS MINUS_MINUS UMINUS
+%left DOT DOUBLE_DOT
+%left L_SQUARE_BRACKET R_SQUARE_BRACKET
+%left L_PARENTHESIS R_PARENTHESIS
 
 %start program
 
