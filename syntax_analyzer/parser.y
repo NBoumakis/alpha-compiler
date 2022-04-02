@@ -50,9 +50,12 @@
 
 %%
 
-program: stmt program       {$$ = Manage_program($1, $2)}
-        |
+program: stmtList       {$$ = Manage_program($1, $2)}
         ;
+
+stmtList: stmtList stmt {$$ = Manage_stmtList($1, $2);}
+|
+;
 
 stmt:  expr SEMICOLON       {$$=Manage_stmt_expr($1);}
         |ifstmt             {$$=Manage_stmt_ifstmt($1);}
