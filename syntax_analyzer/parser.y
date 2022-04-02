@@ -70,7 +70,19 @@ stmt:  expr SEMICOLON       {$$=Manage_stmt_expr($1);}
         ;
 
 expr:  assignexpr          {$$=Manage_expr_assignexpr($1);}
-        |expr op expr       {$$=Manage_expr_exprOPexpr($1, $2, $3);}
+        |expr PLUS expr       {$$=Manage_expr_expr_PLUS_expr($1, $3);}
+        |expr MINUS expr       {$$=Manage_expr_expr_MINUS_expr($1, $3);}
+        |expr MUL expr       {$$=Manage_expr_expr_MUL_expr($1, $3);}
+        |expr DIV expr       {$$=Manage_expr_expr_DIV_expr($1, $3);}
+        |expr MOD expr       {$$=Manage_expr_expr_MOD_expr($1, $3);}
+        |expr GT expr       {$$=Manage_expr_expr_GT_expr($1, $3);}
+        |expr GE expr       {$$=Manage_expr_expr_GE_expr($1, $3);}
+        |expr LT expr       {$$=Manage_expr_expr_LT_expr($1, $3);}
+        |expr LE expr       {$$=Manage_expr_expr_LE_expr($1, $3);}
+        |expr EQUAL expr       {$$=Manage_expr_expr_EQUAL_expr($1, $3);}
+        |expr NEQUAL expr       {$$=Manage_expr_expr_NEQUAL_expr($1, $3);}
+        |expr AND expr       {$$=Manage_expr_expr_AND_expr($1, $3);}
+        |expr OR expr       {$$=Manage_expr_expr_OR_expr($1, $3);}
         |term               {$$=Manage_expr_term($1);}
         ;
 
