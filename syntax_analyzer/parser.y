@@ -168,13 +168,10 @@ const : intNumber   {$$ = $1;}
         |FALSE      {$$ = false;}
         ;
 
-idlist : id {$$ = Manage_idlist($1);}
+idlist : ID {$$ = Manage_idlist_ID($1);}
+        | idlist COMMA ID {$$ = Manage_idlist_idlist_comma_id($1);}
         |
          ;
-
-id:   ID COMMA id   {$$ = Manage_multiple_id($1, $3)}
-    | ID            {$$ = $1}
-    ;
 
 ifstmt : IF L_PARENTHESIS expr R_PARENTHESIS stmt else {$$=Manage_ifstmt($3, $5);};
 
