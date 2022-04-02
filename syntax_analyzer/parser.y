@@ -73,7 +73,7 @@ stmt:  expr SEMICOLON       {std::cout << "Stmt expr ;" << std::endl;}
         |CONTINUE SEMICOLON {std::cout << "Stmt cont;" << std::endl;}
         |block              {std::cout << "Stmt block" << std::endl;}
         |funcdef            {std::cout << "Stmt func" << std::endl;}
-        |SEMICOLON          {std::cout << "Stmt ;" << <std::endl;}
+        |SEMICOLON          {std::cout << "Stmt ;" << std::endl;}
         ;
 
 expr:  assignexpr          {std::cout << "Expr <-" << std::endl;}
