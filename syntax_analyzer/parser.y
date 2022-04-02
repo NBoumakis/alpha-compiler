@@ -12,10 +12,6 @@
     extern int yylex();
     extern int yyparse();
     extern FILE* yyin;
-
-    enum keywords    {IF, ELSE, WHILE, FOR, FUNCTION, RETURN, BREAK, CONTINUE, AND, NOT, OR, LOCAL, TRUE, FALSE, NIL};
-    enum operator    {ASSIGN, PLUS, MINUS, MUL, DIV, MOD, EQUAL, NEQUAL, PLUS_PLUS, MINUS_MINUS, GT, GE, LT, LE};
-    enum punctuation {L_CURLY_BRACKET, R_CURLY_BRACKET, L_SQUARE_BRACKET, R_SQUARE_BRACKET, L_PARENTHESIS, R_PARENTHESIS, SEMICOLON, COMMA, COLON, NAMESPACE, DOT, DOUBLE_DOT}
 %}
 
 %union{ 
