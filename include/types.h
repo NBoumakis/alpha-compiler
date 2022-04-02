@@ -1,11 +1,13 @@
 #include <string>
 
+struct memberValue;
+
 enum ConstTypes {
     INT,
     DOUBLE,
-    STRING,
+    STRING1,
     BOOL,
-    NIL
+    NIL1
 };
 
 struct constValue {
@@ -20,14 +22,14 @@ struct constValue {
 };
 
 enum lvalueTypes {
-    ID,
+    ID1,
     MEMBER
 };
 
 struct lvalueValue {
     union value {
         std::string strVal;
-        struct memberValue memberVal;
+        struct memberValue *memberVal;
     };
 
     lvalueTypes valType;
@@ -38,11 +40,11 @@ struct memberValue {
         struct {
             struct lvalueValue lvalueVal;
             std::string id;
-        };
+        } lvalid;
         struct
         {
             struct lvalueValue lvalueVal;
-            struct exprValue exprVal;
-        };
+            struct exprValue *exprVal;
+        } lvalexpr;
     };
 };
