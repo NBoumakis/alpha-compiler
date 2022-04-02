@@ -16,6 +16,8 @@ protected:
     bool isActive;
     SymbolType type;
 
+    friend class Scope;
+
 public:
     Symbol(std::string name, unsigned int scope, unsigned int line, SymbolType type);
     Symbol(std::string name, unsigned int scope, unsigned int line, SymbolType type, bool isActive);
