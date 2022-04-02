@@ -144,7 +144,6 @@ objectdef: L_SQUARE_BRACKET elist R_SQUARE_BRACKET     {$$=Manage_objectdef_LSBe
 
 
 indexed : indelemlist {$$=Manage_indexed($1);}
-        |
         ;
 
 indelemlist: indexedelem COMMA indelemlist   {$$ = Manage_indelemlist($1, $3)}
