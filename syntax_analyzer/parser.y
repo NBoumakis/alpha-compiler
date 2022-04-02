@@ -152,12 +152,9 @@ indelemlist: indexedelem COMMA indelemlist   {$$ = Manage_indelemlist($1, $3)}
 
 
 indexedelem : L_CURLY_BRACKET expr COLON expr R_CURLY_BRACKET {$$ = Manage_indexedelem_LCB_expr_COLON_expr_RCB($2, $4);};
+    ;
 
-block:  L_CURLY_BRACKET blockStmt R_CURLY_BRACKET {$$=Manage_block_LCBstmtRCB($2);}
-        ;
-
-blockStmt: stmt blockStmt {$$ = Manage_blockStmt($1, $2);}
-        |
+block:  L_CURLY_BRACKET stmtList R_CURLY_BRACKET {$$=Manage_block_LCBstmtRCB($2);}
         ;
 
 funcdef : FUNCTION ID L_PARENTHESIS idlist R_PARENTHESIS block  {$$ = Manage_funcdef_id($2, $4, $6);}
