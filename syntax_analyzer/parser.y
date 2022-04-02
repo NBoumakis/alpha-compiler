@@ -182,7 +182,7 @@ whilestmt : WHILE L_PARENTHESIS expr R_PARENTHESIS stmt {$$=Manage_whilestmt($3,
 
 forstmt : FOR L_PARENTHESIS elist SEMICOLON expr SEMICOLON elist R_PARENTHESIS stmt {$$=Manage_for($3, $5, $7, $9);};
 
-returnstmt : RETURN ret {$$=Manage_returnstmt($2);};
+returnstmt : RETURN ret SEMICOLON {$$=Manage_returnstmt($2);};
 
 ret : expr
      | ;
