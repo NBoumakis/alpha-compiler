@@ -83,18 +83,6 @@ SPACE [\r \t\v]
 char string_buf[YY_BUF_SIZE];
 char *string_buf_ptr;
 
-"print" { return print; }
-"input" { return input; }
-"objectmemberkeys" { return objectmemberkeys; }
-"objecttotalmembers" { return objecttotalmembers; }
-"objectcopy" { return objectcopy; }
-"totalarguments" { return totalarguments; }
-"argument" { return argument; }
-"strtonum" { return strtonum; }
-"sqrt" { return sqrt; }
-"cos" { return cos; }
-"sin" { return sin; }
-
 
 {IF} {
     alpha_token_t *token = static_cast<alpha_token_t *>(yylval);
