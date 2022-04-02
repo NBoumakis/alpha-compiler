@@ -140,7 +140,6 @@ exprOptRpt: expr COMMA exprOptRpt {$$ = Manage_exprOR_exprOR($1, $3);}
 
 objectdef: L_SQUARE_BRACKET elist R_SQUARE_BRACKET     {$$=Manage_objectdef_LSBelistRSB($2);}
         |  L_SQUARE_BRACKET indexed R_SQUARE_BRACKET {$$=Manage_objectdef_LSBindexedRSB($2);}
-        |  L_SQUARE_BRACKET R_SQUARE_BRACKET          {$$=Manage_objectdef_LSBRSB();}
         ;
 
 
