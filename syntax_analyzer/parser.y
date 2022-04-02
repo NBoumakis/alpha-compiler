@@ -29,7 +29,6 @@
 %token  <stringValue> STRING 
 %token  COMMENT
 %token  BLOCK_COMMENT
-%token  print input objectmemberkeys objecttotalmembers objectcopy totalarguments argument strtonum sqrt cos sin
 
 /* Non-terminal types */
 %type <constVal> const
