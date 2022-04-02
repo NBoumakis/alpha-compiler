@@ -173,7 +173,7 @@ idlist : ID {$$ = Manage_idlist_ID($1);}
         |
          ;
 
-ifstmt : IF L_PARENTHESIS expr R_PARENTHESIS stmt else {$$=Manage_ifstmt($3, $5);};
+ifstmt : IF L_PARENTHESIS expr R_PARENTHESIS stmt else {$$=Manage_ifstmt($3, $5, $6);};
 
 else : ELSE stmt {$$ = Manage_else($2);}
     | ;
