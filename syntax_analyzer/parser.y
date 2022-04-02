@@ -184,6 +184,6 @@ forstmt : FOR L_PARENTHESIS elist SEMICOLON expr SEMICOLON elist R_PARENTHESIS s
 
 returnstmt : RETURN ret SEMICOLON {$$=Manage_returnstmt($2);};
 
-ret : expr
+ret : expr {$$=Manage_ret_expr($2);};
      | ;
 
