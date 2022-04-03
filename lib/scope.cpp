@@ -15,3 +15,15 @@ Symbol *Scope::lookup_scope(std::string key, unsigned int scope) {
 
     return nullptr;
 }
+
+Symbol *Scope::lookup_symbol(std::string key) {
+    auto p = hash_table.equal_range(key);
+
+    for (auto it = p.first; it != p.second; ++it) {
+        if (key == it->second->name) {
+            return it->second;
+        }
+    }
+
+    return nullptr;
+}
