@@ -1,3 +1,6 @@
+#ifndef __SYMBOL_H
+#define __SYMBOL_H
+
 #include <string>
 
 enum SymbolType {
@@ -29,3 +32,5 @@ class Variable : protected Symbol {};
 class Function : protected Symbol {
 protected:
 };
+
+#endif /* __SYMBOL_H */

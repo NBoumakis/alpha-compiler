@@ -1,3 +1,6 @@
+#ifndef __SCOPE_H
+#define __SCOPE_H
+
 #include "symbol.h"
 #include <list>
 #include <string>
@@ -21,3 +24,5 @@ public:
     /* Remove element(key) */
     /* Clear */
 };
+
+#endif /* __SCOPE_H */

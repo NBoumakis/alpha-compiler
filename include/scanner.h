@@ -18,4 +18,4 @@ struct alpha_token_t {
     void add_token_to_list();
 };
 
-#endif
+#endif /* __SCANNER_H */

@@ -1,3 +1,6 @@
+#ifndef __TYPES_H
+#define __TYPES_H
+
 #include <string>
 
 enum programType {
@@ -533,3 +536,5 @@ struct retValue {
 
     retType valType;
 };
+
+#endif /* __TYPES_H */
