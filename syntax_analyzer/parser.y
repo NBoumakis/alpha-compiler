@@ -1,6 +1,7 @@
 %{
     #include <iostream>
     #include "../include/types.h"
+    #include "../include/rules.h"
 
     int yyerror(char* yaccProvideedMessage);
 
