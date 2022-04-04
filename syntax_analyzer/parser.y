@@ -164,7 +164,7 @@ funcdef:  FUNCTION ID L_PARENTHESIS idlist R_PARENTHESIS block  {$$ = Manage_fun
 const:    intNumber     {$$ = Manage_const_int($1);}
         | realNumber    {$$ = Manage_const_real($1);}
         | STRING        {$$ = Manage_const_string($1);}
-        | NIL           {$$ = Manage_const_nil($1);;}
+        | NIL           {$$ = Manage_const_nil($1);}
         | TRUE          {$$ = Manage_const_true();}
         | FALSE         {$$ = Manage_const_false();}
         ;
