@@ -172,7 +172,7 @@ lvalue:   ID            {$$ = Manage_lvalue_id($1);}
 member:   lvalue DOT ID                                     {$$ = Manage_member_lvalueDOTid($1, $3);}
         | lvalue L_SQUARE_BRACKET expr R_SQUARE_BRACKET     {$$ = Manage_member_lvalueLSBexprRSB($1, $3);}
         | call DOT ID                                       {$$ = Manage_member_callDOTid($1, $3);}
-        | call L_SQUARE_BRACKET expr R_SQUARE_BRACKET       {$$ = Manage_member_calLSBexprRSB($1, $3);}
+        | call L_SQUARE_BRACKET expr R_SQUARE_BRACKET       {$$ = Manage_member_callLSBexprRSB($1, $3);}
         ;
 
 call:     call L_PARENTHESIS elist R_PARENTHESIS                                        {$$ = Manage_call_callLPelistRP($1, $3);}
@@ -188,7 +188,7 @@ normcall:     L_PARENTHESIS elist R_PARENTHESIS                 {$$ = Manage_nor
 
 methodcall:   DOUBLE_DOT ID L_PARENTHESIS elist R_PARENTHESIS   {$$ = Manage_methodcall_DDOTidLPelistRP($2, $4);}
 
-elist:   exprOptRpt         {$$ = Manage_elist_exprCOMMAexpr($1);}
+elist:   exprOptRpt         {$$ = Manage_elist_exprOptRpt($1);}
        |
        ;
 
@@ -222,7 +222,7 @@ funcdef:  FUNCTION ID L_PARENTHESIS idlist R_PARENTHESIS block  {$$ = Manage_fun
 const:    intNumber     {$$ = Manage_const_int($1);}
         | realNumber    {$$ = Manage_const_real($1);}
         | STRING        {$$ = Manage_const_string($1);}
-        | NIL           {$$ = Manage_const_nil($1);}
+        | NIL           {$$ = Manage_const_nil();}
         | TRUE          {$$ = Manage_const_true();}
         | FALSE         {$$ = Manage_const_false();}
         ;

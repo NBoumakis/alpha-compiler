@@ -106,7 +106,7 @@ memberValue Manage_member_lvalueLSBexprRSB(lvalueValue, exprValue);
 
 memberValue Manage_member_callDOTid(callValue, idValue);
 
-memberValue Manage_member_calLSBexprRSB(callValue, exprValue);
+memberValue Manage_member_callLSBexprRSB(callValue, exprValue);
 
 /* Calls */
 callValue Manage_call_callLPelistRP(callValue, elistValue);
@@ -127,7 +127,7 @@ normcallValue Manage_normcall_LPelistRP(elistValue);
 methodcallValue Manage_methodcall_DDOTidLPelistRP(idValue, elistValue);
 
 /* elist */
-elistValue Manage_elist_exprCOMMAexpr(exprOptRptValue);
+elistValue Manage_elist_exprOptRpt(exprOptRptValue);
 
 /* Expression optional and repeatable */
 exprOptRptValue Manage_exprOR_exprOR(exprValue, exprOptRptValue);
