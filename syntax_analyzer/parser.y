@@ -50,10 +50,10 @@
 
 %%
 
-program:      stmtList       {$$ = Manage_program($1, $2)}
+program:      stmtList       {$$ = Manage_program($1)}
         ;
 
-stmtList:     stmtList stmt  {$$ = Manage_stmtList($1, $2);}
+stmtList:     stmtList stmt  {$$ = Manage_stmtList_stmt($1, $2);}
             |
             ;
 
@@ -135,7 +135,7 @@ elist:   exprOptRpt         {$$ = Manage_elist_exprCOMMAexpr($1);}
        ;
 
 exprOptRpt:   expr COMMA exprOptRpt     {$$ = Manage_exprOR_exprOR($1, $3);}
-            | expr  {$$ = $1;}
+            | expr                      {$$ = Manage_exprOR_expr($1);}
             ;
 
 objectdef:    L_SQUARE_BRACKET elist R_SQUARE_BRACKET       {$$ = Manage_objectdef_LSBelistRSB($2);}
@@ -146,8 +146,8 @@ objectdef:    L_SQUARE_BRACKET elist R_SQUARE_BRACKET       {$$ = Manage_objectd
 indexed:  indelemlist   {$$ = Manage_indexed($1);}
         ;
 
-indelemlist:  indexedelem COMMA indelemlist     {$$ = Manage_indelemlist($1, $3)}
-            | indexedelem                       {$$ = $1}
+indelemlist:  indexedelem COMMA indelemlist     {$$ = Manage_indelemlist($1, $3);}
+            | indexedelem                       {$$ = Manage_indelemlist_indexedelem($1);}
             ;
 
 
@@ -161,16 +161,16 @@ funcdef:  FUNCTION ID L_PARENTHESIS idlist R_PARENTHESIS block  {$$ = Manage_fun
         | FUNCTION L_PARENTHESIS idlist R_PARENTHESIS block     {$$ = Manage_funcdef($3, $5);}
         ;
 
-const:    intNumber     {$$ = $1;}
-        | realNumber    {$$ = $1;}
-        | STRING        {$$ = $1;}
-        | NIL           {$$ = null;}
-        | TRUE          {$$ = true;}
-        | FALSE         {$$ = false;}
+const:    intNumber     {$$ = Manage_const_int($1);}
+        | realNumber    {$$ = Manage_const_real($1);}
+        | STRING        {$$ = Manage_const_string($1);}
+        | NIL           {$$ = Manage_const_nil($1);;}
+        | TRUE          {$$ = Manage_const_true();}
+        | FALSE         {$$ = Manage_const_false();}
         ;
 
 idlist:   ID                {$$ = Manage_idlist_ID($1);}
-        | idlist COMMA ID   {$$ = Manage_idlist_idlist_comma_id($1);}
+        | idlist COMMA ID   {$$ = Manage_idlist_idlist_comma_id($1,$3);}
         |
         ;
 
@@ -186,6 +186,6 @@ forstmt:      FOR L_PARENTHESIS elist SEMICOLON expr SEMICOLON elist R_PARENTHES
 
 returnstmt:   RETURN ret SEMICOLON      {$$ = Manage_returnstmt($2);};
 
-ret:      expr      {$$ = Manage_ret_expr($2);};
+ret:      expr      {$$ = Manage_ret_expr($1);};
         |
         ;
