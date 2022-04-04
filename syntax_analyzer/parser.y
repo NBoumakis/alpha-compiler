@@ -109,7 +109,7 @@
 %%
 
 program:      stmtList       {$$ = Manage_program($1)}
-        ;
+              ;
 
 stmtList:     stmtList stmt  {$$ = Manage_stmtList_stmt($1, $2);}
             |

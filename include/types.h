@@ -4,15 +4,12 @@
 #include <string>
 
 enum programType {
-    STMT,
-    PROGRAM,
-    VOID
+    StmtList
 };
 
 struct programValue {
     union value {
-        struct stmtValue *stmtVal;
-        struct programValue *programVal;
+        struct stmtListValue *stmtListVal;
     };
 
     programType valType;
@@ -20,24 +17,28 @@ struct programValue {
 
 enum stmtListType {
     StmtListStmt,
-    EMPTY
+    Empty
 };
 struct stmtListValue {
     union value {
         stmtListValue *stmtListVal;
         stmtValue *stmtVal;
     };
+
+    stmtListType valType;
 };
 
 enum stmtType {
-    EXPR,
-    IFSTMT,
-    WHILESTMT,
-    FORSTMT,
-    RETURNSTMT,
-    BLOCK,
-    FUNCDEF,
-    VOID
+    Expr,
+    Ifstmt,
+    Whilestmt,
+    Forstmt,
+    Returnstmt,
+    Break,
+    Continue,
+    Block,
+    Funcdef,
+    Empty
 };
 
 struct stmtValue {
@@ -57,17 +58,77 @@ struct stmtValue {
 };
 
 enum exprType {
-    ASSIGNEXPR,
-    EXPR,
+    Assignexpr,
+    ExprPlusExpr,
+    ExprMinusExpr,
+    ExprMulExpr,
+    ExprDivExpr,
+    ExprModExpr,
+    ExprGtExpr,
+    ExprGeExpr,
+    ExprLtExpr,
+    ExprLeExpr,
+    ExprEqualExpr,
+    ExprNequalExpr,
+    ExprAndExpr,
+    ExprOrExpr,
     TERM
 };
 
 struct exprValue {
     union value {
         struct assignexprValue *assignexprVal;
-        struct exprOPValue {
+        struct exprPlusValue {
             struct exprValue *exprVal;
-            struct opValue *opVal;
+            std::string PLUS;
+        };
+        struct exprMinusValue {
+            struct exprValue *exprVal;
+            std::string MINUS;
+        };
+        struct exprMulValue {
+            struct exprValue *exprVal;
+            std::string MUL;
+        };
+        struct exprDivValue {
+            struct exprValue *exprVal;
+            std::string DIV;
+        };
+        struct exprModValue {
+            struct exprValue *exprVal;
+            std::string MOD;
+        };
+        struct exprGtValue {
+            struct exprValue *exprVal;
+            std::string GT;
+        };
+        struct exprGeValue {
+            struct exprValue *exprVal;
+            std::string GE;
+        };
+        struct exprLtValue {
+            struct exprValue *exprVal;
+            std::string LT;
+        };
+        struct exprLeValue {
+            struct exprValue *exprVal;
+            std::string LT;
+        };
+        struct exprEqualValue {
+            struct exprValue *exprVal;
+            std::string EQUAL;
+        };
+        struct exprNequalValue {
+            struct exprValue *exprVal;
+            std::string NEQUAL;
+        };
+        struct exprAndValue {
+            struct exprValue *exprVal;
+            std::string AND;
+        };
+        struct exprOrValue {
+            struct exprValue *exprVal;
+            std::string OR;
         };
         struct termValue *termVal;
     };
@@ -76,42 +137,47 @@ struct exprValue {
 };
 
 enum termType {
-    EXPR,
-    LVALUE,
-    PRIMARY
+    LparExprRpar,
+    NotExpr,
+    PlusplusLvalue,
+    LvaluePlusplus,
+    MinusminusLvalue,
+    LvalueMinusminus,
+    Primary,
+    MinusExpr
 };
 
 struct termValue {
     union value {
-        struct termEXPRBRACKETSValue {
+        struct termExprBracketsSValue {
             std::string L_PARENTHSESIS;
             struct exprValue *exprVal;
             std::string R_PARENTHSESIS;
         };
-        struct termNOTEXPRValue {
+        struct termNotExprValue {
             std::string NOT;
             struct exprValue *exprVal;
         };
-        struct termPLUS_PLUSLVALUEValue {
+        struct termPlusplusLvalueValue {
             std::string PLUS_PLUS;
             struct lvalueValue *lvalueVal;
         };
-        struct termLVALUEPLUS_PLUSValue {
-            struct lvalueValue lvalueVal;
+        struct termLvaluePlusplusValue {
+            struct lvalueValue *lvalueVal;
             std::string PLUS_PLUS;
         };
-        struct termMINUS_MINUSLVALUEValue {
+        struct termMinusminusLvalueValue {
             std::string MINUS_MINUS;
             struct lvalueValue *lvalueVal;
         };
-        struct termLVALUEMINUS_MINUSValue {
-            struct lvalueValue lvalueVal;
+        struct termLvaluemMinusminusValue {
+            struct lvalueValue *lvalueVal;
             std::string MINUS_MINUS;
         };
-        struct termPRIMARYValue {
+        struct termPrimaryValue {
             struct primaryValue *primaryVal;
         };
-        struct termMINUSValue {
+        struct termMinusExprValue {
             std::string MINUS;
             struct exprValue *exprVal;
         };
@@ -121,25 +187,26 @@ struct termValue {
 };
 
 enum assignexprType {
-    LVALUE,
-    EXPR
+    LvalueExpr
 };
 
 struct assignexprValue {
     union value {
-        struct lvalueValue *lvalueVal;
-        struct exprValue *exprVal;
+        struct assignexprLvalueExprValue{
+            struct lvalueValue *lvalueVal;
+            struct exprValue *exprVal;
+        };
     };
 
     assignexprType valType;
 };
 
 enum primaryType {
-    LVALUE,
-    CALL,
-    OBJECTDEF,
-    FUNCDEF,
-    CONST
+    Lvalue,
+    Call,
+    Objectdef,
+    Funcdef,
+    Const
 };
 
 struct primaryValue {
@@ -155,18 +222,20 @@ struct primaryValue {
 };
 
 enum lvalueType {
-    ID,
-    MEMBER
+    Id,
+    Local,
+    Namespace,
+    Member
 };
 
 struct lvalueValue {
     union value {
         std::string strVal;
-        struct lvalueLOCALIDValue {
+        struct lvalueLocalIDValue {
             std::string LOCAL;
             std::string id;
         };
-        struct lvalueNAMESPACEIDValue {
+        struct lvalueNamespaceIDValue {
             std::string NAMESPACE;
             std::string id;
         };
@@ -177,27 +246,27 @@ struct lvalueValue {
 };
 
 enum memberType {
-    LVALUE,
-    CALL,
-    ID,
-    EXPR
+    LvalueID,
+    LvalueExpr,
+    CallID,
+    CallExpr
 };
 
 struct memberValue {
     union value {
-        struct memberLVALUEDOTValue {
+        struct memberLvalueIDValue {
             struct lvalueValue *lvalueVal;
             std::string id;
         };
-        struct memberLVALUEEXPRValue {
+        struct memberLvalueExprValue {
             struct lvalueValue *lvalueVal;
             struct exprValue *exprVal;
         };
-        struct memberCALLDOTValue {
+        struct memberCallIDValue {
             struct callValue *callVal;
             std::string id;
         };
-        struct memberCALLEXPRValue {
+        struct memberCallEXprValue {
             struct callValue *callVal;
             struct exprValue *exprVal;
         };
@@ -207,25 +276,23 @@ struct memberValue {
 };
 
 enum callType {
-    CALL,
-    ELIST,
-    LVALUE,
-    CALLSUFFIX,
-    FUNCDEF
+    CallElist,
+    LvalueCallsuffix,
+    FuncdefElist
 };
 
 struct callValue {
     union value {
-        struct callELISTValue {
+        struct callElistValue {
             struct callValue *callVal;
             struct elistValue *elistVal;
         };
-        struct callLVALUEValue {
+        struct callLvalueValue {
             struct lvalueValue *lvalueVal;
             struct callsuffixValue *callsuffixVAl;
         };
-        struct callFUNCDEFValue {
-            struct funcdefValue *funcdefVa;
+        struct callFuncdefElistValue {
+            struct funcdefValue *funcdefVal;
             struct elistValue *elistVAl;
         };
     };
@@ -234,8 +301,8 @@ struct callValue {
 };
 
 enum callsuffixType {
-    NORMCALL,
-    METHODCALL
+    Normcall,
+    Methodcall
 };
 
 struct callsuffixValue {
@@ -246,7 +313,7 @@ struct callsuffixValue {
 };
 
 enum normcallType {
-    ELIST
+    LparElistRpar
 };
 
 struct normcallValue {
@@ -258,21 +325,23 @@ struct normcallValue {
 };
 
 enum methodcallType {
-    ID,
-    ELIST
+    IDElist
 };
 
 struct methodcallValue {
     union value {
-        std::string strVal;
-        struct elistValue *elistVal;
+        struct methodcallIDElistValue {
+            std::string strVal;
+            struct elistValue *elistVal;
+        };
     };
 
     methodcallType valType;
 };
 
 enum elistType {
-    EXPROPTRPT
+    ExprOptRpt,
+    Empty
 };
 
 struct elistValue {
@@ -284,16 +353,16 @@ struct elistValue {
 };
 
 enum exprOptRptType {
-    EXPR,
-    EXPROPTRPT
+    ExprExprOptRpt,
+    Expr
 };
 
 struct exprOptRptValue {
     union value {
-        struct exprOptRptCOMMAValue {
+        struct exprOptRptExprCommaValue {
             struct exprOptRpt *exprOptRptVal;
         };
-        struct exprOptRptEXPRValue {
+        struct exprOptRptExprValue {
             struct exprValue *exprVal;
         };
     };
@@ -302,17 +371,16 @@ struct exprOptRptValue {
 };
 
 enum objectdefType {
-    ELIST,
-    INDEXED,
-    VOID
+    LsqElistPsq,
+    LsqIndexedRsq
 };
 
 struct objectdefValue {
     union value {
-        struct objectdefELISTValue {
+        struct objectdefElistValue {
             struct elistValue *elistVal;
         };
-        struct objectdefINDEXEDValue {
+        struct objectdefIndexedValue {
             struct indexedValue *indexedVal;
         };
     };
@@ -321,8 +389,8 @@ struct objectdefValue {
 };
 
 enum indexedType {
-    INDELEMLIST,
-    VOID
+    Indelemlist,
+    Empty
 };
 
 struct indexedValue {
@@ -334,17 +402,17 @@ struct indexedValue {
 };
 
 enum indelemlistType {
-    INDEXEDELEM,
-    INDELEMLIST
+    IndexedlemIndelemlist,
+    Indelemlist
 };
 
 struct indelemlistValue {
     union value {
-        struct indelemlistCOMMAValue {
+        struct indelemlistCommaValue {
             struct indexedelemValue *indexedelemVal;
             struct indelemlistValue *indelemlistVal;
         };
-        struct indelemlistINDEXEDELEMValue {
+        struct indelemlistIndexedelemValue {
             struct indexedelemValue *indexedelemVal;
         };
     };
@@ -353,7 +421,7 @@ struct indelemlistValue {
 };
 
 enum indexedelemType {
-    EXPR
+    LcuExprRcu
 };
 
 struct indexedelemValue {
@@ -365,45 +433,30 @@ struct indexedelemValue {
 };
 
 enum blockType {
-    BLOCKSTMT
+    LcuStmtListRcu
 };
 
 struct blockValue {
     union value {
-        struct blockstmtValue *blockstmtVal;
+        struct stmtListValue *stmtListVal;
     };
 
     blockType valType;
 };
 
-enum blockstmtType {
-    STMT,
-    BLOCKSTMT
-};
-
-struct blockstmtValue {
-    union value {
-        struct stmtValue *stmtVal;
-        struct blockstmtValue *blockstmtVal;
-    };
-
-    blockstmtType valType;
-};
-
 enum funcdefType {
-    ID,
-    IDLIST,
-    BLOCK
+    IdIdlistBlock,
+    IdlistBlock
 };
 
 struct funcdefValue {
     union value {
-        struct funcdefIDValue {
+        struct funcdefIdIdlistValue {
             std::string strVal;
             struct idlistValue *idlistVal;
             struct blockValue *blockVal;
         };
-        struct funcdefNOIDValue {
+        struct funcdefIdlistValue {
             struct idlistValue *idlistVal;
             struct blockValue *blockVal;
         };
@@ -413,11 +466,11 @@ struct funcdefValue {
 };
 
 enum constTypes {
-    INT,
-    DOUBLE,
-    STRING,
-    NIL,
-    BOOL
+    Int,
+    Double,
+    String,
+    Empty,
+    Bool
 };
 
 struct constValue {
@@ -432,57 +485,44 @@ struct constValue {
 };
 
 enum idlistType {
-    id,
-    VOID
+    Id,
+    IdlistCommaId,
+    Empty
 };
 
 struct idlistValue {
     union value {
-        struct idValue *idVal;
+        struct idlistIDValue {
+            struct idValue *idVal;
+        };
+        struct idlistIdlistValue {
+            struct idlistValue *idlistVal;
+            struct idValue *idVal;
+        };
     };
 
     idlistType valType;
 };
 
-enum idType {
-    ID,
-    id,
-    VOID
-};
-
-struct idValue {
-    union value {
-        struct idCOMMAValue {
-            std::string strVal;
-            struct idValue *idVal;
-        };
-        struct idIDValue {
-            std::string strVal;
-        };
-    };
-
-    idType valType;
-};
-
 enum ifstmtType {
-    EXPR,
-    STMT,
-    ELSE
+    LparExprRparElse
 };
 
 struct ifstmtValue {
     union value {
-        struct exprValue *valType;
-        struct stmtValue *stmtVal;
-        struct elseValue *elseVal;
+        struct ifstmtBlockValue{
+            struct exprValue *valType;
+            struct stmtValue *stmtVal;
+            struct elseValue *elseVal;
+        };
     };
 
     ifstmtType valType;
 };
 
 enum elseType {
-    STMT,
-    VOID
+    ElseStmt,
+    Empty
 };
 
 struct elseValue {
@@ -494,37 +534,38 @@ struct elseValue {
 };
 
 enum whilestmtType {
-    EXPR,
-    STMT
+    LparExprRparStmt
 };
 
 struct whilestmtValue {
     union value {
-        struct exprValue *exprVal;
-        struct stmtValue *stmtVal;
+        struct whilestmtStmtValue {
+            struct exprValue *exprVal;
+            struct stmtValue *stmtVal;
+        };
     };
 
     whilestmtType valType;
 };
 
 enum forstmtType {
-    ELIST,
-    EXPR,
-    STMT
+    LparElistRparStmt
 };
 
 struct forstmtValue {
     union Value {
-        struct elistValue *elistVal;
-        struct exprValue *exprVal;
-        struct stmtValue *stmtVal;
+        struct forstmtStmtValue {
+            struct elistValue *elistVal;
+            struct exprValue *exprVal;
+            struct stmtValue *stmtVal;
+        };
     };
 
     forstmtType valType;
 };
 
 enum returnstmtType {
-    RET
+    ReturnRet
 };
 
 struct returnstmtValue {
@@ -536,8 +577,8 @@ struct returnstmtValue {
 };
 
 enum retType {
-    EXPR,
-    VOID
+    Expr,
+    Empty
 };
 
 struct retValue {
