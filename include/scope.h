@@ -11,6 +11,7 @@ class Scope {
 private:
     std::unordered_multimap<std::string, Symbol *> hash_table;
     std::vector<std::list<Symbol *>> scope_lists;
+    unsigned int symbol_count;
 
 public:
     Scope();

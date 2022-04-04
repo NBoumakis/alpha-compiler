@@ -47,3 +47,12 @@ void Scope::clear() {
     }
     scope_lists.clear();
 }
+
+Symbol *Scope::erase(std::string key) {
+    auto p = hash_table.equal_range(key);
+
+    for (auto it = p.first; it != p.second; ++it) {
+        if (key == it->second->name) {
+        }
+    }
+}
