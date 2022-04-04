@@ -16,6 +16,7 @@
 
 %union{
     struct programValue programVal;
+    struct stmtListValue stmtListVal;
     struct stmtValue stmtVal;
     struct exprValue exprVal;
     struct termValue termVal;
@@ -60,6 +61,7 @@
 
 /* Non-terminal types */
 %type <programVal> program
+%type <stmtListVal> stmtList
 %type <stmtVal> stmt
 %type <exprVal> expr
 %type <termVal> term
