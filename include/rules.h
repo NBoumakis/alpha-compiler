@@ -26,7 +26,7 @@ stmtValue Manage_stmt_break();
 
 stmtValue Manage_stmt_continue();
 
-stmtValue Manage_stmt_block(blockstmtValue);
+stmtValue Manage_stmt_block(blockValue);
 
 stmtValue Manage_stmt_funcdef(funcdefValue);
 
@@ -187,7 +187,9 @@ idlistValue Manage_idlist();
 ifstmtValue Manage_ifstmt(exprValue, stmtValue, elseValue);
 
 /* else */
-elseValue Manage_else(stmtValue);
+elseValue Manage_else_stmt(stmtValue);
+
+elseValue Manage_else();
 
 /* While statement */
 whilestmtValue Manage_whilestmt(exprValue, stmtValue);
