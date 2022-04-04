@@ -372,24 +372,10 @@ enum blockType {
 
 struct blockValue {
     union value {
-        struct blockstmtValue *blockstmtVal;
+        struct stmtListValue *stmtListVal;
     };
 
     blockType valType;
-};
-
-enum blockstmtType {
-    STMT,
-    BLOCKSTMT
-};
-
-struct blockstmtValue {
-    union value {
-        struct stmtValue *stmtVal;
-        struct blockstmtValue *blockstmtVal;
-    };
-
-    blockstmtType valType;
 };
 
 enum funcdefType {
@@ -448,7 +434,6 @@ struct idlistValue {
 
 enum idType {
     ID,
-    id,
     VOID
 };
 
