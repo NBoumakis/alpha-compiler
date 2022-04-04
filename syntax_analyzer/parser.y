@@ -34,7 +34,6 @@
     struct indelemlistValue indelemlistVal;
     struct indexedelemValue indexedelemVal;
     struct blockValue blockVal;
-    struct blockstmtValue blockstmtVal;
     struct funcdefValue funcdefVal;
     struct constValue constVal;
     struct idlistValue idlistVal;
@@ -79,11 +78,9 @@
 %type <indelemlistVal> indelemlist
 %type <indexedelemVal>  indexedelem
 %type <blockVal> block
-%type <blockstmtVal> blockstmt
 %type <funcdefVal> funcdef
 %type <constVal> const
 %type <idlistVal> idlist
-%type <idVal> id
 %type <ifstmtVal> ifstmt
 %type <elseVal> else
 %type <whilestmtVal> whilestmt
