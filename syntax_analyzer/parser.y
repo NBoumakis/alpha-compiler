@@ -15,7 +15,36 @@
 %}
 
 %union{
+    struct programValue programVal;
+    struct stmtValue stmtVal;
+    struct exprValue exprVal;
+    struct termValue termVal;
+    struct assignexprValue assignexprVal;
+    struct primaryValue primaryVal;
+    struct lvalueValue lvalueVal;
+    struct memberValue memberVal;
+    struct callValue callVal;
+    struct callsuffixValue callsuffixVal;
+    struct normcallValue normcallVal;
+    struct methodcallValue methodcallVal;
+    struct elistValue elistVal;
+    struct exprOptRptValue exprOptRptVal;
+    struct objectdefValue objectdefVal;
+    struct indexedValue indexedVal;
+    struct indelemlistValue indelemlistVal;
+    struct indexedelemValue indexedelemVal;
+    struct blockValue blockVal;
+    struct blockstmtValue blockstmtVal;
+    struct funcdefValue funcdefVal;
     struct constValue constVal;
+    struct idlistValue idlistVal;
+    struct idValue idVal;
+    struct ifstmtValue ifstmtVal;
+    struct elseValue elseVal;
+    struct whilestmtValue whilestmtVal;
+    struct forstmtValue forstmtVal;
+    struct returnstmtValue returnstmtVal;
+    struct retValue retVal;
 }
 
 
@@ -31,7 +60,36 @@
 %token  BLOCK_COMMENT
 
 /* Non-terminal types */
+%type <programVal> program
+%type <stmtVal> stmt
+%type <exprVal> expr
+%type <termVal> term
+%type <assignexprVal> assignexpr
+%type <primaryVal> primary
+%type <lvalueVal> lvalue
+%type <memberVal> member
+%type <callVal> call
+%type <callsuffixVal> callsuffix
+%type <normcallVal> normcall
+%type <methodcallVal> methodcall
+%type <elistVal> elist
+%type <exprOptRptVal> exprOptRpt
+%type <objectdefVal> objectdef
+%type <indexedVal> indexed
+%type <indelemlistVal> indelemlist
+%type <indexedelemVal>  indexedelem
+%type <blockVal> block
+%type <blockstmtVal> blockstmt
+%type <funcdefVal> funcdef
 %type <constVal> const
+%type <idlistVal> idlist
+%type <idVal> id
+%type <ifstmtVal> ifstmt
+%type <elseVal> else
+%type <whilestmtVal> whilestmt
+%type <forstmtVal> forstmt
+%type <returnstmtVal> returnstmt
+%type <retVal> ret
 
 /*Associativity and priority */
 %right ASSIGN
