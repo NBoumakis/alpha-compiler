@@ -18,6 +18,17 @@ struct programValue {
     programType valType;
 };
 
+enum stmtListType {
+    StmtListStmt,
+    EMPTY
+};
+struct stmtListValue {
+    union value {
+        stmtListValue *stmtListVal;
+        stmtValue *stmtVal;
+    };
+};
+
 enum stmtType {
     EXPR,
     IFSTMT,
