@@ -9,6 +9,8 @@ programValue Manage_program(stmtListValue);
 /* Statement list */
 stmtListValue Manage_stmtList_stmt(stmtListValue, stmtValue);
 
+stmtListValue Manage_stmtList();
+
 /* Statements */
 stmtValue Manage_stmt_expr(exprValue);
 
@@ -27,6 +29,8 @@ stmtValue Manage_stmt_continue();
 stmtValue Manage_stmt_block(blockstmtValue);
 
 stmtValue Manage_stmt_funcdef(funcdefValue);
+
+stmtValue Manage_stmt_semicolon();
 
 /* Expressions */
 exprValue Manage_expr_assignexpr(assignexprValue);
@@ -129,6 +133,8 @@ methodcallValue Manage_methodcall_DDOTidLPelistRP(idValue, elistValue);
 /* elist */
 elistValue Manage_elist_exprOptRpt(exprOptRptValue);
 
+elistValue Manage_elist();
+
 /* Expression optional and repeatable */
 exprOptRptValue Manage_exprOR_exprOR(exprValue, exprOptRptValue);
 
@@ -175,6 +181,8 @@ idlistValue Manage_idlist_ID(idValue);
 
 idlistValue Manage_idlist_idlist_comma_id(idlistValue, idValue);
 
+idlistValue Manage_idlist();
+
 /* If statement */
 ifstmtValue Manage_ifstmt(exprValue, stmtValue, elseValue);
 
@@ -193,4 +201,5 @@ returnstmtValue Manage_returnstmt(retValue);
 /* Return */
 retValue Manage_ret_expr(exprValue);
 
+retValue Manage_ret();
 #endif /* __RULES_H */
