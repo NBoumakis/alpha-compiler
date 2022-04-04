@@ -27,6 +27,8 @@ struct stmtListValue {
         stmtListValue *stmtListVal;
         stmtValue *stmtVal;
     };
+
+    stmtListType valType;
 };
 
 enum stmtType {
