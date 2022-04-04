@@ -1,6 +1,7 @@
 %{
     #include <iostream>
     #include "../include/types.h"
+    #include "../include/rules.h"
 
     int yyerror(char* yaccProvideedMessage);
 
@@ -16,6 +17,7 @@
 
 %union{
     struct programValue programVal;
+    struct stmtListValue stmtListVal;
     struct stmtValue stmtVal;
     struct exprValue exprVal;
     struct termValue termVal;
@@ -34,7 +36,6 @@
     struct indelemlistValue indelemlistVal;
     struct indexedelemValue indexedelemVal;
     struct blockValue blockVal;
-    struct blockstmtValue blockstmtVal;
     struct funcdefValue funcdefVal;
     struct constValue constVal;
     struct idlistValue idlistVal;
@@ -61,6 +62,7 @@
 
 /* Non-terminal types */
 %type <programVal> program
+%type <stmtListVal> stmtList
 %type <stmtVal> stmt
 %type <exprVal> expr
 %type <termVal> term
@@ -79,11 +81,9 @@
 %type <indelemlistVal> indelemlist
 %type <indexedelemVal>  indexedelem
 %type <blockVal> block
-%type <blockstmtVal> blockstmt
 %type <funcdefVal> funcdef
 %type <constVal> const
 %type <idlistVal> idlist
-%type <idVal> id
 %type <ifstmtVal> ifstmt
 %type <elseVal> else
 %type <whilestmtVal> whilestmt
@@ -112,7 +112,7 @@ program:      stmtList       {$$ = Manage_program($1)}
               ;
 
 stmtList:     stmtList stmt  {$$ = Manage_stmtList_stmt($1, $2);}
-            |
+            |                {$$ = Manage_stmtList();}
             ;
 
 stmt:     expr SEMICOLON        {$$ = Manage_stmt_expr($1);}
@@ -124,7 +124,7 @@ stmt:     expr SEMICOLON        {$$ = Manage_stmt_expr($1);}
         | CONTINUE SEMICOLON    {$$ = Manage_stmt_continue();}
         | block                 {$$ = Manage_stmt_block($1);}
         | funcdef               {$$ = Manage_stmt_funcdef($1);}
-        | SEMICOLON
+        | SEMICOLON             {$$ = Manage_stmt_semicolon();}
         ;
 
 expr:     assignexpr            {$$ = Manage_expr_assignexpr($1);}
@@ -189,7 +189,7 @@ normcall:     L_PARENTHESIS elist R_PARENTHESIS                 {$$ = Manage_nor
 methodcall:   DOUBLE_DOT ID L_PARENTHESIS elist R_PARENTHESIS   {$$ = Manage_methodcall_DDOTidLPelistRP($2, $4);}
 
 elist:   exprOptRpt         {$$ = Manage_elist_exprOptRpt($1);}
-       |
+       |                    {$$ = Manage_elist();}
        ;
 
 exprOptRpt:   expr COMMA exprOptRpt     {$$ = Manage_exprOR_exprOR($1, $3);}
@@ -229,13 +229,13 @@ const:    intNumber     {$$ = Manage_const_int($1);}
 
 idlist:   ID                {$$ = Manage_idlist_ID($1);}
         | idlist COMMA ID   {$$ = Manage_idlist_idlist_comma_id($1,$3);}
-        |
+        |                   {$$ = Manage_idlist();}
         ;
 
 ifstmt:   IF L_PARENTHESIS expr R_PARENTHESIS stmt else     {$$ = Manage_ifstmt($3, $5, $6);};
 
-else:     ELSE stmt     {$$ = Manage_else($2);}
-        |
+else:     ELSE stmt     {$$ = Manage_else_stmt($2);}
+        |               {$$ = Manage_else();}
         ;
 
 whilestmt:    WHILE L_PARENTHESIS expr R_PARENTHESIS stmt   {$$ = Manage_whilestmt($3,$5);}
@@ -245,5 +245,5 @@ forstmt:      FOR L_PARENTHESIS elist SEMICOLON expr SEMICOLON elist R_PARENTHES
 returnstmt:   RETURN ret SEMICOLON      {$$ = Manage_returnstmt($2);};
 
 ret:      expr      {$$ = Manage_ret_expr($1);};
-        |
+        |           {$$ = Manage_ret();}
         ;
