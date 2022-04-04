@@ -21,8 +21,8 @@ public:
     Symbol *lookup_scope(std::string key, unsigned int scope);
     Symbol *lookup_symbol(std::string key);
     /* Iterate over */
-    /* Remove element(key) */
-    /* Clear */
+    Symbol *erase(std::string key);
+    void clear();
 };
 
 #endif /* __SCOPE_H */
