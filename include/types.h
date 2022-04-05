@@ -471,7 +471,7 @@ struct forstmtValue {
 };
 
 enum returnstmtType {
-    RET
+    retReturnstmt_T
 };
 
 struct returnstmtValue {
