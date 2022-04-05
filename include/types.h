@@ -31,14 +31,16 @@ struct stmtListValue {
 };
 
 enum stmtType {
-    EXPR,
-    IFSTMT,
-    WHILESTMT,
-    FORSTMT,
-    RETURNSTMT,
-    BLOCK,
-    FUNCDEF,
-    VOID
+    ExprStmt_T,
+    IfstmtStmt_T,
+    WhilestmtStmt_T,
+    ForstmtStmt_T,
+    ReturnstmtStmt_T,
+    BreakStmt_T,
+    ContiueStmt_T,
+    BlockStmt_T,
+    FuncdefStmt_T,
+    SemicolonStmt_T
 };
 
 struct stmtValue {
@@ -48,8 +50,6 @@ struct stmtValue {
         struct whilestmtValue *whilestmtVal;
         struct forstmtValue *forstmtVal;
         struct returnstmtValue *returnstmtVal;
-        std::string BREAK;
-        std::string CONTINUE;
         struct blockValue *blockVal;
         struct funcdefValue *funcdefVal;
     };
