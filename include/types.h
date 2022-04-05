@@ -373,11 +373,12 @@ struct funcdefValue {
 };
 
 enum constTypes {
-    INT,
-    DOUBLE,
-    STRING,
-    NIL,
-    BOOL
+    intConst_T,
+    doubleConst_T,
+    stringConst_T,
+    nilConst_T,
+    trueConst_T,
+    falseConst_T
 };
 
 struct constValue {
@@ -385,7 +386,6 @@ struct constValue {
         int intVal;
         double doubleVal;
         std::string stringVal;
-        bool boolVal;
     };
 
     constTypes valType;
