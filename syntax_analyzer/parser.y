@@ -1,8 +1,11 @@
 %{
     #include <iostream>
-    #include "../include/types.h"
+    #include "types.h"
+    #include "rules.h"
 
-    int yyerror(char* yaccProvideedMessage);
+    int yyerror(char* yaccProvideedMessage){
+        std::cerr << "Something bad happened here"<<std::endl;
+    }
 
 
     extern int yylineno;
@@ -14,25 +17,86 @@
     extern FILE* yyin;
 %}
 
-%union{ 
-    struct constValue constVal;
-}
+%union{
+
+#include "types.h"
+    int intValue;
+    double realValue;
+    programValue programVal;
+    stmtListValue stmtListVal;
+     stmtValue stmtVal;
+     exprValue exprVal;
+     termValue termVal;
+     assignexprValue assignexprVal;
+     primaryValue primaryVal;
+     lvalueValue lvalueVal;
+     memberValue memberVal;
+     callValue callVal;
+     callsuffixValue callsuffixVal;
+     normcallValue normcallVal;
+     methodcallValue methodcallVal;
+     elistValue elistVal;
+     exprOptRptValue exprOptRptVal;
+     objectdefValue objectdefVal;
+     indexedValue indexedVal;
+     indelemlistValue indelemlistVal;
+     indexedelemValue indexedelemVal;
+     blockValue blockVal;
+     funcdefValue funcdefVal;
+     constValue constVal;
+     idlistValue idlistVal;
+    
+     ifstmtValue ifstmtVal;
+     elseValue elseVal;
+     whilestmtValue whilestmtVal;
+     forstmtValue forstmtVal;
+     returnstmtValue returnstmtVal;
+     retValue retVal;
+    char* stringVal;
+};
 
 
 
-%token  <stringValue> ID
+%token  <stringVal> ID
 %token  IF ELSE WHILE FOR FUNCTION RETURN BREAK CONTINUE AND NOT OR LOCAL TRUE FALSE NIL
 %token  ASSIGN PLUS MINUS MUL DIV MOD EQUAL NEQUAL PLUS_PLUS MINUS_MINUS GT GE LT LE
 %token  <doubleValue> intNumber
 %token  <doubleValue> realNumber
 %token  L_CURLY_BRACKET R_CURLY_BRACKET L_SQUARE_BRACKET R_SQUARE_BRACKET L_PARENTHESIS R_PARENTHESIS SEMICOLON COMMA COLON NAMESPACE DOT DOUBLE_DOT
-%token  <stringValue> STRING 
+%token  <stringVal> STRING
 %token  COMMENT
 %token  BLOCK_COMMENT
-%token  print input objectmemberkeys objecttotalmembers objectcopy totalarguments argument strtonum sqrt cos sin
 
 /* Non-terminal types */
+%type <programVal> program
+%type <stmtListVal> stmtList
+%type <stmtVal> stmt
+%type <exprVal> expr
+%type <termVal> term
+%type <assignexprVal> assignexpr
+%type <primaryVal> primary
+%type <lvalueVal> lvalue
+%type <memberVal> member
+%type <callVal> call
+%type <callsuffixVal> callsuffix
+%type <normcallVal> normcall
+%type <methodcallVal> methodcall
+%type <elistVal> elist
+%type <exprOptRptVal> exprOptRpt
+%type <objectdefVal> objectdef
+%type <indexedVal> indexed
+%type <indelemlistVal> indelemlist
+%type <indexedelemVal>  indexedelem
+%type <blockVal> block
+%type <funcdefVal> funcdef
 %type <constVal> const
+%type <idlistVal> idlist
+%type <ifstmtVal> ifstmt
+%type <elseVal> else
+%type <whilestmtVal> whilestmt
+%type <forstmtVal> forstmt
+%type <returnstmtVal> returnstmt
+%type <retVal> ret
 
 /*Associativity and priority */
 %right ASSIGN
@@ -47,159 +111,146 @@
 %left L_SQUARE_BRACKET R_SQUARE_BRACKET
 %left L_PARENTHESIS R_PARENTHESIS
 
-
-
 %start program
 
 %%
 
-program: stmtList       {std::cout << "Program stmt program" << std::endl;}
-        ;
+program:      stmtList       {std::cerr <<"Test" <<std::endl;}
+              ;
 
-stmtList: stmtList stmt
-|
-;
-
-stmt:  expr SEMICOLON       {std::cout << "Stmt expr ;" << std::endl;}
-        |ifstmt             {std::cout << "Stmt if" << std::endl;}
-        |whilestmt          {std::cout << "Stmt while" << std::endl;}
-        |forstmt            {std::cout << "Stmt for" << std::endl;}
-        |returnstmt         {std::cout << "Stmt return" << std::endl;}
-        |BREAK SEMICOLON    {std::cout << "Stmt break;" << std::endl;}
-        |CONTINUE SEMICOLON {std::cout << "Stmt cont;" << std::endl;}
-        |block              {std::cout << "Stmt block" << std::endl;}
-        |funcdef            {std::cout << "Stmt func" << std::endl;}
-        |SEMICOLON          {std::cout << "Stmt ;" << std::endl;}
-        ;
-
-expr:  assignexpr          {std::cout << "Expr <-" << std::endl;}
-        |expr PLUS expr       {std::cout << "Expr + expr" << std::endl;}
-        |expr MINUS expr       {std::cout << "Expr - expr" << std::endl;}
-        |expr MUL expr       {std::cout << "Expr * expr" << std::endl;}
-        |expr DIV expr       {std::cout << "Expr * expr" << std::endl;}
-        |expr MOD expr       {std::cout << "Expr * expr" << std::endl;}
-        |expr GT expr       {std::cout << "Expr * expr" << std::endl;}
-        |expr GE expr       {std::cout << "Expr * expr" << std::endl;}
-        |expr LT expr       {std::cout << "Expr * expr" << std::endl;}
-        |expr LE expr       {std::cout << "Expr * expr" << std::endl;}
-        |expr EQUAL expr       {std::cout << "Expr * expr" << std::endl;}
-        |expr NEQUAL expr       {std::cout << "Expr * expr" << std::endl;}
-        |expr AND expr       {std::cout << "Expr * expr" << std::endl;}
-        |expr OR expr       {std::cout << "Expr * expr" << std::endl;}
-        |term               {std::cout << "Expr term" << std::endl;}
-        ;
-
-term: L_PARENTHESIS expr R_PARENTHESIS {std::cout << "term ( expr )" << std::endl;}
-    | NOT expr                         {std::cout << "term !expr" << std::endl;}
-    | PLUS_PLUS lvalue                 {std::cout << "term ++lvalue" << std::endl;}
-    | lvalue PLUS_PLUS                 {std::cout << "term lvalue++" << std::endl;}
-    | MINUS_MINUS lvalue               {std::cout << "term --lvalue" << std::endl;}
-    | lvalue MINUS_MINUS               {std::cout << "term lvalue--" << std::endl;}
-    | primary                          {std::cout << "term primary" << std::endl;}
-    | MINUS expr %prec UMINUS          {std::cout << "term -expr" << std::endl;}
-    ;
-
-assignexpr :lvalue ASSIGN expr {std::cout << "assignexpr lvalue <- expr" << std::endl;}
-
-primary : lvalue                              {std::cout << "primary lvalue" << std::endl;}
-        | call                                {std::cout << "primary call" << std::endl;}
-        | objectdef                           {std::cout << "primary objectdef" << std::endl;}
-        | L_PARENTHESIS funcdef R_PARENTHESIS {std::cout << "primary ( funcdef )" << std::endl;}
-        | const                               {std::cout << "primary const" << std::endl;}
-        ;
-
-lvalue : ID            {std::cout << "lvalue id" << std::endl;}
-         |LOCAL ID     {std::cout << "lvalue local id" << std::endl;}
-         |NAMESPACE ID {std::cout << "lvalue ::id" << std::endl;}
-         |member       {std::cout << "lvalue member" << std::endl;}
-         ;
-
-member:  lvalue DOT ID                                   {std::cout << "member lvalue.id" << std::endl;}
-       | lvalue L_SQUARE_BRACKET expr R_SQUARE_BRACKET   {std::cout << "member lvalue[expr]" << std::endl;}
-       | call DOT ID                                     {std::cout << "member call.id" << std::endl;}
-       | call L_SQUARE_BRACKET expr R_SQUARE_BRACKET     {std::cout << "member call [expr]" << std::endl;}
-       ;
-
-call: call L_PARENTHESIS elist R_PARENTHESIS {std::cout << "call call ( elist )" << std::endl;}
-    | lvalue callsuffix                      {std::cout << "call lvalue callsuffix" << std::endl;}
-    | L_PARENTHESIS funcdef R_PARENTHESIS L_PARENTHESIS elist R_PARENTHESIS        {std::cout << "call ( funcdef ) ( elist )" << std::endl;}
-       ;
-
-callsuffix :  normcall    {std::cout << "callsuffix normcall" << std::endl;}
-            | methodcall {std::cout << "callsuffix methodcall" << std::endl;}
+stmtList:     stmtList stmt  {std::cerr << "Test" <<std::endl;}
+            |                {std::cerr << "Test" <<std::endl;}
             ;
 
-normcall : L_PARENTHESIS elist R_PARENTHESIS {std::cout << "normcall ( elist )" << std::endl;}
+stmt:     expr SEMICOLON        {std::cerr << "Test" <<std::endl;}
+        | ifstmt                {std::cerr << "Test" <<std::endl;}
+        | whilestmt             {std::cerr << "Test" <<std::endl;}
+        | forstmt               {std::cerr << "Test" <<std::endl;}
+        | returnstmt            {std::cerr << "Test" <<std::endl;}
+        | BREAK SEMICOLON       {std::cerr << "Test" <<std::endl;}
+        | CONTINUE SEMICOLON    {std::cerr << "Test" <<std::endl;}
+        | block                 {std::cerr << "Test" <<std::endl;}
+        | funcdef               {std::cerr << "Test" <<std::endl;}
+        | SEMICOLON             {std::cerr << "Test" <<std::endl;}
+        ;
 
-methodcall : DOUBLE_DOT ID L_PARENTHESIS elist R_PARENTHESIS {std::cout << "methodcall..id ( elist )" << std::endl;}
+expr:     assignexpr            {std::cerr << "Test" <<std::endl;}
+        | expr PLUS expr        {std::cerr << "Test" <<std::endl;}
+        | expr MINUS expr       {std::cerr << "Test" <<std::endl;}
+        | expr MUL expr         {std::cerr << "Test" <<std::endl;}
+        | expr DIV expr         {std::cerr << "Test" <<std::endl;}
+        | expr MOD expr         {std::cerr << "Test" <<std::endl;}
+        | expr GT expr          {std::cerr << "Test" <<std::endl;}
+        | expr GE expr          {std::cerr << "Test" <<std::endl;}
+        | expr LT expr          {std::cerr << "Test" <<std::endl;}
+        | expr LE expr          {std::cerr << "Test" <<std::endl;}
+        | expr EQUAL expr       {std::cerr << "Test" <<std::endl;}
+        | expr NEQUAL expr      {std::cerr << "Test" <<std::endl;}
+        | expr AND expr         {std::cerr << "Test" <<std::endl;}
+        | expr OR expr          {std::cerr << "Test" <<std::endl;}
+        | term                  {std::cerr << "Test" <<std::endl;}
+        ;
 
-elist: exprOptRpt {std::cout << "elist ( exprOptRpt )" << std::endl;}
-       |
+term:     L_PARENTHESIS expr R_PARENTHESIS  {std::cerr << "Test" <<std::endl;}
+        | NOT expr                          {std::cerr << "Test" <<std::endl;}
+        | PLUS_PLUS lvalue                  {std::cerr << "Test" <<std::endl;}
+        | lvalue PLUS_PLUS                  {std::cerr << "Test" <<std::endl;}
+        | MINUS_MINUS lvalue                {std::cerr << "Test" <<std::endl;}
+        | lvalue MINUS_MINUS                {std::cerr << "Test" <<std::endl;}
+        | primary                           {std::cerr << "Test" <<std::endl;}
+        | MINUS expr %prec UMINUS           {std::cerr << "Test" <<std::endl;}
+        ;
+
+assignexpr: lvalue ASSIGN expr  {std::cerr << "Test" <<std::endl;}
+
+primary:  lvalue                                {std::cerr << "Test" <<std::endl;}
+        | call                                  {std::cerr << "Test" <<std::endl;}
+        | objectdef                             {std::cerr << "Test" <<std::endl;}
+        | L_PARENTHESIS funcdef R_PARENTHESIS   {std::cerr << "Test" <<std::endl;}
+        | const                                 {std::cerr << "Test" <<std::endl;}
+        ;
+
+lvalue:   ID            {std::cerr << "Test" <<std::endl;}
+        | LOCAL ID      {std::cerr << "Test" <<std::endl;}
+        | NAMESPACE ID  {std::cerr << "Test" <<std::endl;}
+        | member        {std::cerr << "Test" <<std::endl;}
+        ;
+
+member:   lvalue DOT ID                                     {std::cerr << "Test" <<std::endl;}
+        | lvalue L_SQUARE_BRACKET expr R_SQUARE_BRACKET     {std::cerr << "Test" <<std::endl;}
+        | call DOT ID                                       {std::cerr << "Test" <<std::endl;}
+        | call L_SQUARE_BRACKET expr R_SQUARE_BRACKET       {std::cerr << "Test" <<std::endl;}
+        ;
+
+call:     call L_PARENTHESIS elist R_PARENTHESIS                                        {std::cerr << "Test" <<std::endl;}
+        | lvalue callsuffix                                                             {std::cerr << "Test" <<std::endl;}
+        | L_PARENTHESIS funcdef R_PARENTHESIS L_PARENTHESIS elist R_PARENTHESIS         {std::cerr << "Test" <<std::endl;}
+        ;
+
+callsuffix:   normcall      {std::cerr << "Test" <<std::endl;}
+            | methodcall    {std::cerr << "Test" <<std::endl;}
+            ;
+
+normcall:     L_PARENTHESIS elist R_PARENTHESIS                 {std::cerr << "Test" <<std::endl;}
+
+methodcall:   DOUBLE_DOT ID L_PARENTHESIS elist R_PARENTHESIS   {std::cerr << "Test" <<std::endl;}
+
+elist:   exprOptRpt         {std::cerr << "Test" <<std::endl;}
+       |                    {std::cerr << "Test" <<std::endl;}
        ;
 
-exprOptRpt: expr COMMA exprOptRpt {std::cout << "exprOptRpt expr , exprOptRpt" << std::endl;}
-        |   expr  {std::cout << "exprOptRpt expr" << std::endl;}
+exprOptRpt:   expr COMMA exprOptRpt     {std::cerr << "Test" <<std::endl;}
+            | expr                      {std::cerr << "Test" <<std::endl;}
+            ;
+
+objectdef:    L_SQUARE_BRACKET elist R_SQUARE_BRACKET       {std::cerr << "Test" <<std::endl;}
+            | L_SQUARE_BRACKET indexed R_SQUARE_BRACKET     {std::cerr << "Test" <<std::endl;}
+            ;
+
+
+indexed:  indelemlist   {std::cerr << "Test" <<std::endl;}
         ;
 
-objectdef: L_SQUARE_BRACKET elist R_SQUARE_BRACKET     {std::cout << "objectdef [ elist ]" << std::endl;}
-        |  L_SQUARE_BRACKET indexed R_SQUARE_BRACKET {std::cout << "objectdef [ indexed ]" << std::endl;}
+indelemlist:  indexedelem COMMA indelemlist     {std::cerr << "Test" <<std::endl;}
+            | indexedelem                       {std::cerr << "Test" <<std::endl;}
+            ;
+
+
+indexedelem:  L_CURLY_BRACKET expr COLON expr R_CURLY_BRACKET   {std::cerr << "Test" <<std::endl;}
+            ;
+
+block:    L_CURLY_BRACKET stmtList R_CURLY_BRACKET              {std::cerr << "Test" <<std::endl;}
         ;
 
-
-indexed : indelemlist {std::cout << "indexed indelemlist" << std::endl;}
+funcdef:  FUNCTION ID L_PARENTHESIS idlist R_PARENTHESIS block  {std::cerr << "Test" <<std::endl;}
+        | FUNCTION L_PARENTHESIS idlist R_PARENTHESIS block     {std::cerr << "Test" <<std::endl;}
         ;
 
-indelemlist: indexedelem COMMA indelemlist   {std::cout << "indelemlist indexedelem , indelemlist" << std::endl;}
-    | indexedelem            {std::cout << "indelemlist indexedelem" << std::endl;}
-    ;
-
-
-indexedelem : L_CURLY_BRACKET expr COLON expr R_CURLY_BRACKET {std::cout << "indexedelem { expr ; expr }" << std::endl;}
-    ;
-
-block:  L_CURLY_BRACKET stmtList R_CURLY_BRACKET {std::cout << "block { blockStmt }" << std::endl;}
-        ;
-/*
-blockStmt: stmt blockStmt {std::cout << "blockStmt stmt blockStmt" << std::endl;}
-        | {std::cout << "blockStmt empty" << std::endl;}
-        ;
-*/
-funcdef : FUNCTION ID L_PARENTHESIS idlist R_PARENTHESIS block  {std::cout << "funcdef function id ( idlist ) block" << std::endl;}
-        | FUNCTION L_PARENTHESIS idlist R_PARENTHESIS block  {std::cout << "funcdef function ( idlist ) block" << std::endl;}
-
-const : intNumber   {std::cout << "const int" << std::endl;}
-        |realNumber {std::cout << "const real" << std::endl;}
-        |STRING     {std::cout << "const string" << std::endl;}
-        |NIL        {std::cout << "const nil" << std::endl;}
-        |TRUE       {std::cout << "const true" << std::endl;}
-        |FALSE      {std::cout << "const false" << std::endl;}
+const:    intNumber     {std::cerr << "Test" <<std::endl;}
+        | realNumber    {std::cerr << "Test" <<std::endl;}
+        | STRING        {std::cerr << "Test" <<std::endl;}
+        | NIL           {std::cerr << "Test" <<std::endl;}
+        | TRUE          {std::cerr << "Test" <<std::endl;}
+        | FALSE         {std::cerr << "Test" <<std::endl;}
         ;
 
-idlist : ID {std::cout << "idlist id" << std::endl;}
-        | idlist COMMA ID
-        |
-         ;
-/*
-id:   ID COMMA id   {std::cout << "id ID, id" << std::endl;}
-    | ID            {std::cout << "id ID" << std::endl;}
-    ;
-*/
-ifstmt : IF L_PARENTHESIS expr R_PARENTHESIS stmt else {std::cout << "ifstmt if ( expr ) stmt else" << std::endl;}
-    ;
+idlist:   ID                {std::cerr << "Test" <<std::endl;}
+        | idlist COMMA ID   {std::cerr << "Test" <<std::endl;}
+        |                   {std::cerr << "Test" <<std::endl;}
+        ;
 
-else : ELSE stmt {std::cout << "else ELSE stmt" << std::endl;}
-    | {std::cout << "else empty" << std::endl;}
-    ;
+ifstmt:   IF L_PARENTHESIS expr R_PARENTHESIS stmt else     {std::cerr << "Test" <<std::endl;}
 
-whilestmt : WHILE L_PARENTHESIS expr R_PARENTHESIS stmt {std::cout << "whilestmt while ( expr ) stmt" << std::endl;}
+else:     ELSE stmt     {std::cerr << "Test" <<std::endl;}
+        |               {std::cerr << "Test" <<std::endl;}
+        ;
 
-forstmt : FOR L_PARENTHESIS elist SEMICOLON expr SEMICOLON elist R_PARENTHESIS stmt {std::cout << "forstmt  for(elist;expr; elist) stmt" << std::endl;}
-    ;
+whilestmt:    WHILE L_PARENTHESIS expr R_PARENTHESIS stmt   {std::cerr << "Test" <<std::endl;}
 
-returnstmt : RETURN ret SEMICOLON {std::cout << "returnstmt return ret" << std::endl; }
-    ;
+forstmt:      FOR L_PARENTHESIS elist SEMICOLON expr SEMICOLON elist R_PARENTHESIS stmt     {std::cerr << "Test" <<std::endl;}
 
-ret : expr {std::cout << "ret expr" << std::endl;}
-     | {std::cout << "ret empty" << std::endl;}
-     ;
+returnstmt:   RETURN ret SEMICOLON      {std::cerr << "Test" <<std::endl;}
 
+ret:      expr      {std::cerr << "Test" <<std::endl;}
+        |           {std::cerr << "Test" <<std::endl;}
+        ;
