@@ -13,9 +13,6 @@ private:
     std::unordered_map<unsigned int, std::list<Symbol *>> scope_lists;
 
 public:
-    Scope();
-    ~Scope();
-
     void insert(std::string key, Symbol *symbol, unsigned int scope);
     void hide(unsigned int scopeLevel);
     Symbol *lookup_scope(std::string key, unsigned int scope);
