@@ -219,11 +219,11 @@ primaryValue Manage_primary_const(constValue){
 }
 
 /* lvalue */
-lvalueValue Manage_lvalue_id(idValue){
+lvalueValue Manage_lvalue_id(std::string){
     /*(front3 slide20)*/
 }
 
-lvalueValue Manage_lvalue_localid(idValue){
+lvalueValue Manage_lvalue_localid(std::string){
     /*  1)lookup_sympol
         2)conflict me library funtion
         3)lookup_scope 
@@ -232,7 +232,7 @@ lvalueValue Manage_lvalue_localid(idValue){
         6)an to scope=0 ignore local (front3 slide 19)*/
 }
 
-lvalueValue Manage_lvalue_globalid(idValue){
+lvalueValue Manage_lvalue_globalid(std::string){
     /*  1)yparxei metablhth me ayto to onoma
         sto scope=0?*/
 }
@@ -243,7 +243,7 @@ lvalueValue Manage_lvalue_member(memberValue){
 }
 
 /* Members */
-memberValue Manage_member_lvalueDOTid(lvalueValue, idValue){
+memberValue Manage_member_lvalueDOTid(lvalueValue, std::string){
     struct memberValue memberVal;
     return memberVal;
 }
@@ -253,7 +253,7 @@ memberValue Manage_member_lvalueLSBexprRSB(lvalueValue, exprValue){
     return memberVal;
 }
 
-memberValue Manage_member_callDOTid(callValue, idValue){
+memberValue Manage_member_callDOTid(callValue, std::string){
     struct memberValue memberVal;
     return memberVal;
 }
@@ -288,7 +288,7 @@ callsuffixValue Manage_callsuffix_methodcall(methodcallValue);
 normcallValue Manage_normcall_LPelistRP(elistValue);
 
 /* Method call */
-methodcallValue Manage_methodcall_DDOTidLPelistRP(idValue, elistValue);
+methodcallValue Manage_methodcall_DDOTidLPelistRP(std::string, elistValue);
 
 /* elist */
 elistValue Manage_elist_exprOptRpt(exprOptRptValue);
@@ -322,7 +322,7 @@ blockValue Manage_block_LCBstmtRCB(stmtValue){
 }
 
 /* Funcdef */
-funcdefValue Manage_funcdef_id(idValue, idlistValue, blockValue){
+funcdefValue Manage_funcdef_id(std::string, idlistValue, blockValue){
     /*  1)( ++scope
         2)} hide(scope) ;scope--
         3)conflict me library function
@@ -358,9 +358,9 @@ constValue Manage_const_true();
 constValue Manage_const_false();
 
 /* ID list */
-idlistValue Manage_idlist_ID(idValue);
+idlistValue Manage_idlist_ID(std::string);
 
-idlistValue Manage_idlist_idlist_comma_id(idlistValue, idValue);
+idlistValue Manage_idlist_idlist_comma_id(idlistValue, std::string);
 
 idlistValue Manage_idlist();
 
