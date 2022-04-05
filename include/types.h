@@ -58,22 +58,39 @@ struct stmtValue {
 };
 
 enum exprType {
-    ASSIGNEXPR,
-    EXPR,
-    TERM
+    AssignexprExpr_T,
+    ExprOpExprExpr_T,
+    TermExpr_T
+};
+
+enum opType {
+    PlusOp_T,
+    MinusOp_T,
+    MulOp_T,
+    DivOp_T,
+    ModOp_T,
+    GTOp_T,
+    GEOp_T,
+    LTOp_T,
+    LEOp_T,
+    EqualOp_T,
+    NEqualOp_T,
+    AndOp_T,
+    OrOp_T
 };
 
 struct exprValue {
     union value {
         struct assignexprValue *assignexprVal;
         struct exprOPValue {
-            struct exprValue *exprVal;
-            struct opValue *opVal;
+            struct exprValue *exprLeftVal;
+            struct exprValue *exprRightVal;
         };
         struct termValue *termVal;
     };
 
     exprType valType;
+    opType opType;
 };
 
 enum termType {
