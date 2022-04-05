@@ -324,12 +324,16 @@ struct indelemlistValue {
 };
 
 enum indexedelemType {
-    EXPR
+    exprExprIndexedelem_T
 };
 
 struct indexedelemValue {
     union value {
-        struct exprValue *exprVal;
+
+        struct indexedelemExprValue {
+            struct exprValue *keyExprVal;
+            struct exprValue *valueExprVal;
+        };
     };
 
     indexedelemType valType;
