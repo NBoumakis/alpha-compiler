@@ -231,16 +231,10 @@ struct callsuffixValue {
     };
 };
 
-enum normcallType {
-    ELIST
-};
-
 struct normcallValue {
     union value {
         struct elistValue *elistVal;
     };
-
-    normcallType valType;
 };
 
 enum methodcallType {
