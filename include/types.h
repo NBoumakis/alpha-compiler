@@ -34,7 +34,8 @@ struct returnstmtValue;
 struct retValue;
 
 enum programType {
-    stmtListPr_T
+    stmtListPr_T,
+    InvalidPr_T
 };
 
 struct programValue {
@@ -47,7 +48,8 @@ struct programValue {
 
 enum stmtListType {
     stmtListStmtStmtL_T,
-    emptyStmtL_T
+    emptyStmtL_T,
+    InvalidStmtL_T
 };
 struct stmtListValue {
     union {
@@ -70,7 +72,8 @@ enum stmtType {
     ContiueStmt_T,
     BlockStmt_T,
     FuncdefStmt_T,
-    SemicolonStmt_T
+    SemicolonStmt_T,
+    InvalidStmt_T
 };
 
 struct stmtValue {
@@ -90,7 +93,8 @@ struct stmtValue {
 enum exprType {
     AssignexprExpr_T,
     ExprOpExprExpr_T,
-    TermExpr_T
+    TermExpr_T,
+    InvalidExpr_T
 };
 
 enum opType {
@@ -106,7 +110,8 @@ enum opType {
     EqualOp_T,
     NEqualOp_T,
     AndOp_T,
-    OrOp_T
+    OrOp_T,
+    InvalidOp_T
 };
 
 struct exprValue {
@@ -126,13 +131,15 @@ struct exprValue {
 enum termType {
     ExprTerm_T,
     LvalueTerm_T,
-    PrimaryTerm_T
+    PrimaryTerm_T,
+    InvalidTerm_T
 };
 
 enum exprOpType {
     ParenthesizedExprOp_T,
     NotExprOp_T,
-    UMinusExprOp_T
+    UMinusExprOp_T,
+    InvalidExprOp_T
 };
 
 enum lvalueOpType {
@@ -141,6 +148,8 @@ enum lvalueOpType {
 
     PreDecLvalueOp_T,
     PostDecLvalueOp_T,
+
+    InvalidLvalueOp_T
 };
 
 struct termValue {
@@ -155,6 +164,11 @@ struct termValue {
     lvalueOpType lvalType;
 };
 
+enum assignexprType {
+    lvalueExprAssign_T,
+    InvalidAssign_T
+};
+
 struct assignexprValue {
     union {
         struct {
@@ -162,6 +176,8 @@ struct assignexprValue {
             exprValue *exprVal;
         } lvalExprVal;
     } value;
+
+    assignexprType valType;
 };
 
 enum primaryType {
@@ -169,7 +185,8 @@ enum primaryType {
     callPrim_T,
     objdefPrim_T,
     funcdefPrim_T,
-    constPrim_T
+    constPrim_T,
+    InvalidPrim_T
 };
 
 struct primaryValue {
@@ -186,7 +203,8 @@ struct primaryValue {
 
 enum lvalueType {
     IDLvalue_T,
-    MemberLvalue_T
+    MemberLvalue_T,
+    InvalidLvalue_T
 };
 
 struct lvalueValue {
@@ -202,7 +220,8 @@ enum memberType {
     lvalue_IDMember_T,
     lvalue_exprMember_T,
     call_IDMember_T,
-    call_exprMember_T
+    call_exprMember_T,
+    InvalidMember_T
 };
 
 struct memberValue {
@@ -225,13 +244,14 @@ struct memberValue {
         } memberCallExprValue;
     } value;
 
-    memberType valTypes;
+    memberType valType;
 };
 
 enum callType {
     callElistCall_T,
     lvalueCallSuffCall_T,
-    funcdefElistCall_T
+    funcdefElistCall_T,
+    InvalidCall_T
 };
 
 struct callValue {
@@ -255,7 +275,8 @@ struct callValue {
 
 enum callsuffixType {
     normcallCallsuff_T,
-    methodcallCallsuff_T
+    methodcallCallsuff_T,
+    InvalidCallsuff_T
 };
 
 struct callsuffixValue {
@@ -263,12 +284,26 @@ struct callsuffixValue {
         normcallValue *normcallVal;
         methodcallValue *methodcallVal;
     } value;
+
+    callsuffixType valType;
+};
+
+enum normcallType {
+    elistNormcall_T,
+    InvalidNormcall_t
 };
 
 struct normcallValue {
     union {
         elistValue *elistVal;
     } value;
+
+    normcallType valType;
+};
+
+enum methodcallType {
+    methodIdMethodcall_T,
+    InvalidMethodcall_t
 };
 
 struct methodcallValue {
@@ -278,11 +313,14 @@ struct methodcallValue {
             elistValue *elistVal;
         } methodIDValue;
     } value;
+
+    methodcallType valType;
 };
 
 enum elistType {
     exprOptRptElist_T,
-    emptyElist_T
+    emptyElist_T,
+    InvalidElist_T
 };
 
 struct elistValue {
@@ -295,7 +333,8 @@ struct elistValue {
 
 enum exprOptRptType {
     exprExprOptRpt_T,
-    exprORExprOptRpt_T
+    exprORExprOptRpt_T,
+    InvalidExprOptRpt_T
 };
 
 struct exprOptRptValue {
@@ -313,7 +352,8 @@ struct exprOptRptValue {
 
 enum objectdefType {
     elistObjdef_T,
-    indexedObjdef_T
+    indexedObjdef_T,
+    InvalidOnjdef_T
 };
 
 struct objectdefValue {
@@ -327,7 +367,8 @@ struct objectdefValue {
 
 enum indexedType {
     indelemIndexed_T,
-    VOID_Indexed_T
+    VOID_Indexed_T,
+    InvalidIndexed_T
 };
 
 struct indexedValue {
@@ -340,7 +381,8 @@ struct indexedValue {
 
 enum indelemlistType {
     indexedelem_IndelemlistIndeleml_T,
-    indexedelemIndeleml_T
+    indexedelemIndeleml_T,
+    InvalidIndeleml_T
 };
 
 struct indelemlistValue {
@@ -358,7 +400,8 @@ struct indelemlistValue {
 };
 
 enum indexedelemType {
-    exprExprIndexedelem_T
+    exprExprIndexedelem_T,
+    InvalidIndexedelem_T
 };
 
 struct indexedelemValue {
@@ -373,7 +416,8 @@ struct indexedelemValue {
 };
 
 enum blockType {
-    stmtListBlock_T
+    stmtListBlock_T,
+    InvalidVlock_T
 };
 
 struct blockValue {
@@ -386,7 +430,8 @@ struct blockValue {
 
 enum funcdefType {
     namedFuncdef_T,
-    unnamedFuncdef_T
+    unnamedFuncdef_T,
+    InvalidFuncdef_T
 };
 
 struct funcdefValue {
@@ -411,7 +456,8 @@ enum constTypes {
     stringConst_T,
     nilConst_T,
     trueConst_T,
-    falseConst_T
+    falseConst_T,
+    InvalidConst_T
 };
 
 struct constValue {
@@ -427,7 +473,8 @@ struct constValue {
 enum idlistType {
     idIdlist_T,
     idlistIdIdlist_T,
-    emptyIdlist_T
+    emptyIdlist_T,
+    InvalidIdlist_T
 };
 
 struct idlistValue {
@@ -443,7 +490,8 @@ struct idlistValue {
 };
 
 enum ifstmtType {
-    ifstmtIfstmt_T
+    ifstmtIfstmt_T,
+    InvalidIfstmt_T
 };
 
 struct ifstmtValue {
@@ -460,7 +508,8 @@ struct ifstmtValue {
 
 enum elseType {
     stmtElse_T,
-    emptyElse_T
+    emptyElse_T,
+    InvalidElse_T
 };
 
 struct elseValue {
@@ -472,7 +521,8 @@ struct elseValue {
 };
 
 enum whilestmtType {
-    exprStmtWhilestmt_T
+    exprStmtWhilestmt_T,
+    InvalidWhilestmt_T
 };
 
 struct whilestmtValue {
@@ -487,7 +537,8 @@ struct whilestmtValue {
 };
 
 enum forstmtType {
-    forstmtForstmt_T
+    forstmtForstmt_T,
+    InvalidForstmt_T
 };
 
 struct forstmtValue {
@@ -504,7 +555,8 @@ struct forstmtValue {
 };
 
 enum returnstmtType {
-    retReturnstmt_T
+    retReturnstmt_T,
+    InvalidReturnstmt_T
 };
 
 struct returnstmtValue {
@@ -517,7 +569,8 @@ struct returnstmtValue {
 
 enum retType {
     exprRet_T,
-    emptyRet_T
+    emptyRet_T,
+    InvalidRet_T
 };
 
 struct retValue {
