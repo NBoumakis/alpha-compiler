@@ -8,7 +8,7 @@ ParserGen = bison
 
 INCLUDE_DIR = ./include
 
-CppOptions 	= -I$(INCLUDE_DIR) -std=c++11 -g
+CppOptions 	= -I$(INCLUDE_DIR) -std=c++14 -g
 ParserGenOptions = --yacc --defines 
 
 
@@ -28,7 +28,7 @@ parser:
 
 
 analyzer:
-	$(CCpp) $(CppOptions) ./build/scanner.cpp ./build/parser.cpp -o ./build/parser
+	$(CCpp) $(CppOptions) build/scanner.cpp build/parser.cpp syntax_analyzer/rules.cpp lib/scope.cpp syntax_analyzer/symbol.cpp -o ./build/parser
 
 clean:
 	-rm -rf build
