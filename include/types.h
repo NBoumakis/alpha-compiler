@@ -151,21 +151,13 @@ struct primaryValue {
 };
 
 enum lvalueType {
-    ID,
-    MEMBER
+    IDLvalue_T,
+    MemberLvalue_T
 };
 
 struct lvalueValue {
     union value {
         std::string strVal;
-        struct lvalueLOCALIDValue {
-            std::string LOCAL;
-            std::string id;
-        };
-        struct lvalueNAMESPACEIDValue {
-            std::string NAMESPACE;
-            std::string id;
-        };
         struct memberValue *memberVal;
     };
 
