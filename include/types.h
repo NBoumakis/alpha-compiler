@@ -247,7 +247,8 @@ struct methodcallValue {
 };
 
 enum elistType {
-    EXPROPTRPT
+    exprOptRptElist_T,
+    emptyElist_T
 };
 
 struct elistValue {
@@ -259,18 +260,18 @@ struct elistValue {
 };
 
 enum exprOptRptType {
-    EXPR,
-    EXPROPTRPT
+    exprExprOptRpt_T,
+    exprORExprOptRpt_T
 };
 
 struct exprOptRptValue {
     union value {
-        struct exprOptRptCOMMAValue {
-            struct exprOptRpt *exprOptRptVal;
-        };
-        struct exprOptRptEXPRValue {
+        struct exprOptRptExprValue {
+            struct exprOptRptValue *exprOptRptVal;
             struct exprValue *exprVal;
         };
+
+        struct exprValue *exprVal;
     };
 
     exprOptRptType valType;
