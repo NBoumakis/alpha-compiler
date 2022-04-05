@@ -16,13 +16,15 @@ struct programValue {
 };
 
 enum stmtListType {
-    StmtListStmt,
-    EMPTY
+    StmtListStmtStmtL_T,
+    EmptyStmtL_T
 };
 struct stmtListValue {
     union value {
-        stmtListValue *stmtListVal;
-        stmtValue *stmtVal;
+        struct stmtList_Stmt {
+            stmtListValue *stmtListVal;
+            stmtValue *stmtVal;
+        }
     };
 
     stmtListType valType;
