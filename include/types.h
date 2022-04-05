@@ -392,48 +392,34 @@ struct constValue {
 };
 
 enum idlistType {
-    id,
-    VOID
+    idIdlist_T,
+    idlistIdIdlist_T,
+    emptyIdlist_T
 };
 
 struct idlistValue {
     union value {
-        struct idValue *idVal;
-    };
-
-    idlistType valType;
-};
-
-enum idType {
-    ID,
-    VOID
-};
-
-struct idValue {
-    union value {
-        struct idCOMMAValue {
-            std::string strVal;
-            struct idValue *idVal;
+        std::string id;
+        struct idlistIdValue {
+            idlistValue *idlistVal;
+            std::string idVal;
         };
-        struct idIDValue {
-            std::string strVal;
-        };
-    };
 
-    idType valType;
+        idlistType valType;
+    };
 };
 
 enum ifstmtType {
-    EXPR,
-    STMT,
-    ELSE
+    ifstmtIfstmt_T
 };
 
 struct ifstmtValue {
     union value {
-        struct exprValue *valType;
-        struct stmtValue *stmtVal;
-        struct elseValue *elseVal;
+        struct ifStmtValue {
+            exprValue *exprVal;
+            struct stmtValue *stmtVal;
+            struct elseValue *elseVal;
+        };
     };
 
     ifstmtType valType;
