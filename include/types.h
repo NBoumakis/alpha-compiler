@@ -125,18 +125,9 @@ struct termValue {
     lvalueOpType lvalType;
 };
 
-enum assignexprType {
-    LVALUE,
-    EXPR
-};
-
 struct assignexprValue {
-    union value {
-        struct lvalueValue *lvalueVal;
-        struct exprValue *exprVal;
-    };
-
-    assignexprType valType;
+    struct lvalueValue *lvalueVal;
+    struct exprValue *exprVal;
 };
 
 enum primaryType {
