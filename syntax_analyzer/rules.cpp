@@ -219,11 +219,11 @@ primaryValue Manage_primary_const(constValue constVal) {
 }
 
 /* lvalue */
-lvalueValue Manage_lvalue_id(idValue id) {
+lvalueValue Manage_lvalue_id(std::string id) {
     /*(front3 slide20)*/
 }
 
-lvalueValue Manage_lvalue_localid(idValue id) {
+lvalueValue Manage_lvalue_localid(std::string id) {
     /*  1)lookup_sympol
         2)conflict me library funtion
         3)lookup_scope
@@ -232,7 +232,7 @@ lvalueValue Manage_lvalue_localid(idValue id) {
         6)an to scope=0 ignore local (front3 slide 19)*/
 }
 
-lvalueValue Manage_lvalue_globalid(idValue id) {
+lvalueValue Manage_lvalue_globalid(std::string id) {
     /*  1)yparxei metablhth me ayto to onoma
         sto scope=0?*/
 }
@@ -243,7 +243,7 @@ lvalueValue Manage_lvalue_member(memberValue member) {
 }
 
 /* Members */
-memberValue Manage_member_lvalueDOTid(lvalueValue lvalue, idValue id) {
+memberValue Manage_member_lvalueDOTid(lvalueValue lvalue, std::string id) {
     struct memberValue memberVal;
     return memberVal;
 }
@@ -253,7 +253,7 @@ memberValue Manage_member_lvalueLSBexprRSB(lvalueValue lvalue, exprValue expr) {
     return memberVal;
 }
 
-memberValue Manage_member_callDOTid(callValue call, idValue id) {
+memberValue Manage_member_callDOTid(callValue call, std::string id) {
     struct memberValue memberVal;
     return memberVal;
 }
@@ -288,7 +288,7 @@ callsuffixValue Manage_callsuffix_methodcall(methodcallValue methodcall);
 normcallValue Manage_normcall_LPelistRP(elistValue elist);
 
 /* Method call */
-methodcallValue Manage_methodcall_DDOTidLPelistRP(idValue id, elistValue elist);
+methodcallValue Manage_methodcall_DDOTidLPelistRP(std::string id, elistValue elist);
 
 /* elist */
 elistValue Manage_elist_exprOptRpt(exprOptRptValue exprOptRpt);
@@ -322,7 +322,7 @@ blockValue Manage_block_LCBstmtRCB(stmtValue stmt) {
 }
 
 /* Funcdef */
-funcdefValue Manage_funcdef_id(idValue id, idlistValue idlist, blockValue block) {
+funcdefValue Manage_funcdef_id(std::string id, idlistValue idlist, blockValue block) {
     /*  1)( ++scope
         2)} hide(scope) ;scope--
         3)conflict me library function
@@ -358,9 +358,9 @@ constValue Manage_const_true();
 constValue Manage_const_false();
 
 /* ID list */
-idlistValue Manage_idlist_ID(idValue id);
+idlistValue Manage_idlist_ID(std::string id);
 
-idlistValue Manage_idlist_idlist_comma_id(idlistValue idlist, idValue id);
+idlistValue Manage_idlist_idlist_comma_id(idlistValue idlist, std::string id);
 
 idlistValue Manage_idlist();
 
