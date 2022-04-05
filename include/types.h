@@ -340,7 +340,7 @@ struct indexedelemValue {
 };
 
 enum blockType {
-    BLOCKSTMT
+    stmtListBlock_T
 };
 
 struct blockValue {
