@@ -292,8 +292,8 @@ struct objectdefValue {
 };
 
 enum indexedType {
-    INDELEMLIST,
-    VOID
+    indelemIndexed_T,
+    VOID_Indexed_T
 };
 
 struct indexedValue {
