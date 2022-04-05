@@ -165,27 +165,27 @@ struct lvalueValue {
 };
 
 enum memberType {
-    LVALUE,
-    CALL,
-    ID,
-    EXPR
+    lvalue_IDMember_T,
+    lvalue_exprMember_T,
+    call_IDMember_T,
+    call_exprMember_T
 };
 
 struct memberValue {
     union value {
-        struct memberLVALUEDOTValue {
+        struct memberLvalueIDValue {
             struct lvalueValue *lvalueVal;
             std::string id;
         };
-        struct memberLVALUEEXPRValue {
+        struct memberLvalueExprValue {
             struct lvalueValue *lvalueVal;
             struct exprValue *exprVal;
         };
-        struct memberCALLDOTValue {
+        struct memberCallIDValue {
             struct callValue *callVal;
             std::string id;
         };
-        struct memberCALLEXPRValue {
+        struct memberCallExprValue {
             struct callValue *callVal;
             struct exprValue *exprVal;
         };
