@@ -94,48 +94,35 @@ struct exprValue {
 };
 
 enum termType {
-    EXPR,
-    LVALUE,
-    PRIMARY
+    ExprTerm_T,
+    LvalueTerm_T,
+    PrimaryTerm_T
+};
+
+enum exprOpType {
+    ParenthesizedExprOp_T,
+    NotExprOp_T,
+    UMinusExprOp_T
+};
+
+enum lvalueOpType {
+    PreIncLvalueOp_T,
+    PostIncLvalueOp_T,
+
+    PreDecLvalueOp_T,
+    PostDecLvalueOp_T,
 };
 
 struct termValue {
     union value {
-        struct termEXPRBRACKETSValue {
-            std::string L_PARENTHSESIS;
-            struct exprValue *exprVal;
-            std::string R_PARENTHSESIS;
-        };
-        struct termNOTEXPRValue {
-            std::string NOT;
-            struct exprValue *exprVal;
-        };
-        struct termPLUS_PLUSLVALUEValue {
-            std::string PLUS_PLUS;
-            struct lvalueValue *lvalueVal;
-        };
-        struct termLVALUEPLUS_PLUSValue {
-            struct lvalueValue lvalueVal;
-            std::string PLUS_PLUS;
-        };
-        struct termMINUS_MINUSLVALUEValue {
-            std::string MINUS_MINUS;
-            struct lvalueValue *lvalueVal;
-        };
-        struct termLVALUEMINUS_MINUSValue {
-            struct lvalueValue lvalueVal;
-            std::string MINUS_MINUS;
-        };
-        struct termPRIMARYValue {
-            struct primaryValue *primaryVal;
-        };
-        struct termMINUSValue {
-            std::string MINUS;
-            struct exprValue *exprVal;
-        };
+        struct exprValue *exprVal;
+        struct lvalueValue *lvalueVal;
+        struct primaryValue *primaryVal;
     };
 
     termType valType;
+    exprOpType exprType;
+    lvalueOpType lvalType;
 };
 
 enum assignexprType {
