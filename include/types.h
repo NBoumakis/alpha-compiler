@@ -426,8 +426,8 @@ struct ifstmtValue {
 };
 
 enum elseType {
-    STMT,
-    VOID
+    stmtElse_T,
+    emptyElse_T
 };
 
 struct elseValue {
@@ -439,14 +439,15 @@ struct elseValue {
 };
 
 enum whilestmtType {
-    EXPR,
-    STMT
+    exprStmtWhilestmt_T
 };
 
 struct whilestmtValue {
     union value {
-        struct exprValue *exprVal;
-        struct stmtValue *stmtVal;
+        struct whileStmtValue {
+            struct exprValue *exprVal;
+            struct stmtValue *stmtVal;
+        };
     };
 
     whilestmtType valType;
