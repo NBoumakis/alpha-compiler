@@ -360,4 +360,6 @@ SPACE [\r \t\v]
 
 %%
 
-int main() {}
+int main() {
+    yyparse();
+}
