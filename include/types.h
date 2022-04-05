@@ -352,9 +352,8 @@ struct blockValue {
 };
 
 enum funcdefType {
-    ID,
-    IDLIST,
-    BLOCK
+    namedFuncdef_T,
+    unnamedFuncdef_T
 };
 
 struct funcdefValue {
