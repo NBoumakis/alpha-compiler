@@ -1,4 +1,4 @@
-#include "../include/rules.h"
+#include "rules.h"
 #include "symbol_table.h"
 #include <iostream>
 
@@ -325,6 +325,7 @@ blockValue Manage_block_LCBstmtRCB(stmtValue stmt) {
 
 /* Funcdef */
 funcdefValue Manage_funcdef_id(std::string id, idlistValue idlist, blockValue block) {
+    funcdefValue fval;
     /*  1)(
         2)} hide(scope) ;scope--
         3)conflict me library function
@@ -336,7 +337,9 @@ funcdefValue Manage_funcdef_id(std::string id, idlistValue idlist, blockValue bl
 
     if (Symbol_Table::isLibFunction(id)) {
         std::cerr << "Cannot define function " << id << ". It conflicts with library function." << std::endl;
-        return -1;
+
+        fval.valType = InvalidFuncdef_T;
+        return fval;
     }
 
     auto symbol_in_table = Symbol_Table::symbolTable.lookup_scope(id, scope);
@@ -369,7 +372,8 @@ funcdefValue Manage_funcdef_id(std::string id, idlistValue idlist, blockValue bl
 
         std::cerr << " last defined in line " << symbol_in_table->line << "." << std::endl;
 
-        return -1;
+        fval.valType = InvalidFuncdef_T;
+        return fval;
     }
 }
 
