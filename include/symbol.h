@@ -12,7 +12,7 @@ enum SymbolType {
 };
 
 class Symbol {
-protected:
+public:
     std::string name;
     unsigned int scope;
     unsigned int line;
