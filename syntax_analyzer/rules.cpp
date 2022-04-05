@@ -1,4 +1,6 @@
 #include "../include/rules.h"
+#include "symbol_table.h"
+#include <iostream>
 
 programValue Manage_program(stmtListValue stmtList) {
     struct programValue newStructVal;
@@ -323,13 +325,52 @@ blockValue Manage_block_LCBstmtRCB(stmtValue stmt) {
 
 /* Funcdef */
 funcdefValue Manage_funcdef_id(std::string id, idlistValue idlist, blockValue block) {
-    /*  1)( ++scope
+    /*  1)(
         2)} hide(scope) ;scope--
         3)conflict me library function
         4)lookup_symbol,no:insert
         5)yes:lookup_scope
         6)conflict me function sto idio scope/variable ( front3 slide 11)
         */
+    unsigned int &scope = Symbol_Table::scopeLevel;
+
+    if (Symbol_Table::isLibFunction(id)) {
+        std::cerr << "Cannot define function " << id << ". It conflicts with library function." << std::endl;
+        return -1;
+    }
+
+    auto symbol_in_table = Symbol_Table::symbolTable.lookup_scope(id, scope);
+
+    if (symbol_in_table != nullptr) {
+        std::cerr << "Cannot define function " << id << ". It conflicts with ";
+
+        switch (symbol_in_table->type) {
+        case USER_FUNC:
+            std::cerr << "previous user function";
+            break;
+
+        case LOCAL:
+            std::cerr << "local variable";
+            break;
+
+        case GLOBAL:
+            std::cerr << "global variable";
+            break;
+
+        case FORMAL_ARG:
+            std::cerr << "formal argument";
+            break;
+
+        default:
+            std::cerr << "This shouldn't have happened";
+
+            break;
+        }
+
+        std::cerr << " last defined in line " << symbol_in_table->line << "." << std::endl;
+
+        return -1;
+    }
 }
 
 funcdefValue Manage_funcdef(idlistValue idlist, blockValue block) {
