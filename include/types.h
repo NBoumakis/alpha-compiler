@@ -131,11 +131,11 @@ struct assignexprValue {
 };
 
 enum primaryType {
-    LVALUE,
-    CALL,
-    OBJECTDEF,
-    FUNCDEF,
-    CONST
+    lvaluePrim_T,
+    callPrim_T,
+    objdefPrim_T,
+    funcdefPrim_T,
+    constPrim_T
 };
 
 struct primaryValue {
