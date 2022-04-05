@@ -24,7 +24,7 @@ struct stmtListValue {
         struct stmtList_Stmt {
             stmtListValue *stmtListVal;
             stmtValue *stmtVal;
-        }
+        };
     };
 
     stmtListType valType;
