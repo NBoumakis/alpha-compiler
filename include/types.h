@@ -120,7 +120,7 @@ struct exprValue {
     } value;
 
     exprType valType;
-    opType opType;
+    opType operatorType;
 };
 
 enum termType {
@@ -157,10 +157,10 @@ struct termValue {
 
 struct assignexprValue {
     union {
-        struct lvalExprVal {
+        struct {
             lvalueValue *lvalueVal;
             exprValue *exprVal;
-        };
+        } lvalExprVal;
     } value;
 };
 
@@ -191,7 +191,7 @@ enum lvalueType {
 
 struct lvalueValue {
     union {
-        std::string strVal;
+        char *strVal;
         memberValue *memberVal;
     } value;
 
@@ -209,7 +209,7 @@ struct memberValue {
     union {
         struct {
             lvalueValue *lvalueVal;
-            std::string id;
+            char *id;
         } memberLvalueIDValue;
         struct {
             lvalueValue *lvalueVal;
@@ -217,7 +217,7 @@ struct memberValue {
         } memberLvalueExprValue;
         struct {
             callValue *callVal;
-            std::string id;
+            char *id;
         } memberCallIDValue;
         struct {
             callValue *callVal;
@@ -274,7 +274,7 @@ struct normcallValue {
 struct methodcallValue {
     union {
         struct {
-            std::string idVal;
+            char *idVal;
             elistValue *elistVal;
         } methodIDValue;
     } value;
@@ -333,10 +333,10 @@ enum indexedType {
 struct indexedValue {
     union {
         indelemlistValue *indelemlistVal;
-    };
+    } value;
 
     indexedType valType;
-} value;
+};
 
 enum indelemlistType {
     indexedelem_IndelemlistIndeleml_T,
@@ -392,7 +392,7 @@ enum funcdefType {
 struct funcdefValue {
     union {
         struct {
-            std::string strVal;
+            char *strVal;
             idlistValue *idlistVal;
             blockValue *blockVal;
         } funcdefIDValue;
@@ -418,7 +418,7 @@ struct constValue {
     union {
         int intVal;
         double doubleVal;
-        std::string stringVal;
+        char *stringVal;
     } value;
 
     constTypes valType;
@@ -432,15 +432,15 @@ enum idlistType {
 
 struct idlistValue {
     union {
-        std::string id;
+        char *id;
         struct {
             idlistValue *idlistVal;
-            std::string idVal;
+            char *idVal;
         } idlistIdValue;
 
         idlistType valType;
-    };
-} value;
+    } value;
+};
 
 enum ifstmtType {
     ifstmtIfstmt_T
@@ -510,10 +510,10 @@ enum returnstmtType {
 struct returnstmtValue {
     union {
         retValue *retVal;
-    };
+    } value;
 
     returnstmtType valType;
-} value;
+};
 
 enum retType {
     exprRet_T,
