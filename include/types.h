@@ -305,17 +305,17 @@ struct indexedValue {
 };
 
 enum indelemlistType {
-    INDEXEDELEM,
-    INDELEMLIST
+    indexedelem_IndelemlistIndeleml_T,
+    indexedelemIndeleml_T
 };
 
 struct indelemlistValue {
     union value {
-        struct indelemlistCOMMAValue {
+        struct indelemIndexedelemlistValue {
             struct indexedelemValue *indexedelemVal;
             struct indelemlistValue *indelemlistVal;
         };
-        struct indelemlistINDEXEDELEMValue {
+        struct indexedelemlistValue {
             struct indexedelemValue *indexedelemVal;
         };
     };
