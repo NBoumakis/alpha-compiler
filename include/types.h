@@ -220,8 +220,8 @@ struct callValue {
 };
 
 enum callsuffixType {
-    NORMCALL,
-    METHODCALL
+    normcallCallsuff_T,
+    methodcallCallsuff_T
 };
 
 struct callsuffixValue {
