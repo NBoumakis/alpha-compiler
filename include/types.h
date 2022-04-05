@@ -4,15 +4,12 @@
 #include <string>
 
 enum programType {
-    STMT,
-    PROGRAM,
-    VOID
+    StmtListPr_T
 };
 
 struct programValue {
     union value {
-        struct stmtValue *stmtVal;
-        struct programValue *programVal;
+        struct stmtListValue *stmtListVal;
     };
 
     programType valType;
