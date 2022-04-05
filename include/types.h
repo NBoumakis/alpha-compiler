@@ -454,16 +454,17 @@ struct whilestmtValue {
 };
 
 enum forstmtType {
-    ELIST,
-    EXPR,
-    STMT
+    forstmtForstmt_T
 };
 
 struct forstmtValue {
     union Value {
-        struct elistValue *elistVal;
-        struct exprValue *exprVal;
-        struct stmtValue *stmtVal;
+        struct elistExprStmt {
+            struct elistValue *elistFirstVal;
+            struct exprValue *exprVal;
+            struct elistValue *elistLastVal;
+            struct stmtValue *stmtVal;
+        };
     };
 
     forstmtType valType;
