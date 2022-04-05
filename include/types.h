@@ -278,19 +278,14 @@ struct exprOptRptValue {
 };
 
 enum objectdefType {
-    ELIST,
-    INDEXED,
-    VOID
+    elistObjdef_T,
+    indexedObjdef_T
 };
 
 struct objectdefValue {
     union value {
-        struct objectdefELISTValue {
-            struct elistValue *elistVal;
-        };
-        struct objectdefINDEXEDValue {
-            struct indexedValue *indexedVal;
-        };
+        struct elistValue *elistVal;
+        struct indexedValue *indexedVal;
     };
 
     objectdefType valType;
