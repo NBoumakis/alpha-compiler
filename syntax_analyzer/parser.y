@@ -46,17 +46,18 @@
     struct forstmtValue forstmtVal;
     struct returnstmtValue returnstmtVal;
     struct retValue retVal;
+    std::string stringVal
 }
 
 
 
-%token  <stringValue> ID
+%token  <stringVal> ID
 %token  IF ELSE WHILE FOR FUNCTION RETURN BREAK CONTINUE AND NOT OR LOCAL TRUE FALSE NIL
 %token  ASSIGN PLUS MINUS MUL DIV MOD EQUAL NEQUAL PLUS_PLUS MINUS_MINUS GT GE LT LE
 %token  <doubleValue> intNumber
 %token  <doubleValue> realNumber
 %token  L_CURLY_BRACKET R_CURLY_BRACKET L_SQUARE_BRACKET R_SQUARE_BRACKET L_PARENTHESIS R_PARENTHESIS SEMICOLON COMMA COLON NAMESPACE DOT DOUBLE_DOT
-%token  <stringValue> STRING
+%token  <stringVal> STRING
 %token  COMMENT
 %token  BLOCK_COMMENT
 
