@@ -3,6 +3,36 @@
 
 #include <string>
 
+struct programValue;
+struct stmtListValue;
+struct stmtValue;
+struct exprValue;
+struct termValue;
+struct assignexprValue;
+struct primaryValue;
+struct lvalueValue;
+struct memberValue;
+struct callValue;
+struct callsuffixValue;
+struct normcallValue;
+struct methodcallValue;
+struct elistValue;
+struct exprOptRptValue;
+struct objectdefValue;
+struct indexedValue;
+struct indelemlistValue;
+struct indexedelemValue;
+struct blockValue;
+struct funcdefValue;
+struct constValue;
+struct idlistValue;
+struct ifstmtValue;
+struct elseValue;
+struct whilestmtValue;
+struct forstmtValue;
+struct returnstmtValue;
+struct retValue;
+
 enum programType {
     stmtListPr_T
 };
