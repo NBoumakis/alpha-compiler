@@ -27,7 +27,7 @@ Symbol *Scope::lookup_scope(std::string key, unsigned int scope) {
         scope_list = scope_lists[scope];
 
     for (Symbol *it : scope_list) {
-        if (it->name == key) {
+        if (it->isActive && it->name == key) {
             return it;
         }
     }
