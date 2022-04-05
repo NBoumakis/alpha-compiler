@@ -6,8 +6,12 @@
 #include <string>
 
 void Scope::insert(std::string key, Symbol *symbol, unsigned int scope) {
-    Scope::hash_table.insert({key, symbol});
-    Scope::scope_lists[scope].push_front(symbol);
+    hash_table.insert({key, symbol});
+    
+    std::list<Symbol *> scope_list;
+    scope_list.push_front(symbol);
+    
+    scope_lists.insert({scope,scope_list});
 }
 
 void Scope::hide(unsigned int scopeLevel) {
@@ -17,7 +21,10 @@ void Scope::hide(unsigned int scopeLevel) {
 }
 
 Symbol *Scope::lookup_scope(std::string key, unsigned int scope) {
-    std::list<Symbol *> scope_list = scope_lists[scope];
+    std::list<Symbol *> scope_list;
+    
+    if (scope<scope_lists.size())
+        scope_list=scope_lists[scope];
 
     for (Symbol *it : scope_list) {
         if (it->name == key) {
@@ -42,9 +49,6 @@ Symbol *Scope::lookup_symbol(std::string key) {
 
 void Scope::clear() {
     hash_table.clear();
-    for (auto &&i : scope_lists) {
-        i.clear();
-    }
     scope_lists.clear();
 }
 
