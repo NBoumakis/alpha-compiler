@@ -483,8 +483,8 @@ struct returnstmtValue {
 };
 
 enum retType {
-    EXPR,
-    VOID
+    exprRet_T,
+    emptyRet_T
 };
 
 struct retValue {
