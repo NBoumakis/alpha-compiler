@@ -10,8 +10,7 @@
 class Scope {
 private:
     std::unordered_multimap<std::string, Symbol *> hash_table;
-    std::unordered_map<unsigned int,std::list<Symbol *>> scope_lists;
-    unsigned int symbol_count;
+    std::unordered_map<unsigned int, std::list<Symbol *>> scope_lists;
 
 public:
     Scope();
@@ -20,7 +19,7 @@ public:
     void insert(std::string key, Symbol *symbol, unsigned int scope);
     void hide(unsigned int scopeLevel);
     Symbol *lookup_scope(std::string key, unsigned int scope);
-    Symbol *lookup_symbol(std::string key);
+    auto lookup_symbol(std::string key);
     /* Iterate over */
     Symbol *erase(std::string key);
     void clear();
