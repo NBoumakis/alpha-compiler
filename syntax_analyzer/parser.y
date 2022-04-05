@@ -115,142 +115,142 @@
 
 %%
 
-program:      stmtList       {std::cerr <<"Test" <<std::endl;}
+program:      stmtList       {$$ = Manage_program($1)}
               ;
 
-stmtList:     stmtList stmt  {std::cerr << "Test" <<std::endl;}
-            |                {std::cerr << "Test" <<std::endl;}
+stmtList:     stmtList stmt  {$$ = Manage_stmtList_stmt($1, $2);}
+            |                {$$ = Manage_stmtList();}
             ;
 
-stmt:     expr SEMICOLON        {std::cerr << "Test" <<std::endl;}
-        | ifstmt                {std::cerr << "Test" <<std::endl;}
-        | whilestmt             {std::cerr << "Test" <<std::endl;}
-        | forstmt               {std::cerr << "Test" <<std::endl;}
-        | returnstmt            {std::cerr << "Test" <<std::endl;}
-        | BREAK SEMICOLON       {std::cerr << "Test" <<std::endl;}
-        | CONTINUE SEMICOLON    {std::cerr << "Test" <<std::endl;}
-        | block                 {std::cerr << "Test" <<std::endl;}
-        | funcdef               {std::cerr << "Test" <<std::endl;}
-        | SEMICOLON             {std::cerr << "Test" <<std::endl;}
+stmt:     expr SEMICOLON        {$$ = Manage_stmt_expr($1);}
+        | ifstmt                {$$ = Manage_stmt_ifstmt($1);}
+        | whilestmt             {$$ = Manage_stmt_whilestmt($1);}
+        | forstmt               {$$ = Manage_stmt_forstmt($1);}
+        | returnstmt            {$$ = Manage_stmt_returnstmt($1);}
+        | BREAK SEMICOLON       {$$ = Manage_stmt_break();}
+        | CONTINUE SEMICOLON    {$$ = Manage_stmt_continue();}
+        | block                 {$$ = Manage_stmt_block($1);}
+        | funcdef               {$$ = Manage_stmt_funcdef($1);}
+        | SEMICOLON             {$$ = Manage_stmt_semicolon();}
         ;
 
-expr:     assignexpr            {std::cerr << "Test" <<std::endl;}
-        | expr PLUS expr        {std::cerr << "Test" <<std::endl;}
-        | expr MINUS expr       {std::cerr << "Test" <<std::endl;}
-        | expr MUL expr         {std::cerr << "Test" <<std::endl;}
-        | expr DIV expr         {std::cerr << "Test" <<std::endl;}
-        | expr MOD expr         {std::cerr << "Test" <<std::endl;}
-        | expr GT expr          {std::cerr << "Test" <<std::endl;}
-        | expr GE expr          {std::cerr << "Test" <<std::endl;}
-        | expr LT expr          {std::cerr << "Test" <<std::endl;}
-        | expr LE expr          {std::cerr << "Test" <<std::endl;}
-        | expr EQUAL expr       {std::cerr << "Test" <<std::endl;}
-        | expr NEQUAL expr      {std::cerr << "Test" <<std::endl;}
-        | expr AND expr         {std::cerr << "Test" <<std::endl;}
-        | expr OR expr          {std::cerr << "Test" <<std::endl;}
-        | term                  {std::cerr << "Test" <<std::endl;}
+expr:     assignexpr            {$$ = Manage_expr_assignexpr($1);}
+        | expr PLUS expr        {$$ = Manage_expr_expr_PLUS_expr($1, $3);}
+        | expr MINUS expr       {$$ = Manage_expr_expr_MINUS_expr($1, $3);}
+        | expr MUL expr         {$$ = Manage_expr_expr_MUL_expr($1, $3);}
+        | expr DIV expr         {$$ = Manage_expr_expr_DIV_expr($1, $3);}
+        | expr MOD expr         {$$ = Manage_expr_expr_MOD_expr($1, $3);}
+        | expr GT expr          {$$ = Manage_expr_expr_GT_expr($1, $3);}
+        | expr GE expr          {$$ = Manage_expr_expr_GE_expr($1, $3);}
+        | expr LT expr          {$$ = Manage_expr_expr_LT_expr($1, $3);}
+        | expr LE expr          {$$ = Manage_expr_expr_LE_expr($1, $3);}
+        | expr EQUAL expr       {$$ = Manage_expr_expr_EQUAL_expr($1, $3);}
+        | expr NEQUAL expr      {$$ = Manage_expr_expr_NEQUAL_expr($1, $3);}
+        | expr AND expr         {$$ = Manage_expr_expr_AND_expr($1, $3);}
+        | expr OR expr          {$$ = Manage_expr_expr_OR_expr($1, $3);}
+        | term                  {$$ = Manage_expr_term($1);}
         ;
 
-term:     L_PARENTHESIS expr R_PARENTHESIS  {std::cerr << "Test" <<std::endl;}
-        | NOT expr                          {std::cerr << "Test" <<std::endl;}
-        | PLUS_PLUS lvalue                  {std::cerr << "Test" <<std::endl;}
-        | lvalue PLUS_PLUS                  {std::cerr << "Test" <<std::endl;}
-        | MINUS_MINUS lvalue                {std::cerr << "Test" <<std::endl;}
-        | lvalue MINUS_MINUS                {std::cerr << "Test" <<std::endl;}
-        | primary                           {std::cerr << "Test" <<std::endl;}
-        | MINUS expr %prec UMINUS           {std::cerr << "Test" <<std::endl;}
+term:     L_PARENTHESIS expr R_PARENTHESIS  {$$ = Manage_term_LPexprRP($2);}
+        | NOT expr                          {$$ = Manage_term_notexpr($2);}
+        | PLUS_PLUS lvalue                  {$$ = Manage_term_PPlval($2);}
+        | lvalue PLUS_PLUS                  {$$ = Manage_term_lvaluePP($1);}
+        | MINUS_MINUS lvalue                {$$ = Manage_term_MMlval($2);}
+        | lvalue MINUS_MINUS                {$$ = Manage_term_lvalueMM($1);}
+        | primary                           {$$ = Manage_term_primary($1);}
+        | MINUS expr %prec UMINUS           {$$ = Manage_term_minusexpr($2);}
         ;
 
-assignexpr: lvalue ASSIGN expr  {std::cerr << "Test" <<std::endl;}
+assignexpr: lvalue ASSIGN expr  {$$ = Manage_assignexpr_lvalueASSIGNexpr($1, $3);}
 
-primary:  lvalue                                {std::cerr << "Test" <<std::endl;}
-        | call                                  {std::cerr << "Test" <<std::endl;}
-        | objectdef                             {std::cerr << "Test" <<std::endl;}
-        | L_PARENTHESIS funcdef R_PARENTHESIS   {std::cerr << "Test" <<std::endl;}
-        | const                                 {std::cerr << "Test" <<std::endl;}
+primary:  lvalue                                {$$ = Manage_primary_lvalue($1);}
+        | call                                  {$$ = Manage_primary_call($1);}
+        | objectdef                             {$$ = Manage_primary_objectdef($1);}
+        | L_PARENTHESIS funcdef R_PARENTHESIS   {$$ = Manage_primary_LPfuncdefRP($2);}
+        | const                                 {$$ = Manage_primary_const($1);}
         ;
 
-lvalue:   ID            {std::cerr << "Test" <<std::endl;}
-        | LOCAL ID      {std::cerr << "Test" <<std::endl;}
-        | NAMESPACE ID  {std::cerr << "Test" <<std::endl;}
-        | member        {std::cerr << "Test" <<std::endl;}
+lvalue:   ID            {$$ = Manage_lvalue_id($1);}
+        | LOCAL ID      {$$ = Manage_lvalue_localid($2);}
+        | NAMESPACE ID  {$$ = Manage_lvalue_globalid($2);}
+        | member        {$$ = Manage_lvalue_member($1);}
         ;
 
-member:   lvalue DOT ID                                     {std::cerr << "Test" <<std::endl;}
-        | lvalue L_SQUARE_BRACKET expr R_SQUARE_BRACKET     {std::cerr << "Test" <<std::endl;}
-        | call DOT ID                                       {std::cerr << "Test" <<std::endl;}
-        | call L_SQUARE_BRACKET expr R_SQUARE_BRACKET       {std::cerr << "Test" <<std::endl;}
+member:   lvalue DOT ID                                     {$$ = Manage_member_lvalueDOTid($1, $3);}
+        | lvalue L_SQUARE_BRACKET expr R_SQUARE_BRACKET     {$$ = Manage_member_lvalueLSBexprRSB($1, $3);}
+        | call DOT ID                                       {$$ = Manage_member_callDOTid($1, $3);}
+        | call L_SQUARE_BRACKET expr R_SQUARE_BRACKET       {$$ = Manage_member_callLSBexprRSB($1, $3);}
         ;
 
-call:     call L_PARENTHESIS elist R_PARENTHESIS                                        {std::cerr << "Test" <<std::endl;}
-        | lvalue callsuffix                                                             {std::cerr << "Test" <<std::endl;}
-        | L_PARENTHESIS funcdef R_PARENTHESIS L_PARENTHESIS elist R_PARENTHESIS         {std::cerr << "Test" <<std::endl;}
+call:     call L_PARENTHESIS elist R_PARENTHESIS                                        {$$ = Manage_call_callLPelistRP($1, $3);}
+        | lvalue callsuffix                                                             {$$ = Manage_call_lvaluecallsuffix($1, $2);}
+        | L_PARENTHESIS funcdef R_PARENTHESIS L_PARENTHESIS elist R_PARENTHESIS         {$$ = Manage_call_LPfuncdefRPLPelistRP($2, $5);}
         ;
 
-callsuffix:   normcall      {std::cerr << "Test" <<std::endl;}
-            | methodcall    {std::cerr << "Test" <<std::endl;}
+callsuffix:   normcall      {$$ = Manage_callsuffix_normcall($1);}
+            | methodcall    {$$ = Manage_callsuffix_methodcall($1);}
             ;
 
-normcall:     L_PARENTHESIS elist R_PARENTHESIS                 {std::cerr << "Test" <<std::endl;}
+normcall:     L_PARENTHESIS elist R_PARENTHESIS                 {$$ = Manage_normcall_LPelistRP($2);}
 
-methodcall:   DOUBLE_DOT ID L_PARENTHESIS elist R_PARENTHESIS   {std::cerr << "Test" <<std::endl;}
+methodcall:   DOUBLE_DOT ID L_PARENTHESIS elist R_PARENTHESIS   {$$ = Manage_methodcall_DDOTidLPelistRP($2, $4);}
 
-elist:   exprOptRpt         {std::cerr << "Test" <<std::endl;}
-       |                    {std::cerr << "Test" <<std::endl;}
+elist:   exprOptRpt         {$$ = Manage_elist_exprOptRpt($1);}
+       |                    {$$ = Manage_elist();}
        ;
 
-exprOptRpt:   expr COMMA exprOptRpt     {std::cerr << "Test" <<std::endl;}
-            | expr                      {std::cerr << "Test" <<std::endl;}
+exprOptRpt:   expr COMMA exprOptRpt     {$$ = Manage_exprOR_exprOR($1, $3);}
+            | expr                      {$$ = Manage_exprOR_expr($1);}
             ;
 
-objectdef:    L_SQUARE_BRACKET elist R_SQUARE_BRACKET       {std::cerr << "Test" <<std::endl;}
-            | L_SQUARE_BRACKET indexed R_SQUARE_BRACKET     {std::cerr << "Test" <<std::endl;}
-            ;
-
-
-indexed:  indelemlist   {std::cerr << "Test" <<std::endl;}
-        ;
-
-indelemlist:  indexedelem COMMA indelemlist     {std::cerr << "Test" <<std::endl;}
-            | indexedelem                       {std::cerr << "Test" <<std::endl;}
+objectdef:    L_SQUARE_BRACKET elist R_SQUARE_BRACKET       {$$ = Manage_objectdef_LSBelistRSB($2);}
+            | L_SQUARE_BRACKET indexed R_SQUARE_BRACKET     {$$ = Manage_objectdef_LSBindexedRSB($2);}
             ;
 
 
-indexedelem:  L_CURLY_BRACKET expr COLON expr R_CURLY_BRACKET   {std::cerr << "Test" <<std::endl;}
+indexed:  indelemlist   {$$ = Manage_indexed($1);}
+        ;
+
+indelemlist:  indexedelem COMMA indelemlist     {$$ = Manage_indelemlist($1, $3);}
+            | indexedelem                       {$$ = Manage_indelemlist_indexedelem($1);}
             ;
 
-block:    L_CURLY_BRACKET stmtList R_CURLY_BRACKET              {std::cerr << "Test" <<std::endl;}
+
+indexedelem:  L_CURLY_BRACKET expr COLON expr R_CURLY_BRACKET   {$$ = Manage_indexedelem_LCB_expr_COLON_expr_RCB($2, $4);};
+            ;
+
+block:    L_CURLY_BRACKET stmtList R_CURLY_BRACKET              {$$ = Manage_block_LCBstmtRCB($2);}
         ;
 
-funcdef:  FUNCTION ID L_PARENTHESIS idlist R_PARENTHESIS block  {std::cerr << "Test" <<std::endl;}
-        | FUNCTION L_PARENTHESIS idlist R_PARENTHESIS block     {std::cerr << "Test" <<std::endl;}
+funcdef:  FUNCTION ID L_PARENTHESIS idlist R_PARENTHESIS block  {$$ = Manage_funcdef_id($2, $4, $6);}
+        | FUNCTION L_PARENTHESIS idlist R_PARENTHESIS block     {$$ = Manage_funcdef($3, $5);}
         ;
 
-const:    intNumber     {std::cerr << "Test" <<std::endl;}
-        | realNumber    {std::cerr << "Test" <<std::endl;}
-        | STRING        {std::cerr << "Test" <<std::endl;}
-        | NIL           {std::cerr << "Test" <<std::endl;}
-        | TRUE          {std::cerr << "Test" <<std::endl;}
-        | FALSE         {std::cerr << "Test" <<std::endl;}
+const:    intNumber     {$$ = Manage_const_int($1);}
+        | realNumber    {$$ = Manage_const_real($1);}
+        | STRING        {$$ = Manage_const_string($1);}
+        | NIL           {$$ = Manage_const_nil();}
+        | TRUE          {$$ = Manage_const_true();}
+        | FALSE         {$$ = Manage_const_false();}
         ;
 
-idlist:   ID                {std::cerr << "Test" <<std::endl;}
-        | idlist COMMA ID   {std::cerr << "Test" <<std::endl;}
-        |                   {std::cerr << "Test" <<std::endl;}
+idlist:   ID                {$$ = Manage_idlist_ID($1);}
+        | idlist COMMA ID   {$$ = Manage_idlist_idlist_comma_id($1,$3);}
+        |                   {$$ = Manage_idlist();}
         ;
 
-ifstmt:   IF L_PARENTHESIS expr R_PARENTHESIS stmt else     {std::cerr << "Test" <<std::endl;}
+ifstmt:   IF L_PARENTHESIS expr R_PARENTHESIS stmt else     {$$ = Manage_ifstmt($3, $5, $6);};
 
-else:     ELSE stmt     {std::cerr << "Test" <<std::endl;}
-        |               {std::cerr << "Test" <<std::endl;}
+else:     ELSE stmt     {$$ = Manage_else_stmt($2);}
+        |               {$$ = Manage_else();}
         ;
 
-whilestmt:    WHILE L_PARENTHESIS expr R_PARENTHESIS stmt   {std::cerr << "Test" <<std::endl;}
+whilestmt:    WHILE L_PARENTHESIS expr R_PARENTHESIS stmt   {$$ = Manage_whilestmt($3,$5);}
 
-forstmt:      FOR L_PARENTHESIS elist SEMICOLON expr SEMICOLON elist R_PARENTHESIS stmt     {std::cerr << "Test" <<std::endl;}
+forstmt:      FOR L_PARENTHESIS elist SEMICOLON expr SEMICOLON elist R_PARENTHESIS stmt     {$$ = Manage_for($3, $5, $7, $9);};
 
-returnstmt:   RETURN ret SEMICOLON      {std::cerr << "Test" <<std::endl;}
+returnstmt:   RETURN ret SEMICOLON      {$$ = Manage_returnstmt($2);};
 
-ret:      expr      {std::cerr << "Test" <<std::endl;}
-        |           {std::cerr << "Test" <<std::endl;}
+ret:      expr      {$$ = Manage_ret_expr($1);};
+        |           {$$ = Manage_ret();}
         ;
