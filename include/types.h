@@ -415,7 +415,7 @@ enum ifstmtType {
 
 struct ifstmtValue {
     union value {
-        struct ifStmtValue {
+        struct ifValue {
             exprValue *exprVal;
             struct stmtValue *stmtVal;
             struct elseValue *elseVal;
@@ -444,7 +444,7 @@ enum whilestmtType {
 
 struct whilestmtValue {
     union value {
-        struct whileStmtValue {
+        struct whileValue {
             struct exprValue *exprVal;
             struct stmtValue *stmtVal;
         };
