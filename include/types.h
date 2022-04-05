@@ -195,26 +195,24 @@ struct memberValue {
 };
 
 enum callType {
-    CALL,
-    ELIST,
-    LVALUE,
-    CALLSUFFIX,
-    FUNCDEF
+    callElistCall_T,
+    lvalueCallSuffCall_T,
+    funcdefElistCall_T
 };
 
 struct callValue {
     union value {
-        struct callELISTValue {
+        struct callCallElistValue {
             struct callValue *callVal;
             struct elistValue *elistVal;
         };
-        struct callLVALUEValue {
+        struct callLvalueValue {
             struct lvalueValue *lvalueVal;
-            struct callsuffixValue *callsuffixVAl;
+            struct callsuffixValue *callsuffixVal;
         };
-        struct callFUNCDEFValue {
-            struct funcdefValue *funcdefVa;
-            struct elistValue *elistVAl;
+        struct callFuncdefValue {
+            struct funcdefValue *funcdefVal;
+            struct elistValue *elistVal;
         };
     };
 
