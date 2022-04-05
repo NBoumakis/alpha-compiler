@@ -376,7 +376,7 @@ elseValue Manage_else();
 whilestmtValue Manage_whilestmt(exprValue expr, stmtValue stmt);
 
 /* For statement */
-forstmtValue Manage_for(elistValue elist, exprValue expr, elistValue elist, stmtValue stmt);
+forstmtValue Manage_for(elistValue elistFirst, exprValue expr, elistValue elistLast, stmtValue stmt);
 
 /* Return statement */
 returnstmtValue Manage_returnstmt(retValue ret);
