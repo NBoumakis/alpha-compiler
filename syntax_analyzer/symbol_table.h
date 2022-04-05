@@ -1,5 +1,5 @@
-#include "../include/scope.h"
-#include "../include/symbol.h"
+#include "scope.h"
+#include "symbol.h"
 
 #include <unordered_set>
 

@@ -1,7 +1,7 @@
 #ifndef __RULES_H
 #define __RULES_H
 
-#include "../include/types.h"
+#include "types.h"
 
 /* Program */
 programValue Manage_program(stmtListValue);
