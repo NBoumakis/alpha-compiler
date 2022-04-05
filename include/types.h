@@ -353,7 +353,7 @@ struct exprOptRptValue {
 enum objectdefType {
     elistObjdef_T,
     indexedObjdef_T,
-    InvalidOnjdef_T
+    InvalidObjdef_T
 };
 
 struct objectdefValue {
