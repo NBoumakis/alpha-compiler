@@ -156,7 +156,7 @@ indelemlistValue Manage_indelemlist_indexedelem(indexedelemValue);
 indexedelemValue Manage_indexedelem_LCB_expr_COLON_expr_RCB(exprValue, exprValue);
 
 /* Block */
-blockValue Manage_block_LCBstmtRCB(stmtValue);
+blockValue Manage_block_LCBstmtRCB(stmtListValue);
 
 /* Funcdef */
 funcdefValue Manage_funcdef_id(std::string, idlistValue, blockValue);

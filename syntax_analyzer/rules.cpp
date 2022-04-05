@@ -318,7 +318,7 @@ indelemlistValue Manage_indelemlist_indexedelem(indexedelemValue indexedelem);
 indexedelemValue Manage_indexedelem_LCB_expr_COLON_expr_RCB(exprValue key, exprValue value);
 
 /* Block */
-blockValue Manage_block_LCBstmtRCB(stmtValue stmt) {
+blockValue Manage_block_LCBstmtRCB(stmtListValue stmt) {
     /*  1){ scope++
         2)hide(scope);scope--}*/
 }
