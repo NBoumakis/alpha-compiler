@@ -1,6 +1,8 @@
 %{
     #include <iostream>
+    #include <unordered_set>
     #include "types.h"
+    #include "scope.h"
     #include "rules.h"
 
     int yyerror(char* yaccProvideedMessage){
@@ -16,6 +18,10 @@
     extern int yylex();
     extern int yyparse();
     extern FILE* yyin;
+
+    extern Scope symbolTableObj;
+    extern unsigned int scopeLevel;
+    extern std::unordered_set<std::string> libFunctions;
 %}
 
 %union{
@@ -223,7 +229,10 @@ indexedelem:  L_CURLY_BRACKET expr COLON expr R_CURLY_BRACKET   {$$ = Manage_ind
 block:    L_CURLY_BRACKET stmtList R_CURLY_BRACKET              {$$ = Manage_block_LCBstmtRCB($2);}
         ;
 
-funcdef:  FUNCTION ID L_PARENTHESIS idlist R_PARENTHESIS block  {$$ = Manage_funcdef_id($2, $4, $6);}
+funcdef:  FUNCTION ID L_PARENTHESIS idlist R_PARENTHESIS block  {
+                                                                    std::cout << "\e[1;32mRule funcdef -> FUNCTION ID (idlist) block" << "id" << "\e[0m" << std::endl;
+                                                                    $$ = Manage_funcdef_id($2, $4, $6);
+                                                                }
         | FUNCTION L_PARENTHESIS idlist R_PARENTHESIS block     {$$ = Manage_funcdef($3, $5);}
         ;
 

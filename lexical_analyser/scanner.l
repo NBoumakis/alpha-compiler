@@ -1,10 +1,14 @@
 %{
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <stack>
 #include "scanner.h"
 #include "parser.hpp"
 /*#define YY_DECL int alpha_yylex(void *ylval)*/
+extern int yylineno;
+extern char *yytext;
+extern FILE *yyin;
 
 
 int string_line_start;
@@ -347,7 +351,7 @@ SPACE [\r \t\v]
 
 
 {CONST_INT}[a-zA-Z_] {
-    
+    std::cerr  << "Unknown token " << yytext << " in line " << yyget_lineno() <<std::endl;
 }
 
 {CONST_REAL}[a-zA-Z_] {
@@ -360,6 +364,29 @@ SPACE [\r \t\v]
 
 %%
 
-int main() {
+int main(int argc, char*argv[]) {
+    std::ofstream outfile;
+
+    if (argc > 1) {
+        if (!(yyin = fopen(argv[1], "r"))) {
+            std::cerr << "Cannot read file: " << argv[1] << std::endl;
+            return -1;
+        }
+    } else {
+        yyin = stdin;
+    }
+
+    if (argc > 2) {
+        outfile.open(argv[2]);
+        if (!(outfile.is_open())) {
+            std::cerr << "Cannot open output file: " << argv[2] << std::endl;
+            return -1;
+        }
+    }
+
+    std::ostream &out = (argc > 2) ? outfile : std::cout;
+
     yyparse();
+
+    return 0;
 }
