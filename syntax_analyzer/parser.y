@@ -161,72 +161,188 @@ expr:     assignexpr            {$$ = Manage_expr_assignexpr($1);}
         | term                  {$$ = Manage_expr_term($1);}
         ;
 
-term:     L_PARENTHESIS expr R_PARENTHESIS  {$$ = Manage_term_LPexprRP($2);}
-        | NOT expr                          {$$ = Manage_term_notexpr($2);}
-        | PLUS_PLUS lvalue                  {$$ = Manage_term_PPlval($2);}
-        | lvalue PLUS_PLUS                  {$$ = Manage_term_lvaluePP($1);}
-        | MINUS_MINUS lvalue                {$$ = Manage_term_MMlval($2);}
-        | lvalue MINUS_MINUS                {$$ = Manage_term_lvalueMM($1);}
-        | primary                           {$$ = Manage_term_primary($1);}
-        | MINUS expr %prec UMINUS           {$$ = Manage_term_minusexpr($2);}
+term:     L_PARENTHESIS expr R_PARENTHESIS  {
+                                                std::cout << "\e[1;32m" "Rule term -> (expr)" "\e[0m" << std::endl;
+                                                $$ = Manage_term_LPexprRP($2);
+                                            }
+        | NOT expr                          {
+                                                std::cout << "\e[1;32m" "Rule term -> not expr" "\e[0m" << std::endl;
+                                                $$ = Manage_term_notexpr($2);
+                                            }
+        | PLUS_PLUS lvalue                  {
+                                                std::cout << "\e[1;32m" "Rule term -> ++lvalue" "\e[0m" << std::endl;
+                                                $$ = Manage_term_PPlval($2);
+                                            }
+        | lvalue PLUS_PLUS                  {
+                                                std::cout << "\e[1;32m" "Rule term -> lvalue++" "\e[0m" << std::endl;
+                                                $$ = Manage_term_lvaluePP($1);
+                                            }
+        | MINUS_MINUS lvalue                {
+                                                std::cout << "\e[1;32m" "Rule term -> --lvalue" "\e[0m" << std::endl;
+                                                $$ = Manage_term_MMlval($2);
+                                            }
+        | lvalue MINUS_MINUS                {
+                                                std::cout << "\e[1;32m" "Rule term -> lvalue--" "\e[0m" << std::endl;
+                                                $$ = Manage_term_lvalueMM($1);
+                                            }
+        | primary                           {
+                                                std::cout << "\e[1;32m" "Rule term -> primary" "\e[0m" << std::endl;
+                                                $$ = Manage_term_primary($1);
+                                            }
+        | MINUS expr %prec UMINUS           {
+                                                std::cout << "\e[1;32m" "Rule term -> -expr Uminus" "\e[0m" << std::endl;
+                                                $$ = Manage_term_minusexpr($2);
+                                            }
         ;
 
-assignexpr: lvalue ASSIGN expr  {$$ = Manage_assignexpr_lvalueASSIGNexpr($1, $3);}
+assignexpr: lvalue ASSIGN expr  {
+                                    std::cout << "\e[1;32m" "Rule assignexpr -> lvalue=expr" "\e[0m" << std::endl;
+                                    $$ = Manage_assignexpr_lvalueASSIGNexpr($1, $3);
+                                }
 
-primary:  lvalue                                {$$ = Manage_primary_lvalue($1);}
-        | call                                  {$$ = Manage_primary_call($1);}
-        | objectdef                             {$$ = Manage_primary_objectdef($1);}
-        | L_PARENTHESIS funcdef R_PARENTHESIS   {$$ = Manage_primary_LPfuncdefRP($2);}
-        | const                                 {$$ = Manage_primary_const($1);}
+primary:  lvalue                                {
+                                                   std::cout << "\e[1;32m" "Rule primary -> lvalue" "\e[0m" << std::endl;
+                                                   $$ = Manage_primary_lvalue($1);
+                                                }
+        | call                                  {
+                                                   std::cout << "\e[1;32m" "Rule primary -> call" "\e[0m" << std::endl;
+                                                   $$ = Manage_primary_call($1);
+                                                }
+        | objectdef                             {
+                                                   std::cout << "\e[1;32m" "Rule primary -> objectdef" "\e[0m" << std::endl;
+                                                   $$ = Manage_primary_objectdef($1);
+                                                }
+        | L_PARENTHESIS funcdef R_PARENTHESIS   {
+                                                   std::cout << "\e[1;32m" "Rule primary -> (funcdef)" "\e[0m" << std::endl;
+                                                   $$ = Manage_primary_LPfuncdefRP($2);
+                                                }
+        | const                                 {
+                                                   std::cout << "\e[1;32m" "Rule primary -> const" "\e[0m" << std::endl;
+                                                   $$ = Manage_primary_const($1);
+                                                }
         ;
 
-lvalue:   ID            {$$ = Manage_lvalue_id($1);}
-        | LOCAL ID      {$$ = Manage_lvalue_localid($2);}
-        | NAMESPACE ID  {$$ = Manage_lvalue_globalid($2);}
-        | member        {$$ = Manage_lvalue_member($1);}
+lvalue:   ID            {
+                            std::cout << "\e[1;32m" "Rule lvalue -> id" "\e[0m" << std::endl;
+                            $$ = Manage_lvalue_id($1);
+                        }
+        | LOCAL ID      {
+                            std::cout << "\e[1;32m" "Rule lvalue -> local id" "\e[0m" << std::endl;
+                            $$ = Manage_lvalue_localid($2);
+                        }
+        | NAMESPACE ID  {
+                            std::cout << "\e[1;32m" "Rule lvalue -> namespace id" "\e[0m" << std::endl;
+                            $$ = Manage_lvalue_globalid($2);
+                        }
+        | member        {
+                            std::cout << "\e[1;32m" "Rule lvalue -> member" "\e[0m" << std::endl;
+                            $$ = Manage_lvalue_member($1);
+                        }
         ;
 
-member:   lvalue DOT ID                                     {$$ = Manage_member_lvalueDOTid($1, $3);}
-        | lvalue L_SQUARE_BRACKET expr R_SQUARE_BRACKET     {$$ = Manage_member_lvalueLSBexprRSB($1, $3);}
-        | call DOT ID                                       {$$ = Manage_member_callDOTid($1, $3);}
-        | call L_SQUARE_BRACKET expr R_SQUARE_BRACKET       {$$ = Manage_member_callLSBexprRSB($1, $3);}
+member:   lvalue DOT ID                                     {
+                                                                std::cout << "\e[1;32m" "Rule member -> lvalue.id" "\e[0m" << std::endl;
+                                                                $$ = Manage_member_lvalueDOTid($1, $3);
+                                                            }
+        | lvalue L_SQUARE_BRACKET expr R_SQUARE_BRACKET     {
+                                                                std::cout << "\e[1;32m" "Rule member -> lvalue[expr]" "\e[0m" << std::endl;
+                                                                $$ = Manage_member_lvalueLSBexprRSB($1, $3);
+                                                            }
+        | call DOT ID                                       {
+                                                                std::cout << "\e[1;32m" "Rule member -> call.id" "\e[0m" << std::endl;
+                                                                $$ = Manage_member_callDOTid($1, $3);
+                                                            }
+        | call L_SQUARE_BRACKET expr R_SQUARE_BRACKET       {
+                                                                std::cout << "\e[1;32m" "Rule member -> call[expr]" "\e[0m" << std::endl;
+                                                                $$ = Manage_member_callLSBexprRSB($1, $3);
+                                                            }
         ;
 
-call:     call L_PARENTHESIS elist R_PARENTHESIS                                        {$$ = Manage_call_callLPelistRP($1, $3);}
-        | lvalue callsuffix                                                             {$$ = Manage_call_lvaluecallsuffix($1, $2);}
-        | L_PARENTHESIS funcdef R_PARENTHESIS L_PARENTHESIS elist R_PARENTHESIS         {$$ = Manage_call_LPfuncdefRPLPelistRP($2, $5);}
+call:     call L_PARENTHESIS elist R_PARENTHESIS                                        {
+                                                                                            std::cout << "\e[1;32m" "Rule call -> call(elist)" "\e[0m" << std::endl;
+                                                                                            $$ = Manage_call_callLPelistRP($1, $3);
+                                                                                        }
+        | lvalue callsuffix                                                             {
+                                                                                            std::cout << "\e[1;32m" "Rule call -> lvalue callsuffix" "\e[0m" << std::endl;
+                                                                                            $$ = Manage_call_lvaluecallsuffix($1, $2);
+                                                                                        }
+        | L_PARENTHESIS funcdef R_PARENTHESIS L_PARENTHESIS elist R_PARENTHESIS         {
+                                                                                            std::cout << "\e[1;32m" "Rule call -> (funcdef)(elist)" "\e[0m" << std::endl;
+                                                                                            $$ = Manage_call_LPfuncdefRPLPelistRP($2, $5);
+                                                                                        }
         ;
 
-callsuffix:   normcall      {$$ = Manage_callsuffix_normcall($1);}
-            | methodcall    {$$ = Manage_callsuffix_methodcall($1);}
+callsuffix:   normcall      {
+                                std::cout << "\e[1;32m" "Rule callsuffix -> normcall" "\e[0m" << std::endl;
+                                $$ = Manage_callsuffix_normcall($1);}
+            | methodcall    {
+                                std::cout << "\e[1;32m" "Rule callsuffix -> methodcall" "\e[0m" << std::endl;
+                                $$ = Manage_callsuffix_methodcall($1);
+                            }
             ;
 
-normcall:     L_PARENTHESIS elist R_PARENTHESIS                 {$$ = Manage_normcall_LPelistRP($2);}
+normcall:     L_PARENTHESIS elist R_PARENTHESIS                 {
+                                                                    std::cout << "\e[1;32m" "Rule normcall -> (elist)" "\e[0m" << std::endl;
+                                                                    $$ = Manage_normcall_LPelistRP($2);
+                                                                }
 
-methodcall:   DOUBLE_DOT ID L_PARENTHESIS elist R_PARENTHESIS   {$$ = Manage_methodcall_DDOTidLPelistRP($2, $4);}
+methodcall:   DOUBLE_DOT ID L_PARENTHESIS elist R_PARENTHESIS   {
+                                                                    std::cout << "\e[1;32m" "Rule methodcall -> ..id(elist)" "\e[0m" << std::endl;
+                                                                    $$ = Manage_methodcall_DDOTidLPelistRP($2, $4);
+                                                                }
 
-elist:   exprOptRpt         {$$ = Manage_elist_exprOptRpt($1);}
-       |                    {$$ = Manage_elist();}
+elist:   exprOptRpt         {
+                                std::cout << "\e[1;32m" "Rule elist -> exprOptRpt" "\e[0m" << std::endl;
+                                $$ = Manage_elist_exprOptRpt($1);
+                            }
+       |                    {
+                                std::cout << "\e[1;32m" "Rule elist -> ε" "\e[0m" << std::endl;
+                                $$ = Manage_elist();
+                            }
        ;
 
-exprOptRpt:   expr COMMA exprOptRpt     {$$ = Manage_exprOR_exprOR($1, $3);}
-            | expr                      {$$ = Manage_exprOR_expr($1);}
+exprOptRpt:   expr COMMA exprOptRpt     {
+                                            std::cout << "\e[1;32m" "Rule exprOptRpt -> expr,exprOptRpt" "\e[0m" << std::endl;
+                                            $$ = Manage_exprOR_exprOR($1, $3);
+                                        }
+            | expr                      {
+                                            std::cout << "\e[1;32m" "Rule exprOptRpt -> expr" "\e[0m" << std::endl;
+                                            $$ = Manage_exprOR_expr($1);
+                                        }
             ;
 
-objectdef:    L_SQUARE_BRACKET elist R_SQUARE_BRACKET       {$$ = Manage_objectdef_LSBelistRSB($2);}
-            | L_SQUARE_BRACKET indexed R_SQUARE_BRACKET     {$$ = Manage_objectdef_LSBindexedRSB($2);}
+objectdef:    L_SQUARE_BRACKET elist R_SQUARE_BRACKET       {
+                                                                std::cout << "\e[1;32m" "Rule objectdef -> [elist]" "\e[0m" << std::endl;
+                                                                $$ = Manage_objectdef_LSBelistRSB($2);
+                                                            }
+            | L_SQUARE_BRACKET indexed R_SQUARE_BRACKET     {
+                                                                std::cout << "\e[1;32m" "Rule objectdef -> [indexed]" "\e[0m" << std::endl;
+                                                                $$ = Manage_objectdef_LSBindexedRSB($2);
+                                                            }
             ;
 
 
-indexed:  indelemlist   {$$ = Manage_indexed($1);}
+indexed:  indelemlist   {
+                            std::cout << "\e[1;32m" "Rule indexed -> indelemlist" "\e[0m" << std::endl;
+                            $$ = Manage_indexed($1);
+                        }
         ;
 
-indelemlist:  indexedelem COMMA indelemlist     {$$ = Manage_indelemlist($1, $3);}
-            | indexedelem                       {$$ = Manage_indelemlist_indexedelem($1);}
+indelemlist:  indexedelem COMMA indelemlist     {
+                                                    std::cout << "\e[1;32m" "Rule indelemlist -> indexedelem,indelemlist" "\e[0m" << std::endl;
+                                                    $$ = Manage_indelemlist($1, $3);
+                                                }
+            | indexedelem                       {
+                                                    std::cout << "\e[1;32m" "Rule indelemlist -> indexedelem" "\e[0m" << std::endl;
+                                                    $$ = Manage_indelemlist_indexedelem($1);
+                                                }
             ;
 
 
-indexedelem:  L_CURLY_BRACKET expr COLON expr R_CURLY_BRACKET   {$$ = Manage_indexedelem_LCB_expr_COLON_expr_RCB($2, $4);};
+indexedelem:  L_CURLY_BRACKET expr COLON expr R_CURLY_BRACKET   {
+                                                                    std::cout << "\e[1;32m" "Rule indexedelem -> {expr:expr}" "\e[0m" << std::endl;
+                                                                    $$ = Manage_indexedelem_LCB_expr_COLON_expr_RCB($2, $4);
+                                                                }
             ;
 
 block:    L_CURLY_BRACKET stmtList R_CURLY_BRACKET              {$$ = Manage_block_LCBstmtRCB($2);}
