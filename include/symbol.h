@@ -1,3 +1,5 @@
+#ifndef __SYMBOL_H
+#define __SYMBOL_H
 #include <string>
 
 enum SymbolType {
@@ -21,7 +23,7 @@ protected:
 public:
     Symbol(std::string name, unsigned int scope, unsigned int line, SymbolType type);
     Symbol(std::string name, unsigned int scope, unsigned int line, SymbolType type, bool isActive);
-    ~Symbol(){};
+    ~Symbol();
 };
 
 class Variable : protected Symbol {};
@@ -29,3 +31,4 @@ class Variable : protected Symbol {};
 class Function : protected Symbol {
 protected:
 };
+#endif
