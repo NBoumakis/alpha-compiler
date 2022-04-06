@@ -239,6 +239,7 @@ lvalueValue Manage_lvalue_localid(std::string id) {
         5)an den yparxei sto scope insert ston symbol table
         6)an to scope=0 ignore local (front3 slide 19)*/
     lvalueValue newStructVal;
+
     return newStructVal;
 }
 
@@ -380,14 +381,6 @@ blockValue Manage_block_LCBstmtRCB(stmtListValue stmt) {
 /* Funcdef */
 funcdefValue Manage_funcdef_id(std::string id, idlistValue idlist, blockValue block) {
     funcdefValue fval;
-    /*  1)(
-        2)} hide(scope) ;scope--
-        3)conflict me library function
-        4)lookup_symbol,no:insert
-        5)yes:lookup_scope
-        6)conflict me function sto idio scope/variable ( front3 slide 11)
-        */
-
     unsigned int &scope = scopeLevel;
 
     std::cout << scope << std::endl;
