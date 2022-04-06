@@ -128,37 +128,117 @@ program:      stmtList       {
                              }
               ;
 
-stmtList:     stmtList stmt  {$$ = Manage_stmtList_stmt($1, $2);}
-            |                {$$ = Manage_stmtList();}
+stmtList:     stmtList stmt  {
+                                std::cout << "\e[1;32m" "Rule stmtList -> stmtlist stmt" "\e[0m" << std::endl;
+                                $$ = Manage_stmtList_stmt($1, $2);
+                             }
+            |                {
+                                std::cout << "\e[1;32m" "Rule stmtList -> ε" "\e[0m" << std::endl;
+                                $$ = Manage_stmtList();
+                             }
             ;
 
-stmt:     expr SEMICOLON        {$$ = Manage_stmt_expr($1);}
-        | ifstmt                {$$ = Manage_stmt_ifstmt($1);}
-        | whilestmt             {$$ = Manage_stmt_whilestmt($1);}
-        | forstmt               {$$ = Manage_stmt_forstmt($1);}
-        | returnstmt            {$$ = Manage_stmt_returnstmt($1);}
-        | BREAK SEMICOLON       {$$ = Manage_stmt_break();}
-        | CONTINUE SEMICOLON    {$$ = Manage_stmt_continue();}
-        | block                 {$$ = Manage_stmt_block($1);}
-        | funcdef               {$$ = Manage_stmt_funcdef($1);}
-        | SEMICOLON             {$$ = Manage_stmt_semicolon();}
+stmt:     expr SEMICOLON        {
+                                    std::cout << "\e[1;32m" "Rule stmt -> expr;" "\e[0m" << std::endl;
+                                    $$ = Manage_stmt_expr($1);
+                                }
+        | ifstmt                {
+                                    std::cout << "\e[1;32m" "Rule stmt -> ifstmt" "\e[0m" << std::endl;
+                                    $$ = Manage_stmt_ifstmt($1);
+                                }
+        | whilestmt             {
+                                    std::cout << "\e[1;32m" "Rule stmt -> whilestmt" "\e[0m" << std::endl;
+                                    $$ = Manage_stmt_whilestmt($1);
+                                }
+        | forstmt               {
+                                    std::cout << "\e[1;32m" "Rule stmt -> forstmt" "\e[0m" << std::endl;
+                                    $$ = Manage_stmt_forstmt($1);
+                                }
+        | returnstmt            {
+                                    std::cout << "\e[1;32m" "Rule stmt -> returnstmt" "\e[0m" << std::endl;
+                                    $$ = Manage_stmt_returnstmt($1);
+                                }
+        | BREAK SEMICOLON       {
+                                    std::cout << "\e[1;32m" "Rule stmt -> break;" "\e[0m" << std::endl;
+                                    $$ = Manage_stmt_break();
+                                }
+        | CONTINUE SEMICOLON    {
+                                    std::cout << "\e[1;32m" "Rule stmt -> continue;" "\e[0m" << std::endl;
+                                    $$ = Manage_stmt_continue();
+                                }
+        | block                 {
+                                    std::cout << "\e[1;32m" "Rule stmt -> block" "\e[0m" << std::endl;
+                                    $$ = Manage_stmt_block($1);
+                                }
+        | funcdef               {
+                                    std::cout << "\e[1;32m" "Rule stmt -> funcdef" "\e[0m" << std::endl;
+                                    $$ = Manage_stmt_funcdef($1);
+                                }
+        | SEMICOLON             {
+                                    std::cout << "\e[1;32m" "Rule stmt -> ;" "\e[0m" << std::endl;
+                                    $$ = Manage_stmt_semicolon();
+                                }
         ;
 
-expr:     assignexpr            {$$ = Manage_expr_assignexpr($1);}
-        | expr PLUS expr        {$$ = Manage_expr_expr_PLUS_expr($1, $3);}
-        | expr MINUS expr       {$$ = Manage_expr_expr_MINUS_expr($1, $3);}
-        | expr MUL expr         {$$ = Manage_expr_expr_MUL_expr($1, $3);}
-        | expr DIV expr         {$$ = Manage_expr_expr_DIV_expr($1, $3);}
-        | expr MOD expr         {$$ = Manage_expr_expr_MOD_expr($1, $3);}
-        | expr GT expr          {$$ = Manage_expr_expr_GT_expr($1, $3);}
-        | expr GE expr          {$$ = Manage_expr_expr_GE_expr($1, $3);}
-        | expr LT expr          {$$ = Manage_expr_expr_LT_expr($1, $3);}
-        | expr LE expr          {$$ = Manage_expr_expr_LE_expr($1, $3);}
-        | expr EQUAL expr       {$$ = Manage_expr_expr_EQUAL_expr($1, $3);}
-        | expr NEQUAL expr      {$$ = Manage_expr_expr_NEQUAL_expr($1, $3);}
-        | expr AND expr         {$$ = Manage_expr_expr_AND_expr($1, $3);}
-        | expr OR expr          {$$ = Manage_expr_expr_OR_expr($1, $3);}
-        | term                  {$$ = Manage_expr_term($1);}
+expr:     assignexpr            {
+                                    std::cout << "\e[1;32m" "Rule expr -> assignexpr" "\e[0m" << std::endl;
+                                    $$ = Manage_expr_assignexpr($1);
+                                }
+        | expr PLUS expr        {
+                                    std::cout << "\e[1;32m" "Rule expr -> expr + expr" "\e[0m" << std::endl;
+                                    $$ = Manage_expr_expr_PLUS_expr($1, $3);}
+        | expr MINUS expr       {
+                                    std::cout << "\e[1;32m" "Rule expr -> expr - expr" "\e[0m" << std::endl;
+                                    $$ = Manage_expr_expr_MINUS_expr($1, $3);
+                                }
+        | expr MUL expr         {
+                                    std::cout << "\e[1;32m" "Rule expr -> expr * expr" "\e[0m" << std::endl;
+                                    $$ = Manage_expr_expr_MUL_expr($1, $3);
+                                }
+        | expr DIV expr         {
+                                    std::cout << "\e[1;32m" "Rule expr -> expr / expr" "\e[0m" << std::endl;
+                                    $$ = Manage_expr_expr_DIV_expr($1, $3);
+                                }
+        | expr MOD expr         {
+                                    std::cout << "\e[1;32m" "Rule expr -> expr % expr" "\e[0m" << std::endl;
+                                    $$ = Manage_expr_expr_MOD_expr($1, $3);
+                                }
+        | expr GT expr          {
+                                    std::cout << "\e[1;32m" "Rule expr -> expr > expr" "\e[0m" << std::endl;
+                                    $$ = Manage_expr_expr_GT_expr($1, $3);
+                                }
+        | expr GE expr          {
+                                    std::cout << "\e[1;32m" "Rule expr -> expr >= expr" "\e[0m" << std::endl;
+                                    $$ = Manage_expr_expr_GE_expr($1, $3);
+                                }
+        | expr LT expr          {
+                                    std::cout << "\e[1;32m" "Rule expr -> expr < expr" "\e[0m" << std::endl;
+                                    $$ = Manage_expr_expr_LT_expr($1, $3);
+                                }
+        | expr LE expr          {
+                                    std::cout << "\e[1;32m" "Rule expr -> expr <= expr" "\e[0m" << std::endl;
+                                    $$ = Manage_expr_expr_LE_expr($1, $3);
+                                }
+        | expr EQUAL expr       {
+                                    std::cout << "\e[1;32m" "Rule expr -> expr == expr" "\e[0m" << std::endl;
+                                    $$ = Manage_expr_expr_EQUAL_expr($1, $3);
+                                }
+        | expr NEQUAL expr      {
+                                    std::cout << "\e[1;32m" "Rule expr -> expr != expr" "\e[0m" << std::endl;
+                                    $$ = Manage_expr_expr_NEQUAL_expr($1, $3);
+                                }
+        | expr AND expr         {
+                                    std::cout << "\e[1;32m" "Rule expr -> expr and expr" "\e[0m" << std::endl;
+                                    $$ = Manage_expr_expr_AND_expr($1, $3);
+                                }
+        | expr OR expr          {
+                                    std::cout << "\e[1;32m" "Rule expr -> expr or expr" "\e[0m" << std::endl;
+                                    $$ = Manage_expr_expr_OR_expr($1, $3);
+                                }
+        | term                  {
+                                    std::cout << "\e[1;32m" "Rule expr -> term" "\e[0m" << std::endl;
+                                    $$ = Manage_expr_term($1);
+                                }
         ;
 
 term:     L_PARENTHESIS expr R_PARENTHESIS  {$$ = Manage_term_LPexprRP($2);}
