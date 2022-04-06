@@ -4,6 +4,23 @@
 
 extern int yylineno;
 
+static lvalueValue lvalueId(std::string id, unsigned int scope) {
+    lvalueValue newlvalueValue;
+    Symbol *symbol = nullptr;
+
+    for (unsigned int i = scope + 1; i > 0 && symbol == nullptr; --i) {
+        symbol = symbolTableObj.lookup_scope(id, i - 1);
+    }
+
+    if (symbol == nullptr) {
+        std::cerr << "Got here" << std::endl;
+        symbol = new Variable(id, scope, yylineno, (scope ? LOCAL_VAR : GLOBAL_VAR));
+        symbolTableObj.insert(id, symbol, scope);
+    }
+
+    return newlvalueValue;
+}
+
 programValue Manage_program(stmtListValue stmtList) {
     programValue newStructVal;
     return newStructVal;
@@ -201,6 +218,10 @@ assignexprValue Manage_assignexpr_lvalueASSIGNexpr(lvalueValue lvalue, exprValue
 /* Primary */
 primaryValue Manage_primary_lvalue(lvalueValue lvalue) {
     primaryValue primaryValueVal;
+
+    if (lvalue.valType == IDLvalue_T) {
+        lvalueId(lvalue.value.strVal, scopeLevel);
+    }
     return primaryValueVal;
 }
 
@@ -228,6 +249,10 @@ primaryValue Manage_primary_const(constValue constVal) {
 lvalueValue Manage_lvalue_id(std::string id) {
     /*(front3 slide20)*/
     lvalueValue newStructVal;
+
+    newStructVal.valType = IDLvalue_T;
+    newStructVal.value.strVal = const_cast<char *>(id.c_str());
+
     return newStructVal;
 }
 
