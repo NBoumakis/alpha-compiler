@@ -2,6 +2,7 @@
 #include "symbol.h"
 
 #include <algorithm>
+#include <assert.h>
 #include <list>
 #include <string>
 
@@ -12,6 +13,8 @@ void Scope::insert(std::string key, Symbol *symbol, unsigned int scope) {
 }
 
 void Scope::hide(unsigned int scopeLevel) {
+    assert(scopeLevel > 0);
+
     for (Symbol *symbol : Scope::scope_lists[scopeLevel]) {
         symbol->isActive = false;
     }
