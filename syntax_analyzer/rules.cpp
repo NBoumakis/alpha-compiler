@@ -404,11 +404,11 @@ funcdefValue Manage_funcdef_id(std::string id, idlistValue idlist, blockValue bl
             std::cerr << "previous user function";
             break;
 
-        case LOCAL:
+        case LOCAL_VAR:
             std::cerr << "local variable";
             break;
 
-        case GLOBAL:
+        case GLOBAL_VAR:
             std::cerr << "global variable";
             break;
 

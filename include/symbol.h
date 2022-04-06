@@ -4,8 +4,8 @@
 #include <string>
 
 enum SymbolType {
-    GLOBAL,
-    LOCAL,
+    GLOBAL_VAR,
+    LOCAL_VAR,
     FORMAL_ARG,
     USER_FUNC,
     LIB_FUNC
