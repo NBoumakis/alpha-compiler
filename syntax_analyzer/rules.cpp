@@ -254,9 +254,14 @@ lvalueValue Manage_lvalue_localid(std::string id) {
 }
 
 lvalueValue Manage_lvalue_globalid(std::string id) {
-    /*  1)yparxei metablhth me ayto to onoma
-        sto scope=0?*/
     lvalueValue newStructVal;
+
+    auto symbol = symbolTableObj.lookup_scope(id, 0);
+
+    if (symbol == nullptr) {
+        std::cerr << "Undefined reference to global symbol " << id << "." << std::endl;
+    }
+
     return newStructVal;
 }
 
