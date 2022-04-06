@@ -485,8 +485,9 @@ struct idlistValue {
             char *idVal;
         } idlistIdValue;
 
-        idlistType valType;
     } value;
+
+    idlistType valType;
 };
 
 enum ifstmtType {
