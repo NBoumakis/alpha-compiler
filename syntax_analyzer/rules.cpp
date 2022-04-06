@@ -232,13 +232,23 @@ lvalueValue Manage_lvalue_id(std::string id) {
 }
 
 lvalueValue Manage_lvalue_localid(std::string id) {
-    /*  1)lookup_sympol
-        2)conflict me library funtion
-        3)lookup_scope
-        4)conflict me function sto idio scope(front 3 slide 11)
-        5)an den yparxei sto scope insert ston symbol table
-        6)an to scope=0 ignore local (front3 slide 19)*/
     lvalueValue newStructVal;
+    unsigned int &scope = scopeLevel;
+
+    std::cout << scope << std::endl;
+    auto symbol_in_table = symbolTableObj.lookup_scope(id, scope);
+
+    if (symbol_in_table != nullptr) {
+        newStructVal.value.strVal = const_cast<char *>(id.c_str());
+        newStructVal.valType = IDLvalue_T;
+    } else {
+        if (!isLibFunction(id)) {
+            Symbol *newSymbol = new Variable(id, scope, yylineno, (scope != 0) ? LOCAL_VAR : GLOBAL_VAR);
+            symbolTableObj.insert(id, newSymbol, scope);
+        } else {
+            std::cerr << "Variable " << id << " conflicts with library function. Cannot define." << std::endl;
+        }
+    }
 
     return newStructVal;
 }
