@@ -484,12 +484,61 @@ constValue Manage_const_false() {
 /* ID list */
 idlistValue Manage_idlist_ID(std::string id) {
     idlistValue newStructVal;
+
+    unsigned int &scope = scopeLevel;
+
+    std::cout << scope;
+    std::cout << " - " << id << std::endl;
+
+    if (isLibFunction(id)) {
+        std::cerr << "Formal argument " << id << " conflicts with library function." << std::endl;
+
+        newStructVal.valType = InvalidIdlist_T;
+        return newStructVal;
+    }
+
+    auto symbol_in_table = symbolTableObj.lookup_scope(id, scope);
+
+    if (symbol_in_table != nullptr) {
+        std::cerr << "Formal argument " << id << " conflicts with ";
+
+        switch (symbol_in_table->type) {
+        case USER_FUNC:
+            std::cerr << "previous user function";
+            break;
+
+        case LOCAL_VAR:
+            std::cerr << "local variable";
+            break;
+
+        case GLOBAL_VAR:
+            std::cerr << "global variable";
+            break;
+
+        case FORMAL_ARG:
+            std::cerr << "formal argument";
+            break;
+
+        default:
+            std::cerr << "This shouldn't have happened";
+
+            break;
+        }
+
+        std::cerr << " last defined in line " << symbol_in_table->line << "." << std::endl;
+
+        newStructVal.valType = InvalidIdlist_T;
+        return newStructVal;
+    }
+
+    Symbol *newFormalArgument = new Variable(id, scope, yylineno, FORMAL_ARG);
+    symbolTableObj.insert(id, newFormalArgument, scope);
+
     return newStructVal;
 }
 
 idlistValue Manage_idlist_idlist_comma_id(idlistValue idlist, std::string id) {
-    idlistValue newStructVal;
-    return newStructVal;
+    return Manage_idlist_ID(id);
 }
 
 idlistValue Manage_idlist() {
