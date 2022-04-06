@@ -385,16 +385,19 @@ funcdefValue Manage_funcdef_id(std::string id, idlistValue idlist, blockValue bl
         5)yes:lookup_scope
         6)conflict me function sto idio scope/variable ( front3 slide 11)
         */
-    unsigned int &scope = Symbol_Table::scopeLevel;
 
-    if (Symbol_Table::isLibFunction(id)) {
+    unsigned int &scope = scopeLevel;
+
+    std::cout << scope << std::endl;
+
+    if (isLibFunction(id)) {
         std::cerr << "Cannot define function " << id << ". It conflicts with library function." << std::endl;
 
         fval.valType = InvalidFuncdef_T;
         return fval;
     }
 
-    auto symbol_in_table = Symbol_Table::symbolTableObj.lookup_scope(id, scope);
+    auto symbol_in_table = symbolTableObj.lookup_scope(id, scope);
 
     if (symbol_in_table != nullptr) {
         std::cerr << "Cannot define function " << id << ". It conflicts with ";
