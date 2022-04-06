@@ -27,10 +27,17 @@ public:
     ~Symbol();
 };
 
-class Variable : protected Symbol {};
+class Variable : public Symbol {
+public:
+    Variable(std::string name, unsigned int scope, unsigned int line, SymbolType type) : Symbol(name, scope, line, type) {}
+    Variable(std::string name, unsigned int scope, unsigned int line, SymbolType type, bool isActive) : Symbol(name, scope, line, type, isActive) {}
+};
 
-class Function : protected Symbol {
+class Function : public Symbol {
 protected:
+public:
+    Function(std::string name, unsigned int scope, unsigned int line, SymbolType type) : Symbol(name, scope, line, type) {}
+    Function(std::string name, unsigned int scope, unsigned int line, SymbolType type, bool isActive) : Symbol(name, scope, line, type, isActive) {}
 };
 
 #endif /* __SYMBOL_H */
