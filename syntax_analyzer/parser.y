@@ -425,20 +425,23 @@ indexedelem:  L_CURLY_BRACKET expr COLON expr R_CURLY_BRACKET   {
                                                                 }
             ;
 
-block:    L_CURLY_BRACKET stmtList R_CURLY_BRACKET              {
-                                                                    std::cout << "\e[1;32m" "Rule block -> { stmtList }" "\e[0m" << std::endl;
-                                                                    $$ = Manage_block_LCBstmtRCB($2);
-                                                                }
+block:    L_CURLY_BRACKET {++scopeLevel;} stmtList R_CURLY_BRACKET {symbolTableObj.hide(scopeLevel--);}
+            {
+                std::cout << "\e[1;32m" "Rule block -> { stmtList }" "\e[0m" << std::endl;
+                $$ = Manage_block_LCBstmtRCB($3);
+            }
         ;
 
-funcdef:  FUNCTION ID L_PARENTHESIS idlist R_PARENTHESIS block  {
-                                                                    std::cout << "\e[1;32mRule funcdef -> function ID(idlist) block" "\e[0m" << std::endl;
-                                                                    $$ = Manage_funcdef_id($2, $4, $6);
-                                                                }
-        | FUNCTION L_PARENTHESIS idlist R_PARENTHESIS block     {
-                                                                    std::cout << "\e[1;32m" "Rule funcdef -> function(idlist) block" "\e[0m" << std::endl;
-                                                                    $$ = Manage_funcdef($3, $5);
-                                                                }
+funcdef:  FUNCTION ID L_PARENTHESIS {++scopeLevel;} idlist R_PARENTHESIS {--scopeLevel;} block
+            {
+                std::cout << "\e[1;32mRule funcdef -> function ID(idlist) block" "\e[0m" << std::endl;
+                $$ = Manage_funcdef_id($2, $5, $8);
+            }
+        | FUNCTION L_PARENTHESIS {++scopeLevel;} idlist {--scopeLevel;} R_PARENTHESIS block
+            {
+                std::cout << "\e[1;32m" "Rule funcdef -> function(idlist) block" "\e[0m" << std::endl;
+                $$ = Manage_funcdef($4, $7);
+            }
         ;
 
 const:    intNumber     {
