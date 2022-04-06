@@ -425,41 +425,97 @@ indexedelem:  L_CURLY_BRACKET expr COLON expr R_CURLY_BRACKET   {
                                                                 }
             ;
 
-block:    L_CURLY_BRACKET stmtList R_CURLY_BRACKET              {$$ = Manage_block_LCBstmtRCB($2);}
+block:    L_CURLY_BRACKET stmtList R_CURLY_BRACKET              {
+                                                                    std::cout << "\e[1;32m" "Rule block -> { stmtList }" "\e[0m" << std::endl;
+                                                                    $$ = Manage_block_LCBstmtRCB($2);
+                                                                }
         ;
 
 funcdef:  FUNCTION ID L_PARENTHESIS idlist R_PARENTHESIS block  {
-                                                                    std::cout << "\e[1;32mRule funcdef -> FUNCTION ID (idlist) block" << "id" << "\e[0m" << std::endl;
+                                                                    std::cout << "\e[1;32mRule funcdef -> function ID(idlist) block" "\e[0m" << std::endl;
                                                                     $$ = Manage_funcdef_id($2, $4, $6);
                                                                 }
-        | FUNCTION L_PARENTHESIS idlist R_PARENTHESIS block     {$$ = Manage_funcdef($3, $5);}
+        | FUNCTION L_PARENTHESIS idlist R_PARENTHESIS block     {
+                                                                    std::cout << "\e[1;32m" "Rule funcdef -> function(idlist) block" "\e[0m" << std::endl;
+                                                                    $$ = Manage_funcdef($3, $5);
+                                                                }
         ;
 
-const:    intNumber     {$$ = Manage_const_int($1);}
-        | realNumber    {$$ = Manage_const_real($1);}
-        | STRING        {$$ = Manage_const_string($1);}
-        | NIL           {$$ = Manage_const_nil();}
-        | TRUE          {$$ = Manage_const_true();}
-        | FALSE         {$$ = Manage_const_false();}
+const:    intNumber     {
+                            std::cout << "\e[1;32m" "Rule const -> intNumber" "\e[0m" << std::endl;
+                            $$ = Manage_const_int($1);
+                        }
+        | realNumber    {
+                            std::cout << "\e[1;32m" "Rule const -> realNumber" "\e[0m" << std::endl;
+                            $$ = Manage_const_real($1);
+                        }
+        | STRING        {
+                            std::cout << "\e[1;32m" "Rule const -> string" "\e[0m" << std::endl;
+                            $$ = Manage_const_string($1);
+                        }
+        | NIL           {   
+                            std::cout << "\e[1;32m" "Rule const -> nil" "\e[0m" << std::endl;
+                            $$ = Manage_const_nil();
+                        }
+        | TRUE          {
+                            std::cout << "\e[1;32m" "Rule const -> true" "\e[0m" << std::endl;
+                            $$ = Manage_const_true();
+                        }
+        | FALSE         {
+                            std::cout << "\e[1;32m" "Rule const -> false" "\e[0m" << std::endl;
+                            $$ = Manage_const_false();
+                        }
         ;
 
-idlist:   ID                {$$ = Manage_idlist_ID($1);}
-        | idlist COMMA ID   {$$ = Manage_idlist_idlist_comma_id($1,$3);}
-        |                   {$$ = Manage_idlist();}
+idlist:   ID                {
+                                std::cout << "\e[1;32m" "Rule idlist -> id" "\e[0m" << std::endl;
+                                $$ = Manage_idlist_ID($1);
+                            }
+        | idlist COMMA ID   {
+                                std::cout << "\e[1;32m" "Rule idlist -> idlist,id" "\e[0m" << std::endl;
+                                $$ = Manage_idlist_idlist_comma_id($1,$3);
+                            }
+        |                   {
+                                std::cout << "\e[1;32m" "Rule idlist -> ε" "\e[0m" << std::endl;
+                                $$ = Manage_idlist();
+                            }
         ;
 
-ifstmt:   IF L_PARENTHESIS expr R_PARENTHESIS stmt else     {$$ = Manage_ifstmt($3, $5, $6);};
+ifstmt:   IF L_PARENTHESIS expr R_PARENTHESIS stmt else     {   
+                                                                std::cout << "\e[1;32m" "Rule ifstmt -> if (expr) stmt else" "\e[0m" << std::endl;
+                                                                $$ = Manage_ifstmt($3, $5, $6);
+                                                            };
 
-else:     ELSE stmt     {$$ = Manage_else_stmt($2);}
-        |               {$$ = Manage_else();}
+else:     ELSE stmt     {   
+                            std::cout << "\e[1;32m" "Rule else -> else stmt" "\e[0m" << std::endl;
+                            $$ = Manage_else_stmt($2);
+                        }
+        |               {   
+                            std::cout << "\e[1;32m" "Rule else -> ε" "\e[0m" << std::endl;
+                            $$ = Manage_else();
+                        }
         ;
 
-whilestmt:    WHILE L_PARENTHESIS expr R_PARENTHESIS stmt   {$$ = Manage_whilestmt($3,$5);}
+whilestmt:    WHILE L_PARENTHESIS expr R_PARENTHESIS stmt   {   
+                                                                std::cout << "\e[1;32m" "Rule whilestmt -> (expr) stmt" "\e[0m" << std::endl;
+                                                                $$ = Manage_whilestmt($3,$5);
+                                                            }
 
-forstmt:      FOR L_PARENTHESIS elist SEMICOLON expr SEMICOLON elist R_PARENTHESIS stmt     {$$ = Manage_for($3, $5, $7, $9);};
+forstmt:      FOR L_PARENTHESIS elist SEMICOLON expr SEMICOLON elist R_PARENTHESIS stmt     {
+                                                                                                std::cout << "\e[1;32m" "Rule forstmt -> for (elist ; expr ; elist) stmt " "\e[0m" << std::endl;
+                                                                                                $$ = Manage_for($3, $5, $7, $9);
+                                                                                            };
 
-returnstmt:   RETURN ret SEMICOLON      {$$ = Manage_returnstmt($2);};
+returnstmt:   RETURN ret SEMICOLON      {       
+                                            std::cout << "\e[1;32m" "Rule ret -> expr" "\e[0m" << std::endl;
+                                            $$ = Manage_returnstmt($2);
+                                        };
 
-ret:      expr      {$$ = Manage_ret_expr($1);};
-        |           {$$ = Manage_ret();}
+ret:      expr      {
+                        std::cout << "\e[1;32m" "Rule ret -> expr" "\e[0m" << std::endl;
+                        $$ = Manage_ret_expr($1);
+                    };
+        |           {   
+                        std::cout << "\e[1;32m" "Rule ret -> ε" "\e[0m" << std::endl;
+                        $$ = Manage_ret();}
         ;
