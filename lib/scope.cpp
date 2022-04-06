@@ -8,10 +8,7 @@
 void Scope::insert(std::string key, Symbol *symbol, unsigned int scope) {
     hash_table.insert({key, symbol});
 
-    std::list<Symbol *> scope_list;
-    scope_list.push_front(symbol);
-
-    scope_lists.insert({scope, scope_list});
+    scope_lists[scope].push_front(symbol);
 }
 
 void Scope::hide(unsigned int scopeLevel) {
@@ -21,14 +18,13 @@ void Scope::hide(unsigned int scopeLevel) {
 }
 
 Symbol *Scope::lookup_scope(std::string key, unsigned int scope) {
-    std::list<Symbol *> scope_list;
+    auto scope_list = scope_lists.find(scope);
 
-    if (scope < scope_lists.size())
-        scope_list = scope_lists[scope];
-
-    for (Symbol *it : scope_list) {
-        if (it->isActive && it->name == key) {
-            return it;
+    if (scope_list != scope_lists.end()) {
+        for (auto it : scope_list->second) {
+            if (it->isActive && it->name == key) {
+                return it;
+            }
         }
     }
 
@@ -43,6 +39,11 @@ auto Scope::lookup_symbol(std::string key) {
 
 void Scope::clear() {
     hash_table.clear();
+
+    for (auto &list : scope_lists) {
+        list.second.clear();
+    }
+
     scope_lists.clear();
 }
 
