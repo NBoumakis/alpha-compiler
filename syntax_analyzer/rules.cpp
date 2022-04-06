@@ -440,16 +440,13 @@ funcdefValue Manage_funcdef_id(std::string id, idlistValue idlist, blockValue bl
 }
 
 funcdefValue Manage_funcdef(idlistValue idlist, blockValue block) {
-    /*(front3 slide 22)
-      1)( ++scope
-        2)}hide(scope) scope--
-        3)diko mas onoma
-        3)conflict me library function
-        4)lookup_symbol,no:insert
-        5)yes:lookup_scope
-        6)conflict me function sto idio scope/variable ( front3 slide 11)
-        */
     funcdefValue newStructVal;
+    static unsigned long long unnamed_function_counter = 0;
+
+    std::string function_name = std::string("$f") + std::to_string(unnamed_function_counter);
+
+    Manage_funcdef_id(function_name, idlist, block);
+
     return newStructVal;
 }
 
