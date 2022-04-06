@@ -440,14 +440,11 @@ funcdefValue Manage_funcdef_id(std::string id, idlistValue idlist, blockValue bl
 }
 
 funcdefValue Manage_funcdef(idlistValue idlist, blockValue block) {
-    funcdefValue newStructVal;
     static unsigned long long unnamed_function_counter = 0;
 
     std::string function_name = std::string("$f") + std::to_string(unnamed_function_counter);
 
-    Manage_funcdef_id(function_name, idlist, block);
-
-    return newStructVal;
+    return Manage_funcdef_id(function_name, idlist, block);
 }
 
 /* Constants */
