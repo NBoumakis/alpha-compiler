@@ -2,6 +2,8 @@
 #include "symbol_table.h"
 #include <iostream>
 
+extern int yylineno;
+
 programValue Manage_program(stmtListValue stmtList) {
     programValue newStructVal;
     return newStructVal;
@@ -430,6 +432,9 @@ funcdefValue Manage_funcdef_id(std::string id, idlistValue idlist, blockValue bl
         fval.valType = InvalidFuncdef_T;
         return fval;
     }
+
+    Symbol *newFunc = new Function(id, scope, yylineno, USER_FUNC);
+    symbolTableObj.insert(id, newFunc, scope);
 
     return fval;
 }
