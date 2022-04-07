@@ -1,8 +1,10 @@
 %{
     #include <iostream>
     #include <unordered_set>
+    #include <stack>
     #include "types.h"
     #include "scope.h"
+    
     #include "rules.h"
 
     #include "colors.h"
@@ -24,6 +26,8 @@
     extern Scope symbolTableObj;
     extern unsigned int scopeLevel;
     extern std::unordered_set<std::string> libFunctions;
+    extern std::stack<int> def_lines_stack;
+    extern unsigned int funcDepth;
 %}
 
 %union{
@@ -124,25 +128,30 @@
 
 %%
 
-program:      stmtList       {
+program:     {def_lines_stack.push(yylineno);} stmtList       {
                                 std::cout << BGRN "Rule program -> stmtlist" RST << std::endl;
-                                $$ = Manage_program($1);
+                                $$ = Manage_program($2);
+                                def_lines_stack.pop();
                              }
               ;
 
-stmtList:     stmtList stmt  {
+stmtList:    stmtList {def_lines_stack.push(yylineno);} stmt  {
                                 std::cout << BGRN "Rule stmtList -> stmtlist stmt" RST << std::endl;
-                                $$ = Manage_stmtList_stmt($1, $2);
-                             }
+                                $$ = Manage_stmtList_stmt($1, $3);
+
+                                def_lines_stack.pop();
+                            }
             |                {
                                 std::cout << BGRN "Rule stmtList -> ε" RST << std::endl;
                                 $$ = Manage_stmtList();
                              }
             ;
 
-stmt:     expr SEMICOLON        {
+stmt:     expr {def_lines_stack.push(yylineno);} SEMICOLON        {
                                     std::cout << BGRN "Rule stmt -> expr;" RST << std::endl;
                                     $$ = Manage_stmt_expr($1);
+
+                                    def_lines_stack.pop();
                                 }
         | ifstmt                {
                                     std::cout << BGRN "Rule stmt -> ifstmt" RST << std::endl;
@@ -277,9 +286,10 @@ term:     L_PARENTHESIS expr R_PARENTHESIS  {
                                             }
         ;
 
-assignexpr: lvalue ASSIGN expr  {
+assignexpr: lvalue {def_lines_stack.push(yylineno);} ASSIGN expr  {
                                     std::cout << BGRN "Rule assignexpr -> lvalue=expr" RST << std::endl;
-                                    $$ = Manage_assignexpr_lvalueASSIGNexpr($1, $3);
+                                    $$ = Manage_assignexpr_lvalueASSIGNexpr($1, $4);
+                                    def_lines_stack.pop();
                                 }
 
 primary:  lvalue                                {
@@ -434,15 +444,19 @@ block:    L_CURLY_BRACKET {++scopeLevel;} stmtList R_CURLY_BRACKET {symbolTableO
             }
         ;
 
-funcdef:  FUNCTION ID L_PARENTHESIS {++scopeLevel;} idlist R_PARENTHESIS {--scopeLevel;} block
+funcdef:  FUNCTION ID {def_lines_stack.push(yylineno);} L_PARENTHESIS {++scopeLevel; ++funcDepth;} idlist R_PARENTHESIS {--scopeLevel;} block
             {
-                std::cout << "\e[1;32mRule funcdef -> function ID(idlist) block" RST << std::endl;
-                $$ = Manage_funcdef_id($2, $5, $8);
+                std::cout << BGRN "Rule funcdef -> function ID(idlist) block, line " << yylineno << RST << std::endl;
+                $$ = Manage_funcdef_id($2, $6, $9);
+                def_lines_stack.pop();
+                --funcDepth;
             }
-        | FUNCTION L_PARENTHESIS {++scopeLevel;} idlist {--scopeLevel;} R_PARENTHESIS block
+        | FUNCTION {def_lines_stack.push(yylineno);} L_PARENTHESIS {++scopeLevel; ++funcDepth;} idlist {--scopeLevel;} R_PARENTHESIS block
             {
                 std::cout << BGRN "Rule funcdef -> function(idlist) block" RST << std::endl;
-                $$ = Manage_funcdef($4, $7);
+                $$ = Manage_funcdef($5, $8);
+                def_lines_stack.pop();
+                --funcDepth;
             }
         ;
 
@@ -473,12 +487,15 @@ const:    intNumber     {
         ;
 
 idlist:   ID                {
+                                def_lines_stack.push(yylineno);              
                                 std::cout << BGRN "Rule idlist -> id" RST << std::endl;
                                 $$ = Manage_idlist_ID($1);
+                                def_lines_stack.pop();
                             }
-        | idlist COMMA ID   {
+        | idlist {def_lines_stack.push(yylineno);} COMMA ID   {
                                 std::cout << BGRN "Rule idlist -> idlist,id" RST << std::endl;
-                                $$ = Manage_idlist_idlist_comma_id($1,$3);
+                                $$ = Manage_idlist_idlist_comma_id($1,$4);
+                                def_lines_stack.pop();
                             }
         |                   {
                                 std::cout << BGRN "Rule idlist -> ε" RST << std::endl;
@@ -512,7 +529,7 @@ forstmt:      FOR L_PARENTHESIS elist SEMICOLON expr SEMICOLON elist R_PARENTHES
                                                                                             };
 
 returnstmt:   RETURN ret SEMICOLON      {       
-                                            std::cout << BGRN "Rule ret -> expr" RST << std::endl;
+                                            std::cout << BGRN "Rule returnstmt -> ret;" RST << std::endl;
                                             $$ = Manage_returnstmt($2);
                                         };
 

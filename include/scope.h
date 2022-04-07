@@ -5,19 +5,20 @@
 #include <list>
 #include <string>
 #include <unordered_map>
+#include <map>
 #include <vector>
 
 class Scope {
 private:
     std::unordered_multimap<std::string, Symbol *> hash_table;
-    std::unordered_map<unsigned int, std::list<Symbol *>> scope_lists;
+    std::map<unsigned int, std::list<Symbol *>> scope_lists;
 
 public:
     void insert(std::string key, Symbol *symbol, unsigned int scope);
     void hide(unsigned int scopeLevel);
     Symbol *lookup_scope(std::string key, unsigned int scope);
     auto lookup_symbol(std::string key);
-    /* Iterate over */
+    void get_symbols_scope_order();
     Symbol *erase(std::string key);
     void clear();
 };

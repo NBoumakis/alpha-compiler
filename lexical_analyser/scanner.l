@@ -393,11 +393,13 @@ int main(int argc, char*argv[]) {
     std::ostream &out = (argc > 2) ? outfile : std::cout;
 
     for(auto &funcName : libFunctions){
-        Symbol *libFuncSymbol = new Function(funcName, 0, yyget_lineno(), LIB_FUNC);
+        Symbol *libFuncSymbol = new Function(funcName, 0, 0,0, LIB_FUNC);
         symbolTableObj.insert(funcName, libFuncSymbol, 0);
     }
 
     yyparse();
+
+    symbolTableObj.get_symbols_scope_order();
 
     return 0;
 }

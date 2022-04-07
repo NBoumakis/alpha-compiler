@@ -16,28 +16,31 @@ public:
     std::string name;
     unsigned int scope;
     unsigned int line;
+    unsigned int funcDepth;
     bool isActive;
     SymbolType type;
 
     friend class Scope;
 
 public:
-    Symbol(std::string name, unsigned int scope, unsigned int line, SymbolType type);
-    Symbol(std::string name, unsigned int scope, unsigned int line, SymbolType type, bool isActive);
+    Symbol(std::string name, unsigned int scope, unsigned int line, unsigned int funcDepth, SymbolType type);
+    Symbol(std::string name, unsigned int scope, unsigned int line, unsigned int funcDepth, SymbolType type, bool isActive);
+
+    std::string to_string();
     ~Symbol();
 };
 
 class Variable : public Symbol {
 public:
-    Variable(std::string name, unsigned int scope, unsigned int line, SymbolType type) : Symbol(name, scope, line, type) {}
-    Variable(std::string name, unsigned int scope, unsigned int line, SymbolType type, bool isActive) : Symbol(name, scope, line, type, isActive) {}
+    Variable(std::string name, unsigned int scope, unsigned int line, unsigned int funcDepth, SymbolType type) : Symbol(name, scope, line, funcDepth, type) {}
+    Variable(std::string name, unsigned int scope, unsigned int line, unsigned int funcDepth, SymbolType type, bool isActive) : Symbol(name, scope, line, funcDepth, type, isActive) {}
 };
 
 class Function : public Symbol {
 protected:
 public:
-    Function(std::string name, unsigned int scope, unsigned int line, SymbolType type) : Symbol(name, scope, line, type) {}
-    Function(std::string name, unsigned int scope, unsigned int line, SymbolType type, bool isActive) : Symbol(name, scope, line, type, isActive) {}
+    Function(std::string name, unsigned int scope, unsigned int line, unsigned int funcDepth, SymbolType type) : Symbol(name, scope, line, funcDepth, type) {}
+    Function(std::string name, unsigned int scope, unsigned int line, unsigned int funcDepth, SymbolType type, bool isActive) : Symbol(name, scope, line, funcDepth, type, isActive) {}
 };
 
 #endif /* __SYMBOL_H */

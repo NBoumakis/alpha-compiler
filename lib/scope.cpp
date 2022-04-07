@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <assert.h>
+#include <iostream>
 #include <list>
 #include <string>
 
@@ -38,6 +39,21 @@ auto Scope::lookup_symbol(std::string key) {
     auto p = hash_table.equal_range(key);
 
     return p;
+}
+
+void Scope::get_symbols_scope_order() {
+    for (auto scope : scope_lists) {
+
+        std::cout << "===== Scope " << scope.first << " =====" << std::endl;
+
+        auto list = scope.second;
+
+        for (auto symbol = list.rbegin(); symbol != list.rend(); ++symbol) {
+            std::cout << (*symbol)->to_string() << std::endl;
+        }
+
+        std::cout << std::endl;
+    }
 }
 
 void Scope::clear() {

@@ -19,12 +19,15 @@ prepare:
 	-clear
 	-rm -rf build
 	-mkdir build
+	-echo
 
 scanner:
 	$(Lexer) --outfile=./build/scanner.cpp ./lexical_analyser/scanner.l
+	-echo
 
 parser:
 	$(ParserGen) $(ParserGenOptions) --output=./build/parser.cpp ./syntax_analyzer/parser.y
+	-echo
 
 
 analyzer:
