@@ -550,6 +550,9 @@ idlistValue *Manage_idlist_ID(std::string id) {
 
     unsigned int &scope = scopeLevel;
 
+    newStructVal->value.id = new char[id.length()];
+    std::size_t length = id.copy(newStructVal->value.id, id.length());
+    newStructVal->value.id[length] = '\0';
 
 
 idlistValue *Manage_idlist_idlist_comma_id(idlistValue *idlist, std::string id) {
@@ -558,6 +561,9 @@ idlistValue *Manage_idlist_idlist_comma_id(idlistValue *idlist, std::string id) 
         newStructVal.valType = InvalidIdlist_T;
         return newStructVal;
     }
+    newStructVal->value.idlistIdValue.idVal = new char[id.length()];
+    std::size_t length = id.copy(newStructVal->value.idlistIdValue.idVal, id.length());
+    newStructVal->value.idlistIdValue.idVal[length] = '\0';
 
     Symbol *newFormalArgument = new Variable(id, scope, yylineno, funcDepth, FORMAL_ARG);
     symbolTableObj.insert(id, newFormalArgument, scope);
