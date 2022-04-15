@@ -224,6 +224,12 @@ assignexprValue *Manage_assignexpr_lvalueASSIGNexpr(lvalueValue *lvalue, exprVal
         } else if (funcDepth != symbol->funcDepth) {
             std::cerr << BRED "Inaccessible symbol \"" << symbol->name << "\" in line " << def_lines_stack.top() << RST << std::endl;
         }
+
+        newStructVal->valType = lvalueExprAssign_T;
+        newStructVal->value.lvalExprVal.lvalueVal = lvalue;
+        newStructVal->value.lvalExprVal.exprVal = expr;
+    } else {
+        newStructVal->valType = InvalidAssign_T;
     }
 
     return newStructVal;
