@@ -17,7 +17,11 @@ std::string type_names[] = {
     std::string("user function"),
     std::string("library function")};
 
+static inline SymbolType var_type() {
+    if (scopeLevel == 0) {
+        return GLOBAL_VAR;
     } else {
+        return LOCAL_VAR;
     }
 }
 
@@ -286,8 +290,8 @@ lvalueValue *Manage_lvalue_localid(std::string id) {
 
     if (symbol_in_table == nullptr) {
         if (!isLibFunction(id)) {
-            Symbol *newSymbol = new Variable(id, scope, yylineno, funcDepth, (scope != 0) ? LOCAL_VAR : GLOBAL_VAR);
-            symbolTableObj.insert(id, newSymbol, scope);
+            symbol_in_table = new Variable(id, scope, yylineno, funcDepth, var_type());
+            symbolTableObj.insert(id, symbol_in_table, scope);
         } else {
             std::cerr << BRED "Variable \"" << id << "\" conflicts with library function. Cannot define." RST << std::endl;
         }
