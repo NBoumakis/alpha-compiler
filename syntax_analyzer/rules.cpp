@@ -499,6 +499,14 @@ funcdefValue *Manage_funcdef(idlistValue *idlist, blockValue *block) {
     return Manage_funcdef_id(function_name, idlist, block);
 }
 
+std::string newTmpFuncname() {
+    static unsigned long long unnamed_function_counter = 0;
+
+    std::string function_name = std::string("$f") + std::to_string(unnamed_function_counter++);
+
+    return function_name;
+}
+
 /* Constants */
 constValue *Manage_const_int(int intVal) {
     constValue *newStructVal;
