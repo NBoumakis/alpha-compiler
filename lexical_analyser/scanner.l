@@ -351,9 +351,7 @@ SPACE [\r \t\v]
                     std::cerr<< "EOF in comment" <<std::endl;
             }
 
-{COMMENT}   {
-                return COMMENT; 
-            }
+{COMMENT}   { }
 
 
 {CONST_INT}[a-zA-Z_] {

@@ -79,8 +79,6 @@
 %token  <realValue> realNumber
 %token  L_CURLY_BRACKET R_CURLY_BRACKET L_SQUARE_BRACKET R_SQUARE_BRACKET L_PARENTHESIS R_PARENTHESIS SEMICOLON COMMA COLON NAMESPACE DOT DOUBLE_DOT
 %token  <stringVal> STRING
-%token  COMMENT
-%token  BLOCK_COMMENT
 
 /* Non-terminal types */
 %type <programVal> program
