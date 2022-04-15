@@ -462,29 +462,120 @@ Symbol *Manage_funcprefix(std::string funcName) {
     if (isLibFunction(funcName)) {
         std::cerr << BRED "Cannot define function \"" << funcName << "\". It conflicts with library function." RST << std::endl;
 
-    if (isLibFunction(id)) {
-        std::cerr << BRED "Cannot define function " << id << ". It conflicts with library function." RST << std::endl;
+        return nullptr;
+    }
 
-        fval.valType = InvalidFuncdef_T;
+    auto symbol_in_table = symbolTableObj.lookup_scope(funcName, scopeLevel);
+
+    if (symbol_in_table != nullptr) {
+        std::cerr << BRED "Cannot define function \"" << funcName
+                  << "\" in line " << yylineno << ". It conflicts with previous "
+                  << type_names[symbol_in_table->type] << " last defined in line "
+                  << symbol_in_table->line << "." RST << std::endl;
+
+        return nullptr;
+    } else {
+        symbolTableObj.insert(funcName, newFunc, scopeLevel);
+    }
+
+    return newFunc;
+}
+
+static int check_funcargs(idlistValue *idlist) {
+    std::set<std::string> argSet;
+
+    while (idlist->valType == idlistIdIdlist_T) {
+        std::string id = idlist->value.idlistIdValue.idVal;
+
+        auto symbol_in_table = symbolTableObj.lookup_scope(id, scopeLevel);
+
+        if (argSet.count(id) > 0) {
+            std::cerr << BRED "Duplicate argument \"" << id << "\" in line " << yylineno << RST << std::endl;
+
+            return 1;
+        } else if (isLibFunction(id)) {
+            std::cerr << BRED "Formal argument \"" << id << "\" conflicts with library function." RST << std::endl;
+
+            return 1;
+        } else if (symbol_in_table != nullptr) {
+            std::cerr << BRED "Formal argument \"" << id << "\" conflicts with previous "
+                      << type_names[symbol_in_table->type] << " last defined in line "
+                      << symbol_in_table->line << "." RST << std::endl;
+
+            return 1;
+        }
+
+        argSet.insert(id);
+        idlist = idlist->value.idlistIdValue.idlistVal;
+    }
+
+    if (idlist->valType == idIdlist_T) {
+        std::string id = idlist->value.id;
+
+        auto symbol_in_table = symbolTableObj.lookup_scope(id, scopeLevel);
+
+        if (argSet.count(id) > 0) {
+            std::cerr << BRED "Duplicate argument \"" << id << "\" in line " << yylineno << RST << std::endl;
+
+            return 1;
+        } else if (isLibFunction(id)) {
+            std::cerr << BRED "Formal argument \"" << id << "\" conflicts with library function." RST << std::endl;
+
+            return 1;
+        } else if (symbol_in_table != nullptr) {
+            std::cerr << BRED "Formal argument \"" << id << "\" conflicts with previous "
+                      << type_names[symbol_in_table->type] << " last defined in line "
+                      << symbol_in_table->line << "." RST << std::endl;
+
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+void Manage_funcargs(idlistValue *idlist) {
+    idlistValue *idlist_ptr = idlist;
+    ++scopeLevel;
+
+    if (!check_funcargs(idlist)) {
+        while (idlist_ptr->valType == idlistIdIdlist_T) {
+            Symbol *newArg = new Variable(idlist_ptr->value.idlistIdValue.idVal, scopeLevel, yylineno, funcDepth, FORMAL_ARG);
+
+            symbolTableObj.insert(newArg->name, newArg, scopeLevel);
+
+            idlist_ptr = idlist_ptr->value.idlistIdValue.idlistVal;
+        }
+
+        if (idlist_ptr->valType == idIdlist_T) {
+            Symbol *newArg = new Variable(idlist_ptr->value.id, scopeLevel, yylineno, funcDepth, FORMAL_ARG);
+
+            symbolTableObj.insert(newArg->name, newArg, scopeLevel);
+        }
+    }
+
+    --scopeLevel;
+}
+
+funcdefValue *Manage_funcdef_id(std::string id, idlistValue *idlist, blockValue *block) {
+    funcdefValue *fval = new funcdefValue();
+    unsigned int &scope = scopeLevel;
+
+    int lineno = def_lines_stack.top();
+
+    if (isLibFunction(id)) {
+        std::cerr << BRED "Cannot define function \"" << id << "\". It conflicts with library function." RST << std::endl;
+
+        fval->valType = InvalidFuncdef_T;
         return fval;
     }
 
     auto symbol_in_table = symbolTableObj.lookup_scope(id, scope);
 
     if (symbol_in_table != nullptr) {
-        std::cerr << BRED "Cannot define function " << id << ". It conflicts with ";
-
-        switch (symbol_in_table->type) {
-        case USER_FUNC:
-            std::cerr << "previous user function";
-            break;
-
-
-
-
-
-        }
-
+        std::cerr << BRED "Cannot define function \"" << id << "\". It conflicts with previous "
+                  << type_names[symbol_in_table->type] << " defined in line "
+                  << symbol_in_table->line << "." RST << std::endl;
 
         fval->valType = InvalidFuncdef_T;
         return fval;
@@ -547,34 +638,32 @@ constValue *Manage_const_false() {
 idlistValue *Manage_idlist_ID(std::string id) {
     idlistValue *newStructVal = new idlistValue();
 
-    unsigned int &scope = scopeLevel;
+    newStructVal->valType = idIdlist_T;
 
     newStructVal->value.id = new char[id.length()];
     std::size_t length = id.copy(newStructVal->value.id, id.length());
     newStructVal->value.id[length] = '\0';
 
+    return newStructVal;
+}
 
 idlistValue *Manage_idlist_idlist_comma_id(idlistValue *idlist, std::string id) {
     idlistValue *newStructVal = new idlistValue();
 
-        newStructVal.valType = InvalidIdlist_T;
-        return newStructVal;
-    }
+    newStructVal->valType = idlistIdIdlist_T;
     newStructVal->value.idlistIdValue.idVal = new char[id.length()];
     std::size_t length = id.copy(newStructVal->value.idlistIdValue.idVal, id.length());
     newStructVal->value.idlistIdValue.idVal[length] = '\0';
 
-    Symbol *newFormalArgument = new Variable(id, scope, yylineno, funcDepth, FORMAL_ARG);
-    symbolTableObj.insert(id, newFormalArgument, scope);
+    newStructVal->value.idlistIdValue.idlistVal = idlist;
 
     return newStructVal;
 }
 
-    return Manage_idlist_ID(id);
-}
 idlistValue *Manage_idlist() {
     idlistValue *newStructVal = new idlistValue();
 
+    newStructVal->valType = emptyIdlist_T;
 
     return newStructVal;
 }
