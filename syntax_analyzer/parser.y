@@ -396,7 +396,7 @@ elist:   exprOptRpt         {
        ;
 
 exprOptRpt:   expr COMMA exprOptRpt     {
-                                            std::cout << BGRN "Rule exprOptRpt -> expr,exprOptRpt" RST << std::endl;
+                                            std::cout << BGRN "Rule exprOptRpt -> expr, exprOptRpt" RST << std::endl;
                                             $$ = Manage_exprOR_exprOR($1, $3);
                                         }
             | expr                      {
@@ -423,7 +423,7 @@ indexed:  indelemlist   {
         ;
 
 indelemlist:  indexedelem COMMA indelemlist     {
-                                                    std::cout << BGRN "Rule indelemlist -> indexedelem,indelemlist" RST << std::endl;
+                                                    std::cout << BGRN "Rule indelemlist -> indexedelem, indelemlist" RST << std::endl;
                                                     $$ = Manage_indelemlist($1, $3);
                                                 }
             | indexedelem                       {
@@ -449,7 +449,7 @@ block:    L_CURLY_BRACKET {++scopeLevel;} stmtList R_CURLY_BRACKET {symbolTableO
 funcname:     ID    {
                         size_t id_len = strlen($ID);
                         $funcname = new char[strlen($ID)];
-                        strncpy($funcname,$ID, id_len);
+                        strncpy($funcname, $ID, id_len);
                         $funcname[id_len] = '\0';
                     }
             |       {
@@ -525,7 +525,7 @@ idlist:   ID    {
                     $$ = Manage_idlist_ID($1);
                 }
         | ID COMMA idlist   {
-                                std::cout << BGRN "Rule idlist -> idlist,id" RST << std::endl;
+                                std::cout << BGRN "Rule idlist -> idlist, id" RST << std::endl;
                                 $$ = Manage_idlist_idlist_comma_id($3, $1);
                             }
         |                   {
@@ -551,7 +551,7 @@ else:     ELSE stmt     {
 
 whilestmt:    WHILE L_PARENTHESIS expr R_PARENTHESIS stmt   {   
                                                                 std::cout << BGRN "Rule whilestmt -> (expr) stmt" RST << std::endl;
-                                                                $$ = Manage_whilestmt($3,$5);
+                                                                $$ = Manage_whilestmt($3, $5);
                                                             }
 
 forstmt:      FOR L_PARENTHESIS elist SEMICOLON expr SEMICOLON elist R_PARENTHESIS stmt     {
