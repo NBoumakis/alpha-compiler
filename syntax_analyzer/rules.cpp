@@ -15,6 +15,12 @@ static lvalueValue lvalueId(std::string id, unsigned int scope) {
     for (i = scope + 1; i > 0 && symbol == nullptr; --i) {
         symbol = symbolTableObj.lookup_scope(id, i - 1);
     }
+std::string type_names[] = {
+    std::string("global variable"),
+    std::string("local variable"),
+    std::string("formal argument"),
+    std::string("user function"),
+    std::string("library function")};
 
     if (symbol == nullptr) {
         symbol = new Variable(id, scope, yylineno, funcDepth, (scope ? LOCAL_VAR : GLOBAL_VAR));
@@ -223,9 +229,9 @@ assignexprValue *Manage_assignexpr_lvalueASSIGNexpr(lvalueValue *lvalue, exprVal
 
         if (symbol->type == USER_FUNC ||
             symbol->type == LIB_FUNC) {
-            std::cerr << BRED "Cannot assign to function " << symbol->name << " in line " << def_lines_stack.top() << RST << std::endl;
-        } else if (funcDepth == symbol->funcDepth) {
-            std::cerr << BRED "Inaccessible symbol " << symbol->name << " in line " << def_lines_stack.top() << RST << std::endl;
+            std::cerr << BRED "Cannot assign to " << type_names[symbol->type] << " \"" << symbol->name << "\" in line " << def_lines_stack.top() << RST << std::endl;
+        } else if (funcDepth != symbol->funcDepth) {
+            std::cerr << BRED "Inaccessible symbol \"" << symbol->name << "\" in line " << def_lines_stack.top() << RST << std::endl;
         }
     }
 
@@ -296,7 +302,7 @@ lvalueValue *Manage_lvalue_localid(std::string id) {
             Symbol *newSymbol = new Variable(id, scope, yylineno, funcDepth, (scope != 0) ? LOCAL_VAR : GLOBAL_VAR);
             symbolTableObj.insert(id, newSymbol, scope);
         } else {
-            std::cerr << BRED "Variable " << id << " conflicts with library function. Cannot define." RST << std::endl;
+            std::cerr << BRED "Variable \"" << id << "\" conflicts with library function. Cannot define." RST << std::endl;
         }
     }
 
@@ -314,7 +320,7 @@ lvalueValue *Manage_lvalue_globalid(std::string id) {
     auto symbol = symbolTableObj.lookup_scope(id, 0);
 
     if (symbol == nullptr) {
-        std::cerr << BRED "Undefined reference to global symbol " << id << "." RST << std::endl;
+        std::cerr << BRED "Undefined reference to global symbol \"" << id << "\"." RST << std::endl;
         newStructVal->valType = InvalidLvalue_T;
     } else {
         newStructVal->valType = SymbolLvalue_T;
@@ -453,11 +459,12 @@ blockValue *Manage_block_LCBstmtRCB(stmtListValue *stmt) {
 }
 
 /* Funcdef */
-funcdefValue Manage_funcdef_id(std::string id, idlistValue idlist, blockValue block) {
-    funcdefValue fval;
-    unsigned int &scope = scopeLevel;
+Symbol *Manage_funcprefix(std::string funcName) {
+    Symbol *newFunc = new Function(funcName, scopeLevel, yylineno, funcDepth, USER_FUNC);
 
     int lineno = def_lines_stack.top();
+    if (isLibFunction(funcName)) {
+        std::cerr << BRED "Cannot define function \"" << funcName << "\". It conflicts with library function." RST << std::endl;
 
     if (isLibFunction(id)) {
         std::cerr << BRED "Cannot define function " << id << ". It conflicts with library function." RST << std::endl;
@@ -476,25 +483,12 @@ funcdefValue Manage_funcdef_id(std::string id, idlistValue idlist, blockValue bl
             std::cerr << "previous user function";
             break;
 
-        case LOCAL_VAR:
-            std::cerr << "local variable";
-            break;
 
-        case GLOBAL_VAR:
-            std::cerr << "global variable";
-            break;
 
-        case FORMAL_ARG:
-            std::cerr << "formal argument";
-            break;
 
-        default:
-            std::cerr << "This shouldn't have happened";
 
-            break;
         }
 
-        std::cerr << " last defined in line " << symbol_in_table->line << "." RST << std::endl;
 
         fval->valType = InvalidFuncdef_T;
         return fval;
@@ -551,42 +545,8 @@ idlistValue *Manage_idlist_ID(std::string id) {
 
     unsigned int &scope = scopeLevel;
 
-    if (isLibFunction(id)) {
-        std::cerr << BRED "Formal argument " << id << " conflicts with library function." RST << std::endl;
 
-        newStructVal.valType = InvalidIdlist_T;
-        return newStructVal;
-    }
 
-    auto symbol_in_table = symbolTableObj.lookup_scope(id, scope);
-
-    if (symbol_in_table != nullptr) {
-        std::cerr << BRED "Formal argument " << id << " conflicts with ";
-
-        switch (symbol_in_table->type) {
-        case USER_FUNC:
-            std::cerr << "previous user function";
-            break;
-
-        case LOCAL_VAR:
-            std::cerr << "local variable";
-            break;
-
-        case GLOBAL_VAR:
-            std::cerr << "global variable";
-            break;
-
-        case FORMAL_ARG:
-            std::cerr << "formal argument";
-            break;
-
-        default:
-            std::cerr << "This shouldn't have happened";
-
-            break;
-        }
-
-        std::cerr << " last defined in line " << symbol_in_table->line << "." RST << std::endl;
 idlistValue *Manage_idlist_idlist_comma_id(idlistValue *idlist, std::string id) {
     idlistValue *newStructVal = new idlistValue();
 
