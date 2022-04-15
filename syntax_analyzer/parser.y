@@ -289,10 +289,9 @@ term:     L_PARENTHESIS expr R_PARENTHESIS  {
                                             }
         ;
 
-assignexpr: lvalue {def_lines_stack.push(yylineno);} ASSIGN expr  {
+assignexpr: lvalue ASSIGN expr  {
                                     std::cout << BGRN "Rule assignexpr -> lvalue=expr" RST << std::endl;
-                                    $$ = Manage_assignexpr_lvalueASSIGNexpr($1, $4);
-                                    def_lines_stack.pop();
+                                    $$ = Manage_assignexpr_lvalueASSIGNexpr($1, $3);
                                 }
 
 primary:  lvalue                                {
@@ -521,16 +520,13 @@ const:    intNumber     {
                         }
         ;
 
-idlist:   ID                {
-                                def_lines_stack.push(yylineno);              
-                                std::cout << BGRN "Rule idlist -> id" RST << std::endl;
-                                $$ = Manage_idlist_ID($1);
-                                def_lines_stack.pop();
-                            }
-        | idlist {def_lines_stack.push(yylineno);} COMMA ID   {
+idlist:   ID    {
+                    std::cout << BGRN "Rule idlist -> id" RST << std::endl;
+                    $$ = Manage_idlist_ID($1);
+                }
+        | ID COMMA idlist   {
                                 std::cout << BGRN "Rule idlist -> idlist,id" RST << std::endl;
-                                $$ = Manage_idlist_idlist_comma_id($1,$4);
-                                def_lines_stack.pop();
+                                $$ = Manage_idlist_idlist_comma_id($3, $1);
                             }
         |                   {
                                 std::cout << BGRN "Rule idlist -> ε" RST << std::endl;
