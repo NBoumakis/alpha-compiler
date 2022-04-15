@@ -4,3 +4,5 @@ lexical_analyser/scanner
 lexical_analyser/lex.yy.c
 .vscode
 build/*
+build
+test*
