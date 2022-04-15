@@ -215,15 +215,11 @@ termValue *Manage_term_minusexpr(exprValue *expr) {
 assignexprValue *Manage_assignexpr_lvalueASSIGNexpr(lvalueValue *lvalue, exprValue *expr) {
     assignexprValue *newStructVal = new assignexprValue();
 
-    Symbol *symbol = nullptr;
+    Symbol *symbol;
     unsigned int i;
 
-    if (lvalue.valType == IDLvalue_T) {
-        lvalueId(lvalue.value.strVal, scopeLevel);
-
-        for (i = scopeLevel + 1; i > 0 && symbol == nullptr; --i) {
-            symbol = symbolTableObj.lookup_scope(lvalue.value.strVal, i - 1);
-        }
+    if (lvalue->valType == SymbolLvalue_T) {
+        symbol = lvalue->value.symbolVal;
 
         if (symbol->type == USER_FUNC ||
             symbol->type == LIB_FUNC) {
@@ -265,9 +261,26 @@ primaryValue *Manage_primary_const(constValue *constVal) {
 /* lvalue */
 lvalueValue *Manage_lvalue_id(std::string id) {
     lvalueValue *newStructVal = new lvalueValue();
+    size_t i;
+    Symbol *symbol = nullptr;
 
-    newStructVal.valType = IDLvalue_T;
-    newStructVal.value.strVal = const_cast<char *>(id.c_str());
+    for (i = scopeLevel + 1; i > 0 && symbol == nullptr; --i) {
+        symbol = symbolTableObj.lookup_scope(id, i - 1);
+    }
+
+    if (symbol == nullptr) {
+        if (!isLibFunction(id)) {
+            symbol = new Variable(id, scopeLevel, yylineno, funcDepth, var_type());
+            symbolTableObj.insert(id, symbol, scopeLevel);
+        } else {
+            std::cerr << BRED "Variable \"" << id << "\" conflicts with library function. Cannot define." RST << std::endl;
+        }
+    }
+
+    newStructVal->value.symbolVal = symbol;
+    newStructVal->valType = SymbolLvalue_T;
+
+    assert(newStructVal->value.symbolVal);
 
     return newStructVal;
 }
@@ -278,10 +291,7 @@ lvalueValue *Manage_lvalue_localid(std::string id) {
 
     auto symbol_in_table = symbolTableObj.lookup_scope(id, scope);
 
-    if (symbol_in_table != nullptr) {
-        newStructVal.value.strVal = const_cast<char *>(id.c_str());
-        newStructVal.valType = IDLvalue_T;
-    } else {
+    if (symbol_in_table == nullptr) {
         if (!isLibFunction(id)) {
             Symbol *newSymbol = new Variable(id, scope, yylineno, funcDepth, (scope != 0) ? LOCAL_VAR : GLOBAL_VAR);
             symbolTableObj.insert(id, newSymbol, scope);
@@ -289,6 +299,11 @@ lvalueValue *Manage_lvalue_localid(std::string id) {
             std::cerr << BRED "Variable " << id << " conflicts with library function. Cannot define." RST << std::endl;
         }
     }
+
+    newStructVal->value.symbolVal = symbol_in_table;
+    newStructVal->valType = SymbolLvalue_T;
+
+    assert(newStructVal->value.symbolVal);
 
     return newStructVal;
 }
@@ -300,6 +315,10 @@ lvalueValue *Manage_lvalue_globalid(std::string id) {
 
     if (symbol == nullptr) {
         std::cerr << BRED "Undefined reference to global symbol " << id << "." RST << std::endl;
+        newStructVal->valType = InvalidLvalue_T;
+    } else {
+        newStructVal->valType = SymbolLvalue_T;
+        newStructVal->value.symbolVal = symbol;
     }
 
     return newStructVal;

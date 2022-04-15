@@ -1,6 +1,7 @@
 #ifndef __TYPES_H
 #define __TYPES_H
 
+#include "symbol.h"
 #include <string>
 
 struct programValue;
@@ -202,14 +203,14 @@ struct primaryValue {
 };
 
 enum lvalueType {
-    IDLvalue_T,
+    SymbolLvalue_T,
     MemberLvalue_T,
     InvalidLvalue_T
 };
 
 struct lvalueValue {
     union {
-        char *strVal;
+        Symbol *symbolVal;
         memberValue *memberVal;
     } value;
 
