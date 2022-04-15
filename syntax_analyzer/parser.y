@@ -10,8 +10,8 @@
 
     #include "colors.h"
 
-    int yyerror(char* yaccProvideedMessage){
-        std::cerr << "Something bad happened here"<<std::endl;
+    int yyerror(const char* yaccProvidedMessage){
+        std::cerr << "Something bad happened here" <<std::endl;
         return 0;
     }
 
