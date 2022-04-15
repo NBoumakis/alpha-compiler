@@ -459,7 +459,6 @@ blockValue *Manage_block_LCBstmtRCB(stmtListValue *stmt) {
 Symbol *Manage_funcprefix(std::string funcName) {
     Symbol *newFunc = new Function(funcName, scopeLevel, yylineno, funcDepth, USER_FUNC);
 
-    int lineno = def_lines_stack.top();
     if (isLibFunction(funcName)) {
         std::cerr << BRED "Cannot define function \"" << funcName << "\". It conflicts with library function." RST << std::endl;
 
