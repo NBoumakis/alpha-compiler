@@ -2,6 +2,7 @@
     #include <iostream>
     #include <unordered_set>
     #include <stack>
+    #include <string.h>
     #include "types.h"
     #include "scope.h"
     
@@ -102,6 +103,9 @@
 %type <indelemlistVal> indelemlist
 %type <indexedelemVal>  indexedelem
 %type <blockVal> block
+
+%type <stringVal> funcname
+%type <symPointer> funcprefix
 %type <funcdefVal> funcdef
 %type <constVal> const
 %type <idlistVal> idlist
@@ -445,19 +449,51 @@ block:    L_CURLY_BRACKET {++scopeLevel;} stmtList R_CURLY_BRACKET {symbolTableO
             }
         ;
 
-funcdef:  FUNCTION ID {def_lines_stack.push(yylineno);} L_PARENTHESIS {++scopeLevel; ++funcDepth;} idlist R_PARENTHESIS {--scopeLevel;} block
+funcname:     ID    {
+                        size_t id_len = strlen($ID);
+                        $funcname = new char[strlen($ID)];
+                        strncpy($funcname,$ID, id_len);
+                        $funcname[id_len] = '\0';
+                    }
+            |       {
+                        std::string id = newTmpFuncname();
+                        $funcname = new char[id.length()];
+                        std::size_t length = id.copy($funcname, id.length());
+                        $funcname[length] = '\0';
+                    }
+            ;
+
+funcprefix:   FUNCTION funcname {
+                                    std::cout << BGRN
+                                        "Rule funcprefix -> function funcname, line " << yylineno << RST
+                                        << std::endl;
+
+                                    $funcprefix = Manage_funcprefix($funcname);
+                                }
+            ;
+
+funcargs:     L_PARENTHESIS {++funcDepth;} idlist R_PARENTHESIS
+                                {
+                                    std::cout << BGRN
+                                        "Rule funcargs -> ( idlist ), line " << yylineno << RST
+                                        << std::endl;
+
+                                    Manage_funcargs($idlist);
+                                }
+            ;
+
+funcbody:     block     {
+                            std::cout << BGRN
+                                "Rule funcbody -> block, line " << yylineno << RST
+                                << std::endl;
+
+                            --funcDepth;
+                        }
+            ;
+
+funcdef:  funcprefix funcargs funcbody
             {
-                std::cout << BGRN "Rule funcdef -> function ID(idlist) block, line " << yylineno << RST << std::endl;
-                $$ = Manage_funcdef_id($2, $6, $9);
-                def_lines_stack.pop();
-                --funcDepth;
-            }
-        | FUNCTION {def_lines_stack.push(yylineno);} L_PARENTHESIS {++scopeLevel; ++funcDepth;} idlist {--scopeLevel;} R_PARENTHESIS block
-            {
-                std::cout << BGRN "Rule funcdef -> function(idlist) block" RST << std::endl;
-                $$ = Manage_funcdef($5, $8);
-                def_lines_stack.pop();
-                --funcDepth;
+                std::cout << BGRN "Rule funcdef -> funcprefix funcargs funcbody, line " << yylineno << RST << std::endl;
             }
         ;
 
