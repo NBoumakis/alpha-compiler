@@ -2,19 +2,14 @@
 #include "colors.h"
 #include "symbol.h"
 #include "symbol_table.h"
+#include <cassert>
 #include <iostream>
+#include <set>
+#include <string>
 
 extern int yylineno;
 extern std::stack<int> def_lines_stack;
 
-static lvalueValue lvalueId(std::string id, unsigned int scope) {
-    lvalueValue newlvalueValue;
-    Symbol *symbol = nullptr;
-    unsigned int i;
-
-    for (i = scope + 1; i > 0 && symbol == nullptr; --i) {
-        symbol = symbolTableObj.lookup_scope(id, i - 1);
-    }
 std::string type_names[] = {
     std::string("global variable"),
     std::string("local variable"),
@@ -22,16 +17,8 @@ std::string type_names[] = {
     std::string("user function"),
     std::string("library function")};
 
-    if (symbol == nullptr) {
-        symbol = new Variable(id, scope, yylineno, funcDepth, (scope ? LOCAL_VAR : GLOBAL_VAR));
-        symbolTableObj.insert(id, symbol, scope);
     } else {
-        if (!(symbol->type == USER_FUNC || symbol->type == GLOBAL_VAR || funcDepth == symbol->funcDepth)) {
-            std::cerr << BRED "Error local variable" RST << std::endl;
-        }
     }
-
-    return newlvalueValue;
 }
 
 programValue *Manage_program(stmtListValue *stmtList) {
