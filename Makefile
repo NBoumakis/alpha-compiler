@@ -17,20 +17,25 @@ all: prepare scanner parser analyzer
 
 prepare:
 	-clear
+	@echo -e "\e[0;33mStarting build\e[0m"
+	@echo -e "\e[0;33mPreparing filesystem\e[0m"
 	-rm -rf build
 	-mkdir build
-	-echo
+	@echo
 
 scanner:
+	@echo -e "\e[0;33mMaking lexical analyser\e[0m"
 	$(Lexer) --outfile=./build/scanner.cpp ./lexical_analyser/scanner.l
-	-echo
+	@echo
 
 parser:
+	@echo -e "\e[0;33mMaking syntax analyser\e[0m"
 	$(ParserGen) $(ParserGenOptions) --output=./build/parser.cpp ./syntax_analyzer/parser.y
-	-echo
+	@echo
 
 
 analyzer:
+	@echo -e "\e[0;33mMaking parser\e[0m"
 	$(CCpp) $(CppOptions) build/scanner.cpp build/parser.cpp syntax_analyzer/rules.cpp lib/scope.cpp syntax_analyzer/symbol.cpp -o ./build/parser
 
 clean:
