@@ -180,6 +180,17 @@ termValue *Manage_term_notexpr(exprValue *expr) {
 
 termValue *Manage_term_PPlval(lvalueValue *lvalue) {
     termValue *termValueVal;
+
+    if (lvalue->valType == SymbolLvalue_T) {
+        if (lvalue->value.symbolVal->type == USER_FUNC ||
+            lvalue->value.symbolVal->type == LIB_FUNC) {
+            std::cerr << BRED "Invalid increment of "
+                      << type_names[lvalue->value.symbolVal->type]
+                      << " \"" << lvalue->value.symbolVal->name
+                      << "\" in line " << yylineno << "." RST << std::endl;
+        }
+    }
+
     return termValueVal;
 }
 
