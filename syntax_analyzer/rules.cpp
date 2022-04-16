@@ -294,15 +294,21 @@ lvalueValue *Manage_lvalue_localid(std::string id) {
         if (!isLibFunction(id)) {
             symbol_in_table = new Variable(id, scope, yylineno, funcDepth, var_type());
             symbolTableObj.insert(id, symbol_in_table, scope);
+
+            newStructVal->value.symbolVal = symbol_in_table;
+            newStructVal->valType = SymbolLvalue_T;
         } else {
             std::cerr << BRED "Variable \"" << id << "\" conflicts with library function. Cannot define." RST << std::endl;
+
+            newStructVal->valType = InvalidLvalue_T;
         }
+    } else {
+
+        newStructVal->value.symbolVal = symbol_in_table;
+        newStructVal->valType = SymbolLvalue_T;
     }
 
-    newStructVal->value.symbolVal = symbol_in_table;
-    newStructVal->valType = SymbolLvalue_T;
-
-    assert(newStructVal->value.symbolVal);
+    assert((newStructVal->valType == InvalidLvalue_T) || (newStructVal->valType == SymbolLvalue_T && newStructVal->value.symbolVal));
 
     return newStructVal;
 }
