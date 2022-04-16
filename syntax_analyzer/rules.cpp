@@ -228,6 +228,17 @@ termValue *Manage_term_MMlval(lvalueValue *lvalue) {
 
 termValue *Manage_term_lvalueMM(lvalueValue *lvalue) {
     termValue *termValueVal;
+
+    if (lvalue->valType == SymbolLvalue_T) {
+        if (lvalue->value.symbolVal->type == USER_FUNC ||
+            lvalue->value.symbolVal->type == LIB_FUNC) {
+            std::cerr << BRED "Invalid postdecrement of "
+                      << type_names[lvalue->value.symbolVal->type]
+                      << " \"" << lvalue->value.symbolVal->name
+                      << "\" in line " << yylineno << "." RST << std::endl;
+        }
+    }
+
     return termValueVal;
 }
 
