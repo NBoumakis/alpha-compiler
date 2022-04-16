@@ -266,7 +266,7 @@ assignexprValue *Manage_assignexpr_lvalueASSIGNexpr(lvalueValue *lvalue, exprVal
             symbol->type == LIB_FUNC) {
             std::cerr << BRED "Cannot assign to " << type_names[symbol->type] << " \"" << symbol->name << "\" in line " << def_lines_stack.top() << RST << std::endl;
         } else if (funcDepth != symbol->funcDepth) {
-            std::cerr << BRED "Inaccessible symbol \"" << symbol->name << "\" in line " << def_lines_stack.top() << RST << std::endl;
+            std::cerr << BRED "Inaccessible " << type_names[symbol->type] << " \"" << symbol->name << "\" in line " << def_lines_stack.top() << RST << std::endl;
         }
 
         newStructVal->valType = lvalueExprAssign_T;
