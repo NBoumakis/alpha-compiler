@@ -11,7 +11,7 @@
     #include "colors.h"
 
     int yyerror(const char* yaccProvidedMessage){
-        std::cerr << "Something bad happened here" <<std::endl;
+        std::cerr << REDB "Grammar error: " << yaccProvidedMessage<< RST <<std::endl;
         return 0;
     }
 
