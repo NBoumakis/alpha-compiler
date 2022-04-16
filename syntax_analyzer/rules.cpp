@@ -184,7 +184,7 @@ termValue *Manage_term_PPlval(lvalueValue *lvalue) {
     if (lvalue->valType == SymbolLvalue_T) {
         if (lvalue->value.symbolVal->type == USER_FUNC ||
             lvalue->value.symbolVal->type == LIB_FUNC) {
-            std::cerr << BRED "Invalid increment of "
+            std::cerr << BRED "Invalid preincrement of "
                       << type_names[lvalue->value.symbolVal->type]
                       << " \"" << lvalue->value.symbolVal->name
                       << "\" in line " << yylineno << "." RST << std::endl;
@@ -196,6 +196,17 @@ termValue *Manage_term_PPlval(lvalueValue *lvalue) {
 
 termValue *Manage_term_lvaluePP(lvalueValue *lvalue) {
     termValue *termValueVal;
+
+    if (lvalue->valType == SymbolLvalue_T) {
+        if (lvalue->value.symbolVal->type == USER_FUNC ||
+            lvalue->value.symbolVal->type == LIB_FUNC) {
+            std::cerr << BRED "Invalid postincrement of "
+                      << type_names[lvalue->value.symbolVal->type]
+                      << " \"" << lvalue->value.symbolVal->name
+                      << "\" in line " << yylineno << "." RST << std::endl;
+        }
+    }
+
     return termValueVal;
 }
 
