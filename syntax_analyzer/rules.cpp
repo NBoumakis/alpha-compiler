@@ -407,6 +407,17 @@ callValue *Manage_call_callLPelistRP(callValue *call, elistValue *elist) {
 
 callValue *Manage_call_lvaluecallsuffix(lvalueValue *lvalue, callsuffixValue *callsuffix) {
     callValue *callVal;
+
+    if (lvalue->valType == SymbolLvalue_T) {
+        if (lvalue->value.symbolVal->type != USER_FUNC &&
+            lvalue->value.symbolVal->type != LIB_FUNC) {
+            std::cerr << BRED "Invalid call to "
+                      << type_names[lvalue->value.symbolVal->type]
+                      << " \"" << lvalue->value.symbolVal->name
+                      << "\" in line " << yylineno << "." RST << std::endl;
+        }
+    }
+
     return callVal;
 }
 
