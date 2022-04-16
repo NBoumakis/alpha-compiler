@@ -746,6 +746,11 @@ forstmtValue *Manage_for(elistValue *elistFirst, exprValue *expr, elistValue *el
 /* Return statement */
 returnstmtValue *Manage_returnstmt(retValue *ret) {
     returnstmtValue *newStructVal;
+
+    if (funcDepth == 0) {
+        std::cerr << BRED "Cannot use return statement outside of function" RST << std::endl;
+    }
+
     return newStructVal;
 }
 
