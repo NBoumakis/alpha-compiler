@@ -272,12 +272,8 @@ lvalueValue *Manage_lvalue_id(std::string id) {
     }
 
     if (symbol == nullptr) {
-        if (!isLibFunction(id)) {
-            symbol = new Variable(id, scopeLevel, yylineno, funcDepth, var_type());
-            symbolTableObj.insert(id, symbol, scopeLevel);
-        } else {
-            std::cerr << BRED "Variable \"" << id << "\" conflicts with library function. Cannot define." RST << std::endl;
-        }
+        symbol = new Variable(id, scopeLevel, yylineno, funcDepth, var_type());
+        symbolTableObj.insert(id, symbol, scopeLevel);
     }
 
     newStructVal->value.symbolVal = symbol;
