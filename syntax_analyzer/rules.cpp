@@ -266,9 +266,9 @@ assignexprValue *Manage_assignexpr_lvalueASSIGNexpr(lvalueValue *lvalue, exprVal
 
         if (symbol->type == USER_FUNC ||
             symbol->type == LIB_FUNC) {
-            std::cerr << BRED "Cannot assign to " << type_names[symbol->type] << " \"" << symbol->name << "\" in line " << def_lines_stack.top() << RST << std::endl;
+            std::cerr << BRED "Cannot assign to " << type_names[symbol->type] << " \"" << symbol->name << "\" in line " << yylineno << RST << std::endl;
         } else if (funcDepth != symbol->funcDepth && symbol->type != GLOBAL_VAR) {
-            std::cerr << BRED "Inaccessible " << type_names[symbol->type] << " \"" << symbol->name << "\" in line " << def_lines_stack.top() << RST << std::endl;
+            std::cerr << BRED "Inaccessible " << type_names[symbol->type] << " \"" << symbol->name << "\" in line " << yylineno << RST << std::endl;
         } else {
             newStructVal->valType = lvalueExprAssign_T;
             newStructVal->value.lvalExprVal.lvalueVal = lvalue;
@@ -342,7 +342,8 @@ lvalueValue *Manage_lvalue_localid(std::string id) {
             newStructVal->value.symbolVal = symbol_in_table;
             newStructVal->valType = SymbolLvalue_T;
         } else {
-            std::cerr << BRED "Variable \"" << id << "\" conflicts with library function. Cannot define." RST << std::endl;
+            std::cerr << BRED "Variable \"" << id << "\" in line " << yylineno
+                      << " attempts to shadow library function." RST << std::endl;
 
             newStructVal->valType = InvalidLvalue_T;
         }
@@ -363,7 +364,7 @@ lvalueValue *Manage_lvalue_globalid(std::string id) {
     auto symbol = symbolTableObj.lookup_scope(id, 0);
 
     if (symbol == nullptr) {
-        std::cerr << BRED "Undefined reference to global symbol \"" << id << "\"." RST << std::endl;
+        std::cerr << BRED "Undefined reference to global symbol \"" << id << "\" in line " << yylineno << "." RST << std::endl;
         newStructVal->valType = InvalidLvalue_T;
     } else {
         newStructVal->valType = SymbolLvalue_T;
@@ -517,7 +518,8 @@ Symbol *Manage_funcprefix(std::string funcName) {
     Symbol *newFunc = new Function(funcName, scopeLevel, yylineno, funcDepth, USER_FUNC);
 
     if (isLibFunction(funcName)) {
-        std::cerr << BRED "Cannot define function \"" << funcName << "\". It conflicts with library function." RST << std::endl;
+        std::cerr << BRED "Cannot define function \"" << funcName << "\" in line " << yylineno
+                  << ". It would shadow a library function." RST << std::endl;
 
         return nullptr;
     }
@@ -526,8 +528,8 @@ Symbol *Manage_funcprefix(std::string funcName) {
 
     if (symbol_in_table != nullptr) {
         std::cerr << BRED "Cannot define function \"" << funcName
-                  << "\" in line " << yylineno << ". It conflicts with previous "
-                  << type_names[symbol_in_table->type] << " last defined in line "
+                  << "\" in line " << yylineno << ". It shadows previous "
+                  << type_names[symbol_in_table->type] << " defined in line "
                   << symbol_in_table->line << "." RST << std::endl;
 
         return nullptr;
@@ -551,12 +553,14 @@ static bool check_funcargs(idlistValue *idlist) {
 
             return false;
         } else if (isLibFunction(id)) {
-            std::cerr << BRED "Formal argument \"" << id << "\" conflicts with library function." RST << std::endl;
+            std::cerr << BRED "Formal argument \"" << id << "\" in line " << yylineno
+                      << "attempts to shadow a library function." RST << std::endl;
 
             return false;
         } else if (symbol_in_table != nullptr) {
-            std::cerr << BRED "Formal argument \"" << id << "\" conflicts with previous "
-                      << type_names[symbol_in_table->type] << " last defined in line "
+            std::cerr << BRED "Formal argument \"" << id << "\" in line "
+                      << yylineno << "attempts to shadow with previous "
+                      << type_names[symbol_in_table->type] << " defined in line "
                       << symbol_in_table->line << "." RST << std::endl;
 
             return false;
@@ -576,12 +580,14 @@ static bool check_funcargs(idlistValue *idlist) {
 
             return false;
         } else if (isLibFunction(id)) {
-            std::cerr << BRED "Formal argument \"" << id << "\" conflicts with library function." RST << std::endl;
+            std::cerr << BRED "Formal argument \"" << id << "\" in line " << yylineno
+                      << " shadows a library function." RST << std::endl;
 
             return false;
         } else if (symbol_in_table != nullptr) {
-            std::cerr << BRED "Formal argument \"" << id << "\" conflicts with previous "
-                      << type_names[symbol_in_table->type] << " last defined in line "
+            std::cerr << BRED "Formal argument \"" << id << "\" in line "
+                      << yylineno << " attempts to shadow previous "
+                      << type_names[symbol_in_table->type] << " defined in line "
                       << symbol_in_table->line << "." RST << std::endl;
 
             return false;
@@ -621,7 +627,8 @@ funcdefValue *Manage_funcdef_id(std::string id, idlistValue *idlist, blockValue 
     int lineno = def_lines_stack.top();
 
     if (isLibFunction(id)) {
-        std::cerr << BRED "Cannot define function \"" << id << "\". It conflicts with library function." RST << std::endl;
+        std::cerr << BRED "Cannot define function \"" << id << "\" in line "
+                  << yylineno << ". It would shadow a library function." RST << std::endl;
 
         fval->valType = InvalidFuncdef_T;
         return fval;
@@ -630,7 +637,7 @@ funcdefValue *Manage_funcdef_id(std::string id, idlistValue *idlist, blockValue 
     auto symbol_in_table = symbolTableObj.lookup_scope(id, scope);
 
     if (symbol_in_table != nullptr) {
-        std::cerr << BRED "Cannot define function \"" << id << "\". It conflicts with previous "
+        std::cerr << BRED "Cannot define function \"" << id << "\" in line " << yylineno << ". It shadows previous "
                   << type_names[symbol_in_table->type] << " defined in line "
                   << symbol_in_table->line << "." RST << std::endl;
 
@@ -759,7 +766,7 @@ returnstmtValue *Manage_returnstmt(retValue *ret) {
     returnstmtValue *newStructVal;
 
     if (funcDepth == 0) {
-        std::cerr << BRED "Cannot use return statement outside of function" RST << std::endl;
+        std::cerr << BRED "Cannot use return statement outside of function in line " << yylineno << RST << std::endl;
     }
 
     return newStructVal;
