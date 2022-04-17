@@ -538,7 +538,7 @@ Symbol *Manage_funcprefix(std::string funcName) {
     return newFunc;
 }
 
-static int check_funcargs(idlistValue *idlist) {
+static bool check_funcargs(idlistValue *idlist) {
     std::set<std::string> argSet;
 
     while (idlist->valType == idlistIdIdlist_T) {
@@ -549,17 +549,17 @@ static int check_funcargs(idlistValue *idlist) {
         if (argSet.count(id) > 0) {
             std::cerr << BRED "Duplicate argument \"" << id << "\" in line " << yylineno << RST << std::endl;
 
-            return 1;
+            return false;
         } else if (isLibFunction(id)) {
             std::cerr << BRED "Formal argument \"" << id << "\" conflicts with library function." RST << std::endl;
 
-            return 1;
+            return false;
         } else if (symbol_in_table != nullptr) {
             std::cerr << BRED "Formal argument \"" << id << "\" conflicts with previous "
                       << type_names[symbol_in_table->type] << " last defined in line "
                       << symbol_in_table->line << "." RST << std::endl;
 
-            return 1;
+            return false;
         }
 
         argSet.insert(id);
@@ -574,28 +574,28 @@ static int check_funcargs(idlistValue *idlist) {
         if (argSet.count(id) > 0) {
             std::cerr << BRED "Duplicate argument \"" << id << "\" in line " << yylineno << RST << std::endl;
 
-            return 1;
+            return false;
         } else if (isLibFunction(id)) {
             std::cerr << BRED "Formal argument \"" << id << "\" conflicts with library function." RST << std::endl;
 
-            return 1;
+            return false;
         } else if (symbol_in_table != nullptr) {
             std::cerr << BRED "Formal argument \"" << id << "\" conflicts with previous "
                       << type_names[symbol_in_table->type] << " last defined in line "
                       << symbol_in_table->line << "." RST << std::endl;
 
-            return 1;
+            return false;
         }
     }
 
-    return 0;
+    return true;
 }
 
 void Manage_funcargs(idlistValue *idlist) {
     idlistValue *idlist_ptr = idlist;
     ++scopeLevel;
 
-    if (!check_funcargs(idlist)) {
+    if (check_funcargs(idlist)) {
         while (idlist_ptr->valType == idlistIdIdlist_T) {
             Symbol *newArg = new Variable(idlist_ptr->value.idlistIdValue.idVal, scopeLevel, yylineno, funcDepth, FORMAL_ARG);
 
