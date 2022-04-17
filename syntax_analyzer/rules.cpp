@@ -280,7 +280,23 @@ assignexprValue *Manage_assignexpr_lvalueASSIGNexpr(lvalueValue *lvalue, exprVal
 
 /* Primary */
 primaryValue *Manage_primary_lvalue(lvalueValue *lvalue) {
-    primaryValue *primaryValueVal;
+    primaryValue *primaryValueVal = new primaryValue();
+
+    primaryValueVal->valType = InvalidPrim_T;
+
+    if (lvalue->valType == SymbolLvalue_T) {
+        Symbol *symbol = lvalue->value.symbolVal;
+        if (symbol->scope == 0 ||
+            symbol->type == USER_FUNC ||
+            symbol->type == LIB_FUNC ||
+            funcDepth == symbol->funcDepth) {
+            primaryValueVal->valType = lvaluePrim_T;
+            primaryValueVal->value.lvalueVal = lvalue;
+        } else {
+            std::cerr << BRED "Inaccessible " << type_names[symbol->type] << " \"" << symbol->name << "\" in line " << yylineno << RST << std::endl;
+        }
+    }
+
     return primaryValueVal;
 }
 
