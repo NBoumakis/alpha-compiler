@@ -569,12 +569,12 @@ static bool check_funcargs(idlistValue *idlist) {
             return false;
         } else if (isLibFunction(id)) {
             std::cerr << BRED "Formal argument \"" << id << "\" in line " << yylineno
-                      << "attempts to shadow a library function." RST << std::endl;
+                      << " attempts to shadow a library function." RST << std::endl;
 
             return false;
         } else if (symbol_in_table != nullptr) {
             std::cerr << BRED "Formal argument \"" << id << "\" in line "
-                      << yylineno << "attempts to shadow with previous "
+                      << yylineno << " attempts to shadow with previous "
                       << type_names[symbol_in_table->type] << " defined in line "
                       << symbol_in_table->line << "." RST << std::endl;
 
