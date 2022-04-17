@@ -23,6 +23,5 @@ bool isLibFunction(std::string name) {
     return libFunctions.find(name) != libFunctions.end();
 }
 
-std::stack<int> def_lines_stack;
 unsigned int funcDepth = 0;
 #endif
