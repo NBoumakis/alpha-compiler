@@ -8,7 +8,6 @@
 #include <string>
 
 extern int yylineno;
-extern std::stack<int> def_lines_stack;
 
 std::string type_names[] = {
     std::string("global variable"),
@@ -624,8 +623,6 @@ funcdefValue *Manage_funcdef_id(std::string id, idlistValue *idlist, blockValue 
     funcdefValue *fval = new funcdefValue();
     unsigned int &scope = scopeLevel;
 
-    int lineno = def_lines_stack.top();
-
     if (isLibFunction(id)) {
         std::cerr << BRED "Cannot define function \"" << id << "\" in line "
                   << yylineno << ". It would shadow a library function." RST << std::endl;
@@ -645,7 +642,7 @@ funcdefValue *Manage_funcdef_id(std::string id, idlistValue *idlist, blockValue 
         return fval;
     }
 
-    Symbol *newFunc = new Function(id, scope, lineno, funcDepth, USER_FUNC);
+    Symbol *newFunc = new Function(id, scope, yylineno, funcDepth, USER_FUNC);
     symbolTableObj.insert(id, newFunc, scope);
 
     return fval;

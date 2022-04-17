@@ -27,7 +27,6 @@
     extern Scope symbolTableObj;
     extern unsigned int scopeLevel;
     extern std::unordered_set<std::string> libFunctions;
-    extern std::stack<int> def_lines_stack;
     extern unsigned int funcDepth;
 %}
 
@@ -131,18 +130,15 @@
 
 %%
 
-program:     {def_lines_stack.push(yylineno);} stmtList       {
+program:     stmtList       {
                                 std::cout << BGRN "Rule program -> stmtlist" RST << std::endl;
                                 $$ = Manage_program($2);
-                                def_lines_stack.pop();
                              }
               ;
 
-stmtList:    stmtList {def_lines_stack.push(yylineno);} stmt  {
+stmtList:    stmtList stmt  {
                                 std::cout << BGRN "Rule stmtList -> stmtlist stmt" RST << std::endl;
                                 $$ = Manage_stmtList_stmt($1, $3);
-
-                                def_lines_stack.pop();
                             }
             |                {
                                 std::cout << BGRN "Rule stmtList -> ε" RST << std::endl;
@@ -150,11 +146,9 @@ stmtList:    stmtList {def_lines_stack.push(yylineno);} stmt  {
                              }
             ;
 
-stmt:     expr {def_lines_stack.push(yylineno);} SEMICOLON        {
+stmt:     expr SEMICOLON        {
                                     std::cout << BGRN "Rule stmt -> expr;" RST << std::endl;
                                     $$ = Manage_stmt_expr($1);
-
-                                    def_lines_stack.pop();
                                 }
         | ifstmt                {
                                     std::cout << BGRN "Rule stmt -> ifstmt" RST << std::endl;
