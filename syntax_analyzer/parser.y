@@ -132,13 +132,13 @@
 
 program:     stmtList       {
                                 std::cout << BGRN "Rule program -> stmtlist" RST << std::endl;
-                                $$ = Manage_program($2);
+                                $$ = Manage_program($stmtList);
                              }
               ;
 
 stmtList:    stmtList stmt  {
                                 std::cout << BGRN "Rule stmtList -> stmtlist stmt" RST << std::endl;
-                                $$ = Manage_stmtList_stmt($1, $3);
+                                $$ = Manage_stmtList_stmt($1, $stmt);
                             }
             |                {
                                 std::cout << BGRN "Rule stmtList -> ε" RST << std::endl;
