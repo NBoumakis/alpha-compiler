@@ -259,21 +259,21 @@ assignexprValue *Manage_assignexpr_lvalueASSIGNexpr(lvalueValue *lvalue, exprVal
     Symbol *symbol;
     unsigned int i;
 
+    newStructVal->valType = InvalidAssign_T;
+
     if (lvalue->valType == SymbolLvalue_T) {
         symbol = lvalue->value.symbolVal;
 
         if (symbol->type == USER_FUNC ||
             symbol->type == LIB_FUNC) {
             std::cerr << BRED "Cannot assign to " << type_names[symbol->type] << " \"" << symbol->name << "\" in line " << def_lines_stack.top() << RST << std::endl;
-        } else if (funcDepth != symbol->funcDepth) {
+        } else if (funcDepth != symbol->funcDepth && symbol->type != GLOBAL_VAR) {
             std::cerr << BRED "Inaccessible " << type_names[symbol->type] << " \"" << symbol->name << "\" in line " << def_lines_stack.top() << RST << std::endl;
+        } else {
+            newStructVal->valType = lvalueExprAssign_T;
+            newStructVal->value.lvalExprVal.lvalueVal = lvalue;
+            newStructVal->value.lvalExprVal.exprVal = expr;
         }
-
-        newStructVal->valType = lvalueExprAssign_T;
-        newStructVal->value.lvalExprVal.lvalueVal = lvalue;
-        newStructVal->value.lvalExprVal.exprVal = expr;
-    } else {
-        newStructVal->valType = InvalidAssign_T;
     }
 
     return newStructVal;
