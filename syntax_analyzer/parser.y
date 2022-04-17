@@ -133,17 +133,17 @@
 program:     stmtList       {
                                 std::cout << BGRN "Rule program -> stmtlist" RST << std::endl;
                                 $$ = Manage_program($stmtList);
-                             }
-              ;
+                            }
+            ;
 
 stmtList:    stmtList stmt  {
                                 std::cout << BGRN "Rule stmtList -> stmtlist stmt" RST << std::endl;
                                 $$ = Manage_stmtList_stmt($1, $stmt);
                             }
-            |                {
+            |               {
                                 std::cout << BGRN "Rule stmtList -> ε" RST << std::endl;
                                 $$ = Manage_stmtList();
-                             }
+                            }
             ;
 
 stmt:     expr SEMICOLON        {
@@ -283,10 +283,11 @@ term:     L_PARENTHESIS expr R_PARENTHESIS  {
                                             }
         ;
 
-assignexpr: lvalue ASSIGN expr  {
+assignexpr:  lvalue ASSIGN expr {
                                     std::cout << BGRN "Rule assignexpr -> lvalue=expr" RST << std::endl;
                                     $$ = Manage_assignexpr_lvalueASSIGNexpr($1, $3);
                                 }
+            ;
 
 primary:  lvalue                                {
                                                    std::cout << BGRN "Rule primary -> lvalue" RST << std::endl;
@@ -373,17 +374,19 @@ normcall:     L_PARENTHESIS elist R_PARENTHESIS                 {
                                                                     std::cout << BGRN "Rule normcall -> (elist)" RST << std::endl;
                                                                     $$ = Manage_normcall_LPelistRP($2);
                                                                 }
+            ;
 
 methodcall:   DOUBLE_DOT ID L_PARENTHESIS elist R_PARENTHESIS   {
                                                                     std::cout << BGRN "Rule methodcall -> ..id(elist)" RST << std::endl;
                                                                     $$ = Manage_methodcall_DDOTidLPelistRP($2, $4);
                                                                 }
+            ;
 
 elist:   exprOptRpt         {
                                 std::cout << BGRN "Rule elist -> exprOptRpt" RST << std::endl;
                                 $$ = Manage_elist_exprOptRpt($1);
                             }
-       |                    {
+        |                   {
                                 std::cout << BGRN "Rule elist -> ε" RST << std::endl;
                                 $$ = Manage_elist();
                             }
@@ -531,7 +534,8 @@ idlist:   ID    {
 ifstmt:   IF L_PARENTHESIS expr R_PARENTHESIS stmt else     {   
                                                                 std::cout << BGRN "Rule ifstmt -> if (expr) stmt else" RST << std::endl;
                                                                 $$ = Manage_ifstmt($3, $5, $6);
-                                                            };
+                                                            }
+        ;
 
 else:     ELSE stmt     {   
                             std::cout << BGRN "Rule else -> else stmt" RST << std::endl;
@@ -547,22 +551,26 @@ whilestmt:    WHILE L_PARENTHESIS expr R_PARENTHESIS stmt   {
                                                                 std::cout << BGRN "Rule whilestmt -> (expr) stmt" RST << std::endl;
                                                                 $$ = Manage_whilestmt($3, $5);
                                                             }
+            ;
 
 forstmt:      FOR L_PARENTHESIS elist SEMICOLON expr SEMICOLON elist R_PARENTHESIS stmt     {
                                                                                                 std::cout << BGRN "Rule forstmt -> for (elist ; expr ; elist) stmt " RST << std::endl;
                                                                                                 $$ = Manage_for($3, $5, $7, $9);
-                                                                                            };
+                                                                                            }
+            ;
 
 returnstmt:   RETURN ret SEMICOLON      {       
                                             std::cout << BGRN "Rule returnstmt -> ret;" RST << std::endl;
                                             $$ = Manage_returnstmt($2);
-                                        };
+                                        }
+            ;
 
 ret:      expr      {
                         std::cout << BGRN "Rule ret -> expr" RST << std::endl;
                         $$ = Manage_ret_expr($1);
-                    };
+                    }
         |           {   
                         std::cout << BGRN "Rule ret -> ε" RST << std::endl;
-                        $$ = Manage_ret();}
+                        $$ = Manage_ret();
+                    }
         ;
