@@ -18,6 +18,7 @@ enum iopcode {
     if_greater_eq_iop,
     if_less_iop,
     if_greater_iop,
+    jump_iop,
     call_iop,
     param_iop,
     ret_iop,
