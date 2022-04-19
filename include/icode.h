@@ -1,3 +1,6 @@
+#ifndef __ICODE_H
+#define __ICODE_H
+
 enum iopcode {
     assign_iop,
     add_iop,
@@ -25,3 +28,5 @@ enum iopcode {
     table_getelem_iop,
     table_setelem_iop
 };
+
+#endif /* __ICODE_H */
