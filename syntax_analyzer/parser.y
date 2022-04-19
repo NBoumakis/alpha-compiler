@@ -5,7 +5,7 @@
     #include <string.h>
     #include "types.h"
     #include "scope.h"
-    
+
     #include "rules.h"
 
     #include "colors.h"
@@ -58,7 +58,7 @@
     funcdefValue *funcdefVal;
     constValue *constVal;
     idlistValue *idlistVal;
-    
+
     ifstmtValue *ifstmtVal;
     elseValue *elseVal;
     whilestmtValue *whilestmtVal;
@@ -136,35 +136,35 @@ program:     stmtList       {
                             }
             ;
 
-stmtList:    stmtList stmt  {
-                                std::cout << BGRN "Rule stmtList -> stmtlist stmt, line " << yylineno << RST << std::endl;
-                                $$ = Manage_stmtList_stmt($1, $stmt);
-                            }
-            |               {
-                                std::cout << BGRN "Rule stmtList -> ε, line " << yylineno << RST << std::endl;
-                                $$ = Manage_stmtList();
-                            }
+stmtList:    stmtList[derivated] stmt   {
+                                            std::cout << BGRN "Rule stmtList -> stmtlist stmt, line " << yylineno << RST << std::endl;
+                                            $$ = Manage_stmtList_stmt($derivated, $stmt);
+                                        }
+            |                           {
+                                            std::cout << BGRN "Rule stmtList -> ε, line " << yylineno << RST << std::endl;
+                                            $$ = Manage_stmtList();
+                                        }
             ;
 
 stmt:     expr SEMICOLON        {
                                     std::cout << BGRN "Rule stmt -> expr;, line " << yylineno << RST << std::endl;
-                                    $$ = Manage_stmt_expr($1);
+                                    $$ = Manage_stmt_expr($expr);
                                 }
         | ifstmt                {
                                     std::cout << BGRN "Rule stmt -> ifstmt, line " << yylineno << RST << std::endl;
-                                    $$ = Manage_stmt_ifstmt($1);
+                                    $$ = Manage_stmt_ifstmt($ifstmt);
                                 }
         | whilestmt             {
                                     std::cout << BGRN "Rule stmt -> whilestmt, line " << yylineno << RST << std::endl;
-                                    $$ = Manage_stmt_whilestmt($1);
+                                    $$ = Manage_stmt_whilestmt($whilestmt);
                                 }
         | forstmt               {
                                     std::cout << BGRN "Rule stmt -> forstmt, line " << yylineno << RST << std::endl;
-                                    $$ = Manage_stmt_forstmt($1);
+                                    $$ = Manage_stmt_forstmt($forstmt);
                                 }
         | returnstmt            {
                                     std::cout << BGRN "Rule stmt -> returnstmt, line " << yylineno << RST << std::endl;
-                                    $$ = Manage_stmt_returnstmt($1);
+                                    $$ = Manage_stmt_returnstmt($returnstmt);
                                 }
         | BREAK SEMICOLON       {
                                     std::cout << BGRN "Rule stmt -> break;, line " << yylineno << RST << std::endl;
@@ -176,11 +176,11 @@ stmt:     expr SEMICOLON        {
                                 }
         | block                 {
                                     std::cout << BGRN "Rule stmt -> block, line " << yylineno << RST << std::endl;
-                                    $$ = Manage_stmt_block($1);
+                                    $$ = Manage_stmt_block($block);
                                 }
         | funcdef               {
                                     std::cout << BGRN "Rule stmt -> funcdef, line " << yylineno << RST << std::endl;
-                                    $$ = Manage_stmt_funcdef($1);
+                                    $$ = Manage_stmt_funcdef($funcdef);
                                 }
         | SEMICOLON             {
                                     std::cout << BGRN "Rule stmt -> ;, line " << yylineno << RST << std::endl;
@@ -190,201 +190,203 @@ stmt:     expr SEMICOLON        {
 
 expr:     assignexpr            {
                                     std::cout << BGRN "Rule expr -> assignexpr, line " << yylineno << RST << std::endl;
-                                    $$ = Manage_expr_assignexpr($1);
+                                    $$ = Manage_expr_assignexpr($assignexpr);
                                 }
-        | expr PLUS expr        {
-                                    std::cout << BGRN "Rule expr -> expr + expr, line " << yylineno << RST << std::endl;
-                                    $$ = Manage_expr_expr_PLUS_expr($1, $3);}
-        | expr MINUS expr       {
-                                    std::cout << BGRN "Rule expr -> expr - expr, line " << yylineno << RST << std::endl;
-                                    $$ = Manage_expr_expr_MINUS_expr($1, $3);
-                                }
-        | expr MUL expr         {
-                                    std::cout << BGRN "Rule expr -> expr * expr, line " << yylineno << RST << std::endl;
-                                    $$ = Manage_expr_expr_MUL_expr($1, $3);
-                                }
-        | expr DIV expr         {
-                                    std::cout << BGRN "Rule expr -> expr / expr, line " << yylineno << RST << std::endl;
-                                    $$ = Manage_expr_expr_DIV_expr($1, $3);
-                                }
-        | expr MOD expr         {
-                                    std::cout << BGRN "Rule expr -> expr % expr, line " << yylineno << RST << std::endl;
-                                    $$ = Manage_expr_expr_MOD_expr($1, $3);
-                                }
-        | expr GT expr          {
-                                    std::cout << BGRN "Rule expr -> expr > expr, line " << yylineno << RST << std::endl;
-                                    $$ = Manage_expr_expr_GT_expr($1, $3);
-                                }
-        | expr GE expr          {
-                                    std::cout << BGRN "Rule expr -> expr >= expr, line " << yylineno << RST << std::endl;
-                                    $$ = Manage_expr_expr_GE_expr($1, $3);
-                                }
-        | expr LT expr          {
-                                    std::cout << BGRN "Rule expr -> expr < expr, line " << yylineno << RST << std::endl;
-                                    $$ = Manage_expr_expr_LT_expr($1, $3);
-                                }
-        | expr LE expr          {
-                                    std::cout << BGRN "Rule expr -> expr <= expr, line " << yylineno << RST << std::endl;
-                                    $$ = Manage_expr_expr_LE_expr($1, $3);
-                                }
-        | expr EQUAL expr       {
-                                    std::cout << BGRN "Rule expr -> expr == expr, line " << yylineno << RST << std::endl;
-                                    $$ = Manage_expr_expr_EQUAL_expr($1, $3);
-                                }
-        | expr NEQUAL expr      {
-                                    std::cout << BGRN "Rule expr -> expr != expr, line " << yylineno << RST << std::endl;
-                                    $$ = Manage_expr_expr_NEQUAL_expr($1, $3);
-                                }
-        | expr AND expr         {
-                                    std::cout << BGRN "Rule expr -> expr and expr, line " << yylineno << RST << std::endl;
-                                    $$ = Manage_expr_expr_AND_expr($1, $3);
-                                }
-        | expr OR expr          {
-                                    std::cout << BGRN "Rule expr -> expr or expr, line " << yylineno << RST << std::endl;
-                                    $$ = Manage_expr_expr_OR_expr($1, $3);
-                                }
-        | term                  {
-                                    std::cout << BGRN "Rule expr -> term, line " << yylineno << RST << std::endl;
-                                    $$ = Manage_expr_term($1);
-                                }
+        | expr[left] PLUS expr[right]   {
+                                            std::cout << BGRN "Rule expr -> expr + expr, line " << yylineno << RST << std::endl;
+                                            $$ = Manage_expr_expr_PLUS_expr($left, $right);
+                                        }
+        | expr[left] MINUS expr[right]  {
+                                            std::cout << BGRN "Rule expr -> expr - expr, line " << yylineno << RST << std::endl;
+                                            $$ = Manage_expr_expr_MINUS_expr($left, $right);
+                                        }
+        | expr[left] MUL expr[right]    {
+                                            std::cout << BGRN "Rule expr -> expr * expr, line " << yylineno << RST << std::endl;
+                                            $$ = Manage_expr_expr_MUL_expr($left, $right);
+                                        }
+        | expr[left] DIV expr[right]    {
+                                            std::cout << BGRN "Rule expr -> expr / expr, line " << yylineno << RST << std::endl;
+                                            $$ = Manage_expr_expr_DIV_expr($left, $right);
+                                        }
+        | expr[left] MOD expr[right]    {
+                                            std::cout << BGRN "Rule expr -> expr % expr, line " << yylineno << RST << std::endl;
+                                            $$ = Manage_expr_expr_MOD_expr($left, $right);
+                                        }
+        | expr[left] GT expr[right]     {
+                                            std::cout << BGRN "Rule expr -> expr > expr, line " << yylineno << RST << std::endl;
+                                            $$ = Manage_expr_expr_GT_expr($left, $right);
+                                        }
+        | expr[left] GE expr[right]     {
+                                            std::cout << BGRN "Rule expr -> expr >= expr, line " << yylineno << RST << std::endl;
+                                            $$ = Manage_expr_expr_GE_expr($1, $right);
+                                        }
+        | expr[left] LT expr[right]     {
+                                            std::cout << BGRN "Rule expr -> expr < expr, line " << yylineno << RST << std::endl;
+                                            $$ = Manage_expr_expr_LT_expr($left, $right);
+                                        }
+        | expr[left] LE expr[right]     {
+                                            std::cout << BGRN "Rule expr -> expr <= expr, line " << yylineno << RST << std::endl;
+                                            $$ = Manage_expr_expr_LE_expr($left, $right);
+                                        }
+        | expr[left] EQUAL expr[right]  {
+                                            std::cout << BGRN "Rule expr -> expr == expr, line " << yylineno << RST << std::endl;
+                                            $$ = Manage_expr_expr_EQUAL_expr($left, $right);
+                                        }
+        | expr[left] NEQUAL expr[right] {
+                                            std::cout << BGRN "Rule expr -> expr != expr, line " << yylineno << RST << std::endl;
+                                            $$ = Manage_expr_expr_NEQUAL_expr($left, $right);
+                                        }
+        | expr[left] AND expr[right]    {
+                                            std::cout << BGRN "Rule expr -> expr and expr, line " << yylineno << RST << std::endl;
+                                            $$ = Manage_expr_expr_AND_expr($left, $right);
+                                        }
+        | expr[left] OR expr[right]     {
+                                            std::cout << BGRN "Rule expr -> expr or expr, line " << yylineno << RST << std::endl;
+                                            $$ = Manage_expr_expr_OR_expr($left, $right);
+                                        }
+        | term                          {
+                                            std::cout << BGRN "Rule expr -> term, line " << yylineno << RST << std::endl;
+                                            $$ = Manage_expr_term($1);
+                                        }
         ;
 
 term:     L_PARENTHESIS expr R_PARENTHESIS  {
                                                 std::cout << BGRN "Rule term -> (expr), line " << yylineno << RST << std::endl;
-                                                $$ = Manage_term_LPexprRP($2);
+                                                $$ = Manage_term_LPexprRP($expr);
                                             }
         | NOT expr                          {
                                                 std::cout << BGRN "Rule term -> not expr, line " << yylineno << RST << std::endl;
-                                                $$ = Manage_term_notexpr($2);
+                                                $$ = Manage_term_notexpr($expr);
                                             }
         | PLUS_PLUS lvalue                  {
                                                 std::cout << BGRN "Rule term -> ++lvalue, line " << yylineno << RST << std::endl;
-                                                $$ = Manage_term_PPlval($2);
+                                                $$ = Manage_term_PPlval($lvalue);
                                             }
         | lvalue PLUS_PLUS                  {
                                                 std::cout << BGRN "Rule term -> lvalue++, line " << yylineno << RST << std::endl;
-                                                $$ = Manage_term_lvaluePP($1);
+                                                $$ = Manage_term_lvaluePP($lvalue);
                                             }
         | MINUS_MINUS lvalue                {
                                                 std::cout << BGRN "Rule term -> --lvalue, line " << yylineno << RST << std::endl;
-                                                $$ = Manage_term_MMlval($2);
+                                                $$ = Manage_term_MMlval($lvalue);
                                             }
         | lvalue MINUS_MINUS                {
                                                 std::cout << BGRN "Rule term -> lvalue--, line " << yylineno << RST << std::endl;
-                                                $$ = Manage_term_lvalueMM($1);
+                                                $$ = Manage_term_lvalueMM($lvalue);
                                             }
         | primary                           {
                                                 std::cout << BGRN "Rule term -> primary, line " << yylineno << RST << std::endl;
-                                                $$ = Manage_term_primary($1);
+                                                $$ = Manage_term_primary($primary);
                                             }
         | MINUS expr %prec UMINUS           {
                                                 std::cout << BGRN "Rule term -> -expr Uminus, line " << yylineno << RST << std::endl;
-                                                $$ = Manage_term_minusexpr($2);
+                                                $$ = Manage_term_minusexpr($expr);
                                             }
         ;
 
 assignexpr:  lvalue ASSIGN expr {
                                     std::cout << BGRN "Rule assignexpr -> lvalue=expr, line " << yylineno << RST << std::endl;
-                                    $$ = Manage_assignexpr_lvalueASSIGNexpr($1, $3);
+                                    $$ = Manage_assignexpr_lvalueASSIGNexpr($lvalue, $expr);
                                 }
             ;
 
 primary:  lvalue                                {
                                                    std::cout << BGRN "Rule primary -> lvalue, line " << yylineno << RST << std::endl;
-                                                   $$ = Manage_primary_lvalue($1);
+                                                   $$ = Manage_primary_lvalue($lvalue);
                                                 }
         | call                                  {
                                                    std::cout << BGRN "Rule primary -> call, line " << yylineno << RST << std::endl;
-                                                   $$ = Manage_primary_call($1);
+                                                   $$ = Manage_primary_call($call);
                                                 }
         | objectdef                             {
                                                    std::cout << BGRN "Rule primary -> objectdef, line " << yylineno << RST << std::endl;
-                                                   $$ = Manage_primary_objectdef($1);
+                                                   $$ = Manage_primary_objectdef($objectdef);
                                                 }
         | L_PARENTHESIS funcdef R_PARENTHESIS   {
                                                    std::cout << BGRN "Rule primary -> (funcdef), line " << yylineno << RST << std::endl;
-                                                   $$ = Manage_primary_LPfuncdefRP($2);
+                                                   $$ = Manage_primary_LPfuncdefRP($funcdef);
                                                 }
         | const                                 {
                                                    std::cout << BGRN "Rule primary -> const, line " << yylineno << RST << std::endl;
-                                                   $$ = Manage_primary_const($1);
+                                                   $$ = Manage_primary_const($const);
                                                 }
         ;
 
 lvalue:   ID            {
                             std::cout << BGRN "Rule lvalue -> id, line " << yylineno << RST << std::endl;
-                            $$ = Manage_lvalue_id($1);
+                            $$ = Manage_lvalue_id($ID);
                         }
         | LOCAL ID      {
                             std::cout << BGRN "Rule lvalue -> local id, line " << yylineno << RST << std::endl;
-                            $$ = Manage_lvalue_localid($2);
+                            $$ = Manage_lvalue_localid($ID);
                         }
         | NAMESPACE ID  {
                             std::cout << BGRN "Rule lvalue -> namespace id, line " << yylineno << RST << std::endl;
-                            $$ = Manage_lvalue_globalid($2);
+                            $$ = Manage_lvalue_globalid($ID);
                         }
         | member        {
                             std::cout << BGRN "Rule lvalue -> member, line " << yylineno << RST << std::endl;
-                            $$ = Manage_lvalue_member($1);
+                            $$ = Manage_lvalue_member($member);
                         }
         ;
 
 member:   lvalue DOT ID                                     {
                                                                 std::cout << BGRN "Rule member -> lvalue.id, line " << yylineno << RST << std::endl;
-                                                                $$ = Manage_member_lvalueDOTid($1, $3);
+                                                                $$ = Manage_member_lvalueDOTid($lvalue, $ID);
                                                             }
         | lvalue L_SQUARE_BRACKET expr R_SQUARE_BRACKET     {
                                                                 std::cout << BGRN "Rule member -> lvalue[expr], line " << yylineno << RST << std::endl;
-                                                                $$ = Manage_member_lvalueLSBexprRSB($1, $3);
+                                                                $$ = Manage_member_lvalueLSBexprRSB($lvalue, $expr);
                                                             }
         | call DOT ID                                       {
                                                                 std::cout << BGRN "Rule member -> call.id, line " << yylineno << RST << std::endl;
-                                                                $$ = Manage_member_callDOTid($1, $3);
+                                                                $$ = Manage_member_callDOTid($call, $ID);
                                                             }
         | call L_SQUARE_BRACKET expr R_SQUARE_BRACKET       {
                                                                 std::cout << BGRN "Rule member -> call[expr], line " << yylineno << RST << std::endl;
-                                                                $$ = Manage_member_callLSBexprRSB($1, $3);
+                                                                $$ = Manage_member_callLSBexprRSB($call, $expr);
                                                             }
         ;
 
-call:     call L_PARENTHESIS elist R_PARENTHESIS                                        {
-                                                                                            std::cout << BGRN "Rule call -> call(elist), line " << yylineno << RST << std::endl;
-                                                                                            $$ = Manage_call_callLPelistRP($1, $3);
-                                                                                        }
-        | lvalue callsuffix                                                             {
-                                                                                            std::cout << BGRN "Rule call -> lvalue callsuffix, line " << yylineno << RST << std::endl;
-                                                                                            $$ = Manage_call_lvaluecallsuffix($1, $2);
-                                                                                        }
-        | L_PARENTHESIS funcdef R_PARENTHESIS L_PARENTHESIS elist R_PARENTHESIS         {
-                                                                                            std::cout << BGRN "Rule call -> (funcdef)(elist), line " << yylineno << RST << std::endl;
-                                                                                            $$ = Manage_call_LPfuncdefRPLPelistRP($2, $5);
-                                                                                        }
+call:     call[derivated] L_PARENTHESIS elist R_PARENTHESIS                         {
+                                                                                        std::cout << BGRN "Rule call -> call(elist), line " << yylineno << RST << std::endl;
+                                                                                        $$ = Manage_call_callLPelistRP($derivated, $elist);
+                                                                                    }
+        | lvalue callsuffix                                                         {
+                                                                                        std::cout << BGRN "Rule call -> lvalue callsuffix, line " << yylineno << RST << std::endl;
+                                                                                        $$ = Manage_call_lvaluecallsuffix($lvalue, $callsuffix);
+                                                                                    }
+        | L_PARENTHESIS funcdef R_PARENTHESIS L_PARENTHESIS elist R_PARENTHESIS     {
+                                                                                        std::cout << BGRN "Rule call -> (funcdef)(elist), line " << yylineno << RST << std::endl;
+                                                                                        $$ = Manage_call_LPfuncdefRPLPelistRP($funcdef, $elist);
+                                                                                    }
         ;
 
 callsuffix:   normcall      {
                                 std::cout << BGRN "Rule callsuffix -> normcall, line " << yylineno << RST << std::endl;
-                                $$ = Manage_callsuffix_normcall($1);}
+                                $$ = Manage_callsuffix_normcall($normcall);
+                            }
             | methodcall    {
                                 std::cout << BGRN "Rule callsuffix -> methodcall, line " << yylineno << RST << std::endl;
-                                $$ = Manage_callsuffix_methodcall($1);
+                                $$ = Manage_callsuffix_methodcall($methodcall);
                             }
             ;
 
 normcall:     L_PARENTHESIS elist R_PARENTHESIS                 {
                                                                     std::cout << BGRN "Rule normcall -> (elist), line " << yylineno << RST << std::endl;
-                                                                    $$ = Manage_normcall_LPelistRP($2);
+                                                                    $$ = Manage_normcall_LPelistRP($elist);
                                                                 }
             ;
 
 methodcall:   DOUBLE_DOT ID L_PARENTHESIS elist R_PARENTHESIS   {
                                                                     std::cout << BGRN "Rule methodcall -> ..id(elist), line " << yylineno << RST << std::endl;
-                                                                    $$ = Manage_methodcall_DDOTidLPelistRP($2, $4);
+                                                                    $$ = Manage_methodcall_DDOTidLPelistRP($ID, $elist);
                                                                 }
             ;
 
 elist:   exprOptRpt         {
                                 std::cout << BGRN "Rule elist -> exprOptRpt, line " << yylineno << RST << std::endl;
-                                $$ = Manage_elist_exprOptRpt($1);
+                                $$ = Manage_elist_exprOptRpt($exprOptRpt);
                             }
         |                   {
                                 std::cout << BGRN "Rule elist -> ε, line " << yylineno << RST << std::endl;
@@ -392,54 +394,54 @@ elist:   exprOptRpt         {
                             }
        ;
 
-exprOptRpt:   expr COMMA exprOptRpt     {
-                                            std::cout << BGRN "Rule exprOptRpt -> expr, exprOptRpt, line " << yylineno << RST << std::endl;
-                                            $$ = Manage_exprOR_exprOR($1, $3);
-                                        }
-            | expr                      {
-                                            std::cout << BGRN "Rule exprOptRpt -> expr, line " << yylineno << RST << std::endl;
-                                            $$ = Manage_exprOR_expr($1);
-                                        }
+exprOptRpt:   expr COMMA exprOptRpt[derivated]  {
+                                                    std::cout << BGRN "Rule exprOptRpt -> expr, exprOptRpt, line " << yylineno << RST << std::endl;
+                                                    $$ = Manage_exprOR_exprOR($expr, $derivated);
+                                                }
+            | expr                              {
+                                                    std::cout << BGRN "Rule exprOptRpt -> expr, line " << yylineno << RST << std::endl;
+                                                    $$ = Manage_exprOR_expr($expr);
+                                                }
             ;
 
 objectdef:    L_SQUARE_BRACKET elist R_SQUARE_BRACKET       {
                                                                 std::cout << BGRN "Rule objectdef -> [elist], line " << yylineno << RST << std::endl;
-                                                                $$ = Manage_objectdef_LSBelistRSB($2);
+                                                                $$ = Manage_objectdef_LSBelistRSB($elist);
                                                             }
             | L_SQUARE_BRACKET indexed R_SQUARE_BRACKET     {
                                                                 std::cout << BGRN "Rule objectdef -> [indexed], line " << yylineno << RST << std::endl;
-                                                                $$ = Manage_objectdef_LSBindexedRSB($2);
+                                                                $$ = Manage_objectdef_LSBindexedRSB($indexed);
                                                             }
             ;
 
 
 indexed:  indelemlist   {
                             std::cout << BGRN "Rule indexed -> indelemlist, line " << yylineno << RST << std::endl;
-                            $$ = Manage_indexed($1);
+                            $$ = Manage_indexed($indelemlist);
                         }
         ;
 
-indelemlist:  indexedelem COMMA indelemlist     {
-                                                    std::cout << BGRN "Rule indelemlist -> indexedelem, indelemlist, line " << yylineno << RST << std::endl;
-                                                    $$ = Manage_indelemlist($1, $3);
-                                                }
-            | indexedelem                       {
-                                                    std::cout << BGRN "Rule indelemlist -> indexedelem, line " << yylineno << RST << std::endl;
-                                                    $$ = Manage_indelemlist_indexedelem($1);
-                                                }
+indelemlist:  indexedelem COMMA indelemlist[derivated]  {
+                                                            std::cout << BGRN "Rule indelemlist -> indexedelem, indelemlist, line " << yylineno << RST << std::endl;
+                                                            $$ = Manage_indelemlist($indexedelem, $derivated);
+                                                        }
+            | indexedelem                               {
+                                                            std::cout << BGRN "Rule indelemlist -> indexedelem, line " << yylineno << RST << std::endl;
+                                                            $$ = Manage_indelemlist_indexedelem($indexedelem);
+                                                        }
             ;
 
 
-indexedelem:  L_CURLY_BRACKET expr COLON expr R_CURLY_BRACKET   {
-                                                                    std::cout << BGRN "Rule indexedelem -> {expr:expr}, line " << yylineno << RST << std::endl;
-                                                                    $$ = Manage_indexedelem_LCB_expr_COLON_expr_RCB($2, $4);
-                                                                }
+indexedelem:  L_CURLY_BRACKET expr[key] COLON expr[value] R_CURLY_BRACKET   {
+                                                                                std::cout << BGRN "Rule indexedelem -> {expr:expr}, line " << yylineno << RST << std::endl;
+                                                                                $$ = Manage_indexedelem_LCB_expr_COLON_expr_RCB($key, $value);
+                                                                            }
             ;
 
 block:    L_CURLY_BRACKET {++scopeLevel;} stmtList R_CURLY_BRACKET {symbolTableObj.hide(scopeLevel--);}
             {
                 std::cout << BGRN "Rule block -> { stmtList }, line " << yylineno << RST << std::endl;
-                $$ = Manage_block_LCBstmtRCB($3);
+                $$ = Manage_block_LCBstmtRCB($stmtList);
             }
         ;
 
@@ -493,17 +495,17 @@ funcdef:  funcprefix funcargs funcbody
 
 const:    intNumber     {
                             std::cout << BGRN "Rule const -> intNumber, line " << yylineno << RST << std::endl;
-                            $$ = Manage_const_int($1);
+                            $$ = Manage_const_int($intNumber);
                         }
         | realNumber    {
                             std::cout << BGRN "Rule const -> realNumber, line " << yylineno << RST << std::endl;
-                            $$ = Manage_const_real($1);
+                            $$ = Manage_const_real($realNumber);
                         }
         | STRING        {
                             std::cout << BGRN "Rule const -> string, line " << yylineno << RST << std::endl;
-                            $$ = Manage_const_string($1);
+                            $$ = Manage_const_string($STRING);
                         }
-        | NIL           {   
+        | NIL           {
                             std::cout << BGRN "Rule const -> nil, line " << yylineno << RST << std::endl;
                             $$ = Manage_const_nil();
                         }
@@ -519,57 +521,57 @@ const:    intNumber     {
 
 idlist:   ID    {
                     std::cout << BGRN "Rule idlist -> id, line " << yylineno << RST << std::endl;
-                    $$ = Manage_idlist_ID($1);
+                    $$ = Manage_idlist_ID($ID);
                 }
-        | ID COMMA idlist   {
-                                std::cout << BGRN "Rule idlist -> idlist, id, line " << yylineno << RST << std::endl;
-                                $$ = Manage_idlist_idlist_comma_id($3, $1);
-                            }
-        |                   {
-                                std::cout << BGRN "Rule idlist -> ε, line " << yylineno << RST << std::endl;
-                                $$ = Manage_idlist();
-                            }
+        | ID COMMA idlist[derivated]    {
+                                            std::cout << BGRN "Rule idlist -> idlist, id, line " << yylineno << RST << std::endl;
+                                            $$ = Manage_idlist_idlist_comma_id($derivated, $ID);
+                                        }
+        |                               {
+                                            std::cout << BGRN "Rule idlist -> ε, line " << yylineno << RST << std::endl;
+                                            $$ = Manage_idlist();
+                                        }
         ;
 
-ifstmt:   IF L_PARENTHESIS expr R_PARENTHESIS stmt else     {   
+ifstmt:   IF L_PARENTHESIS expr R_PARENTHESIS stmt else     {
                                                                 std::cout << BGRN "Rule ifstmt -> if (expr) stmt else, line " << yylineno << RST << std::endl;
-                                                                $$ = Manage_ifstmt($3, $5, $6);
+                                                                $$ = Manage_ifstmt($expr, $stmt, $else);
                                                             }
         ;
 
-else:     ELSE stmt     {   
+else:     ELSE stmt     {
                             std::cout << BGRN "Rule else -> else stmt, line " << yylineno << RST << std::endl;
-                            $$ = Manage_else_stmt($2);
+                            $$ = Manage_else_stmt($stmt);
                         }
-        |               {   
+        |               {
                             std::cout << BGRN "Rule else -> ε, line " << yylineno << RST << std::endl;
                             $$ = Manage_else();
                         }
         ;
 
-whilestmt:    WHILE L_PARENTHESIS expr R_PARENTHESIS stmt   {   
+whilestmt:    WHILE L_PARENTHESIS expr R_PARENTHESIS stmt   {
                                                                 std::cout << BGRN "Rule whilestmt -> (expr) stmt, line " << yylineno << RST << std::endl;
-                                                                $$ = Manage_whilestmt($3, $5);
+                                                                $$ = Manage_whilestmt($expr, $stmt);
                                                             }
             ;
 
-forstmt:      FOR L_PARENTHESIS elist SEMICOLON expr SEMICOLON elist R_PARENTHESIS stmt     {
-                                                                                                std::cout << BGRN "Rule forstmt -> for (elist ; expr ; elist) stmt, line " << yylineno << RST << std::endl;
-                                                                                                $$ = Manage_for($3, $5, $7, $9);
-                                                                                            }
+forstmt:      FOR L_PARENTHESIS elist[init] SEMICOLON expr SEMICOLON elist[postloop] R_PARENTHESIS stmt {
+                                                                                                            std::cout << BGRN "Rule forstmt -> for (elist ; expr ; elist) stmt, line " << yylineno << RST << std::endl;
+                                                                                                            $$ = Manage_for($init, $expr, $postloop, $stmt);
+                                                                                                        }
             ;
 
-returnstmt:   RETURN ret SEMICOLON      {       
+returnstmt:   RETURN ret SEMICOLON      {
                                             std::cout << BGRN "Rule returnstmt -> ret;, line " << yylineno << RST << std::endl;
-                                            $$ = Manage_returnstmt($2);
+                                            $$ = Manage_returnstmt($ret);
                                         }
             ;
 
 ret:      expr      {
                         std::cout << BGRN "Rule ret -> expr, line " << yylineno << RST << std::endl;
-                        $$ = Manage_ret_expr($1);
+                        $$ = Manage_ret_expr($expr);
                     }
-        |           {   
+        |           {
                         std::cout << BGRN "Rule ret -> ε, line " << yylineno << RST << std::endl;
                         $$ = Manage_ret();
                     }
