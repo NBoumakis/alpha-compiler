@@ -2,10 +2,10 @@
 #include <cassert>
 #include <string>
 
-Symbol::Symbol(std::string name, unsigned int scope, unsigned int line, unsigned int funcDepth, SymbolType type, unsigned offset)
+Symbol::Symbol(std::string name, unsigned int scope, unsigned int line, unsigned int funcDepth, SymbolType type, unsigned long offset)
     : name(name), scope(scope), line(line), funcDepth(funcDepth), type(type), isActive(true), offset(offset) {}
 
-Symbol::Symbol(std::string name, unsigned int scope, unsigned int line, unsigned int funcDepth, SymbolType type, unsigned offset, bool isActive)
+Symbol::Symbol(std::string name, unsigned int scope, unsigned int line, unsigned int funcDepth, SymbolType type, unsigned long offset, bool isActive)
     : name(name), scope(scope), line(line), funcDepth(funcDepth), type(type), isActive(isActive), offset(offset) {}
 
 std::string Symbol::to_string() {

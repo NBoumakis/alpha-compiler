@@ -25,13 +25,13 @@ public:
 
     SymbolType type;
 
-    unsigned int offset;
+    unsigned long offset;
 
     friend class Scope;
 
 public:
-    Symbol(std::string name, unsigned int scope, unsigned int line, unsigned int funcDepth, SymbolType type, unsigned offset);
-    Symbol(std::string name, unsigned int scope, unsigned int line, unsigned int funcDepth, SymbolType type, unsigned offset, bool isActive);
+    Symbol(std::string name, unsigned int scope, unsigned int line, unsigned int funcDepth, SymbolType type, unsigned long offset);
+    Symbol(std::string name, unsigned int scope, unsigned int line, unsigned int funcDepth, SymbolType type, unsigned long offset, bool isActive);
 
     std::string to_string();
     ~Symbol();
@@ -42,19 +42,21 @@ public:
     ScopespaceType space;
 
 public:
-    Variable(std::string name, unsigned int scope, unsigned int line, unsigned int funcDepth, ScopespaceType type, unsigned offset)
+    Variable(std::string name, unsigned int scope, unsigned int line, unsigned int funcDepth, ScopespaceType type, unsigned long offset)
         : Symbol(name, scope, line, funcDepth, VARIABLE, offset), space(type) {}
-    Variable(std::string name, unsigned int scope, unsigned int line, unsigned int funcDepth, ScopespaceType type, unsigned offset, bool isActive)
+    Variable(std::string name, unsigned int scope, unsigned int line, unsigned int funcDepth, ScopespaceType type, unsigned long offset, bool isActive)
         : Symbol(name, scope, line, funcDepth, VARIABLE, offset, isActive), space(type) {}
 };
 
 class Function : public Symbol {
-protected:
 public:
-    Function(std::string name, unsigned int scope, unsigned int line, unsigned int funcDepth, SymbolType type)
-        : Symbol(name, scope, line, funcDepth, type, offset) {}
-    Function(std::string name, unsigned int scope, unsigned int line, unsigned int funcDepth, SymbolType type, bool isActive)
-        : Symbol(name, scope, line, funcDepth, type, offset, isActive) {}
+    unsigned long iaddress;
+
+public:
+    Function(std::string name, unsigned int scope, unsigned int line, unsigned int funcDepth, SymbolType type, unsigned long offset, unsigned long iaddress)
+        : Symbol(name, scope, line, funcDepth, type, offset), iaddress(iaddress) {}
+    Function(std::string name, unsigned int scope, unsigned int line, unsigned int funcDepth, SymbolType type, unsigned long offset, unsigned long iaddress, bool isActive)
+        : Symbol(name, scope, line, funcDepth, type, offset, isActive), iaddress(iaddress) {}
 };
 
 #endif /* __SYMBOL_H */
