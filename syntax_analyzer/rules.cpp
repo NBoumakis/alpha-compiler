@@ -17,14 +17,6 @@ std::string type_names[] = {
     std::string("user function"),
     std::string("library function")};
 
-static inline SymbolType var_type() {
-    if (scopeLevel == 0) {
-        return GLOBAL_VAR;
-    } else {
-        return LOCAL_VAR;
-    }
-}
-
 programValue *Manage_program(stmtListValue *stmtList) {
     programValue *newStructVal;
     return newStructVal;
