@@ -575,6 +575,16 @@ Symbol *Manage_funcprefix(std::string funcName) {
         symbolTableObj.insert(funcName, newFunc, scopeLevel);
     }
 
+    exprValue *funcprefix = new exprValue();
+    funcprefix->valType = userfuncExpr_T;
+    funcprefix->symbolVal = newFunc;
+
+    emit(funcstart_iop, funcprefix, nullptr, nullptr, 0, 0);
+
+    scopeOffsetStack.push(currScopespaceOffset());
+    enterScopespace();
+    resetFormalArgOffset();
+
     return newFunc;
 }
 
