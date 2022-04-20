@@ -34,7 +34,7 @@ stmtValue *Manage_stmt_funcdef(funcdefValue *);
 stmtValue *Manage_stmt_semicolon();
 
 /* Expressions */
-exprValue *Manage_expr_assignexpr(assignexprValue *);
+exprValue *Manage_expr_assignexpr(exprValue *);
 
 exprValue *Manage_expr_expr_PLUS_expr(exprValue *, exprValue *);
 
@@ -62,63 +62,63 @@ exprValue *Manage_expr_expr_AND_expr(exprValue *, exprValue *);
 
 exprValue *Manage_expr_expr_OR_expr(exprValue *, exprValue *);
 
-exprValue *Manage_expr_term(termValue *);
+exprValue *Manage_expr_term(exprValue *);
 
 /* Terms */
-termValue *Manage_term_LPexprRP(exprValue *);
+exprValue *Manage_term_LPexprRP(exprValue *);
 
-termValue *Manage_term_notexpr(exprValue *);
+exprValue *Manage_term_notexpr(exprValue *);
 
-termValue *Manage_term_PPlval(lvalueValue *);
+exprValue *Manage_term_PPlval(exprValue *);
 
-termValue *Manage_term_lvaluePP(lvalueValue *);
+exprValue *Manage_term_lvaluePP(exprValue *);
 
-termValue *Manage_term_MMlval(lvalueValue *);
+exprValue *Manage_term_MMlval(exprValue *);
 
-termValue *Manage_term_lvalueMM(lvalueValue *);
+exprValue *Manage_term_lvalueMM(exprValue *);
 
-termValue *Manage_term_primary(primaryValue *);
+exprValue *Manage_term_primary(exprValue *);
 
-termValue *Manage_term_minusexpr(exprValue *);
+exprValue *Manage_term_minusexpr(exprValue *);
 
 /* Assign expression */
-assignexprValue *Manage_assignexpr_lvalueASSIGNexpr(lvalueValue *, exprValue *);
+exprValue *Manage_assignexpr_lvalueASSIGNexpr(exprValue *, exprValue *);
 
 /* Primary */
-primaryValue *Manage_primary_lvalue(lvalueValue *);
+exprValue *Manage_primary_lvalue(exprValue *);
 
-primaryValue *Manage_primary_call(callValue *);
+exprValue *Manage_primary_call(exprValue *);
 
-primaryValue *Manage_primary_objectdef(objectdefValue *);
+exprValue *Manage_primary_objectdef(exprValue *);
 
-primaryValue *Manage_primary_LPfuncdefRP(funcdefValue *);
+exprValue *Manage_primary_LPfuncdefRP(funcdefValue *);
 
-primaryValue *Manage_primary_const(constValue *);
+exprValue *Manage_primary_const(exprValue *);
 
 /* lvalue */
-lvalueValue *Manage_lvalue_id(std::string);
+exprValue *Manage_lvalue_id(std::string);
 
-lvalueValue *Manage_lvalue_localid(std::string);
+exprValue *Manage_lvalue_localid(std::string);
 
-lvalueValue *Manage_lvalue_globalid(std::string);
+exprValue *Manage_lvalue_globalid(std::string);
 
-lvalueValue *Manage_lvalue_member(memberValue *);
+exprValue *Manage_lvalue_member(exprValue *);
 
 /* Members */
-memberValue *Manage_member_lvalueDOTid(lvalueValue *, std::string);
+exprValue *Manage_member_lvalueDOTid(exprValue *, std::string);
 
-memberValue *Manage_member_lvalueLSBexprRSB(lvalueValue *, exprValue *);
+exprValue *Manage_member_lvalueLSBexprRSB(exprValue *, exprValue *);
 
-memberValue *Manage_member_callDOTid(callValue *, std::string);
+exprValue *Manage_member_callDOTid(exprValue *, std::string);
 
-memberValue *Manage_member_callLSBexprRSB(callValue *, exprValue *);
+exprValue *Manage_member_callLSBexprRSB(exprValue *, exprValue *);
 
 /* Calls */
-callValue *Manage_call_callLPelistRP(callValue *, elistValue *);
+exprValue *Manage_call_callLPelistRP(exprValue *, elistValue *);
 
-callValue *Manage_call_lvaluecallsuffix(lvalueValue *, callsuffixValue *);
+exprValue *Manage_call_lvaluecallsuffix(exprValue *, callsuffixValue *);
 
-callValue *Manage_call_LPfuncdefRPLPelistRP(funcdefValue *, elistValue *);
+exprValue *Manage_call_LPfuncdefRPLPelistRP(funcdefValue *, elistValue *);
 
 /* Call suffix */
 callsuffixValue *Manage_callsuffix_normcall(normcallValue *);
@@ -142,9 +142,9 @@ exprOptRptValue *Manage_exprOR_exprOR(exprValue *, exprOptRptValue *);
 exprOptRptValue *Manage_exprOR_expr(exprValue *);
 
 /* Objectdef */
-objectdefValue *Manage_objectdef_LSBelistRSB(elistValue *);
+exprValue *Manage_objectdef_LSBelistRSB(elistValue *);
 
-objectdefValue *Manage_objectdef_LSBindexedRSB(indexedValue *);
+exprValue *Manage_objectdef_LSBindexedRSB(indexedValue *);
 
 /* Indexed */
 indexedValue *Manage_indexed(indelemlistValue *);
@@ -171,17 +171,17 @@ funcdefValue *Manage_funcdef(idlistValue *, blockValue *);
 std::string newTmpFuncname();
 
 /* Constants */
-constValue *Manage_const_int(int);
+exprValue *Manage_const_int(int);
 
-constValue *Manage_const_real(double);
+exprValue *Manage_const_real(double);
 
-constValue *Manage_const_string(std::string);
+exprValue *Manage_const_string(std::string);
 
-constValue *Manage_const_nil();
+exprValue *Manage_const_nil();
 
-constValue *Manage_const_true();
+exprValue *Manage_const_true();
 
-constValue *Manage_const_false();
+exprValue *Manage_const_false();
 
 /* ID list */
 idlistValue *Manage_idlist_ID(std::string);

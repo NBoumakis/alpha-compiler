@@ -39,24 +39,17 @@
     stmtListValue *stmtListVal;
     stmtValue *stmtVal;
     exprValue *exprVal;
-    termValue *termVal;
-    assignexprValue *assignexprVal;
     primaryValue *primaryVal;
-    lvalueValue *lvalueVal;
-    memberValue *memberVal;
-    callValue *callVal;
     callsuffixValue *callsuffixVal;
     normcallValue *normcallVal;
     methodcallValue *methodcallVal;
     elistValue *elistVal;
     exprOptRptValue *exprOptRptVal;
-    objectdefValue *objectdefVal;
     indexedValue *indexedVal;
     indelemlistValue *indelemlistVal;
     indexedelemValue *indexedelemVal;
     blockValue *blockVal;
     funcdefValue *funcdefVal;
-    constValue *constVal;
     idlistValue *idlistVal;
 
     ifstmtValue *ifstmtVal;
@@ -84,18 +77,18 @@
 %type <stmtListVal> stmtList
 %type <stmtVal> stmt
 %type <exprVal> expr
-%type <termVal> term
-%type <assignexprVal> assignexpr
-%type <primaryVal> primary
-%type <lvalueVal> lvalue
-%type <memberVal> member
-%type <callVal> call
+%type <exprVal> term
+%type <exprVal> assignexpr
+%type <exprVal> primary
+%type <exprVal> lvalue
+%type <exprVal> member
+%type <exprVal> call
 %type <callsuffixVal> callsuffix
 %type <normcallVal> normcall
 %type <methodcallVal> methodcall
 %type <elistVal> elist
 %type <exprOptRptVal> exprOptRpt
-%type <objectdefVal> objectdef
+%type <exprVal> objectdef
 %type <indexedVal> indexed
 %type <indelemlistVal> indelemlist
 %type <indexedelemVal>  indexedelem
@@ -104,7 +97,7 @@
 %type <stringVal> funcname
 %type <symPointer> funcprefix
 %type <funcdefVal> funcdef
-%type <constVal> const
+%type <exprVal> const
 %type <idlistVal> idlist
 %type <ifstmtVal> ifstmt
 %type <elseVal> else

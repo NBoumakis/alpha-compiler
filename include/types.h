@@ -92,9 +92,23 @@ struct stmtValue {
 };
 
 enum exprType {
-    AssignexprExpr_T,
-    ExprOpExprExpr_T,
-    TermExpr_T,
+    varExpr_T,
+    TableitemExpr_T,
+
+    userfuncExpr_T,
+    libfuncExpr_T,
+
+    arithmexprExpr_T,
+    boolexprExpr_T,
+    assignexprExpr_T,
+    newtableExpr_T,
+
+    constnumExpr_T,
+    constboolExpr_T,
+    conststringExpr_T,
+
+    nilExpr_T,
+
     InvalidExpr_T
 };
 
@@ -116,17 +130,14 @@ enum opType {
 };
 
 struct exprValue {
-    union {
-        assignexprValue *assignexprVal;
-        struct {
-            exprValue *exprLeftVal;
-            exprValue *exprRightVal;
-        } exprOPValue;
-        termValue *termVal;
-    } value;
+    Symbol *symbolVal;
+    exprValue *indexVal;
+    double numConstval;
+    char *strConstVal;
+    bool boolConstVal;
+    exprValue *next;
 
     exprType valType;
-    opType operatorType;
 };
 
 enum termType {

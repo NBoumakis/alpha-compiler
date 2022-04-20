@@ -91,7 +91,7 @@ stmtValue *Manage_stmt_semicolon() {
 }
 
 /* Expressions */
-exprValue *Manage_expr_assignexpr(assignexprValue *assignexpr) {
+exprValue *Manage_expr_assignexpr(exprValue *assignexpr) {
     exprValue *exprValueVal;
     return exprValueVal;
 }
@@ -161,31 +161,31 @@ exprValue *Manage_expr_expr_OR_expr(exprValue *exprLeft, exprValue *exprRight) {
     return exprValueVal;
 }
 
-exprValue *Manage_expr_term(termValue *term) {
+exprValue *Manage_expr_term(exprValue *term) {
     exprValue *exprValueVal;
     return exprValueVal;
 }
 
 /* Terms */
-termValue *Manage_term_LPexprRP(exprValue *expr) {
-    termValue *termValueVal;
+exprValue *Manage_term_LPexprRP(exprValue *expr) {
+    exprValue *termValueVal;
     return termValueVal;
 }
 
-termValue *Manage_term_notexpr(exprValue *expr) {
-    termValue *termValueVal;
+exprValue *Manage_term_notexpr(exprValue *expr) {
+    exprValue *termValueVal;
     return termValueVal;
 }
 
-termValue *Manage_term_PPlval(lvalueValue *lvalue) {
-    termValue *termValueVal;
+exprValue *Manage_term_PPlval(exprValue *lvalue) {
+    exprValue *termValueVal;
 
-    if (lvalue->valType == SymbolLvalue_T) {
-        if (lvalue->value.symbolVal->type == USER_FUNC ||
-            lvalue->value.symbolVal->type == LIB_FUNC) {
+    if (lvalue->valType == varExpr_T) {
+        if (lvalue->symbolVal->type == USER_FUNC ||
+            lvalue->symbolVal->type == LIB_FUNC) {
             std::cerr << BRED "Invalid preincrement of "
-                      << type_names[lvalue->value.symbolVal->type]
-                      << " \"" << lvalue->value.symbolVal->name
+                      << type_names[lvalue->symbolVal->type]
+                      << " \"" << lvalue->symbolVal->name
                       << "\" in line " << yylineno << "." RST << std::endl;
         }
     }
@@ -193,15 +193,15 @@ termValue *Manage_term_PPlval(lvalueValue *lvalue) {
     return termValueVal;
 }
 
-termValue *Manage_term_lvaluePP(lvalueValue *lvalue) {
-    termValue *termValueVal;
+exprValue *Manage_term_lvaluePP(exprValue *lvalue) {
+    exprValue *termValueVal;
 
-    if (lvalue->valType == SymbolLvalue_T) {
-        if (lvalue->value.symbolVal->type == USER_FUNC ||
-            lvalue->value.symbolVal->type == LIB_FUNC) {
+    if (lvalue->valType == varExpr_T) {
+        if (lvalue->symbolVal->type == USER_FUNC ||
+            lvalue->symbolVal->type == LIB_FUNC) {
             std::cerr << BRED "Invalid postincrement of "
-                      << type_names[lvalue->value.symbolVal->type]
-                      << " \"" << lvalue->value.symbolVal->name
+                      << type_names[lvalue->symbolVal->type]
+                      << " \"" << lvalue->symbolVal->name
                       << "\" in line " << yylineno << "." RST << std::endl;
         }
     }
@@ -209,15 +209,15 @@ termValue *Manage_term_lvaluePP(lvalueValue *lvalue) {
     return termValueVal;
 }
 
-termValue *Manage_term_MMlval(lvalueValue *lvalue) {
-    termValue *termValueVal;
+exprValue *Manage_term_MMlval(exprValue *lvalue) {
+    exprValue *termValueVal;
 
-    if (lvalue->valType == SymbolLvalue_T) {
-        if (lvalue->value.symbolVal->type == USER_FUNC ||
-            lvalue->value.symbolVal->type == LIB_FUNC) {
+    if (lvalue->valType == varExpr_T) {
+        if (lvalue->symbolVal->type == USER_FUNC ||
+            lvalue->symbolVal->type == LIB_FUNC) {
             std::cerr << BRED "Invalid predecrement of "
-                      << type_names[lvalue->value.symbolVal->type]
-                      << " \"" << lvalue->value.symbolVal->name
+                      << type_names[lvalue->symbolVal->type]
+                      << " \"" << lvalue->symbolVal->name
                       << "\" in line " << yylineno << "." RST << std::endl;
         }
     }
@@ -225,15 +225,15 @@ termValue *Manage_term_MMlval(lvalueValue *lvalue) {
     return termValueVal;
 }
 
-termValue *Manage_term_lvalueMM(lvalueValue *lvalue) {
-    termValue *termValueVal;
+exprValue *Manage_term_lvalueMM(exprValue *lvalue) {
+    exprValue *termValueVal;
 
-    if (lvalue->valType == SymbolLvalue_T) {
-        if (lvalue->value.symbolVal->type == USER_FUNC ||
-            lvalue->value.symbolVal->type == LIB_FUNC) {
+    if (lvalue->valType == varExpr_T) {
+        if (lvalue->symbolVal->type == USER_FUNC ||
+            lvalue->symbolVal->type == LIB_FUNC) {
             std::cerr << BRED "Invalid postdecrement of "
-                      << type_names[lvalue->value.symbolVal->type]
-                      << " \"" << lvalue->value.symbolVal->name
+                      << type_names[lvalue->symbolVal->type]
+                      << " \"" << lvalue->symbolVal->name
                       << "\" in line " << yylineno << "." RST << std::endl;
         }
     }
@@ -241,27 +241,27 @@ termValue *Manage_term_lvalueMM(lvalueValue *lvalue) {
     return termValueVal;
 }
 
-termValue *Manage_term_primary(primaryValue *primary) {
-    termValue *termValueVal;
+exprValue *Manage_term_primary(exprValue *primary) {
+    exprValue *termValueVal;
     return termValueVal;
 }
 
-termValue *Manage_term_minusexpr(exprValue *expr) {
-    termValue *termValueVal;
+exprValue *Manage_term_minusexpr(exprValue *expr) {
+    exprValue *termValueVal;
     return termValueVal;
 }
 
 /* Assign expression */
-assignexprValue *Manage_assignexpr_lvalueASSIGNexpr(lvalueValue *lvalue, exprValue *expr) {
-    assignexprValue *newStructVal = new assignexprValue();
+exprValue *Manage_assignexpr_lvalueASSIGNexpr(exprValue *lvalue, exprValue *expr) {
+    exprValue *newStructVal = new exprValue();
 
     Symbol *symbol;
     unsigned int i;
 
-    newStructVal->valType = InvalidAssign_T;
+    newStructVal->valType = InvalidExpr_T;
 
-    if (lvalue->valType == SymbolLvalue_T) {
-        symbol = lvalue->value.symbolVal;
+    if (lvalue->valType == varExpr_T) {
+        symbol = lvalue->symbolVal;
 
         if (symbol->type == USER_FUNC ||
             symbol->type == LIB_FUNC) {
@@ -269,9 +269,9 @@ assignexprValue *Manage_assignexpr_lvalueASSIGNexpr(lvalueValue *lvalue, exprVal
         } else if (funcDepth != symbol->funcDepth && symbol->type != GLOBAL_VAR) {
             std::cerr << BRED "Inaccessible " << type_names[symbol->type] << " \"" << symbol->name << "\" in line " << yylineno << RST << std::endl;
         } else {
-            newStructVal->valType = lvalueExprAssign_T;
-            newStructVal->value.lvalExprVal.lvalueVal = lvalue;
-            newStructVal->value.lvalExprVal.exprVal = expr;
+            newStructVal->valType = assignexprExpr_T;
+            newStructVal->symbolVal = lvalue->symbolVal;
+            /*newStructVal-> = expr;*/
         }
     }
 
@@ -279,19 +279,19 @@ assignexprValue *Manage_assignexpr_lvalueASSIGNexpr(lvalueValue *lvalue, exprVal
 }
 
 /* Primary */
-primaryValue *Manage_primary_lvalue(lvalueValue *lvalue) {
-    primaryValue *primaryValueVal = new primaryValue();
+exprValue *Manage_primary_lvalue(exprValue *lvalue) {
+    exprValue *primaryValueVal = new exprValue();
 
-    primaryValueVal->valType = InvalidPrim_T;
+    primaryValueVal->valType = InvalidExpr_T;
 
-    if (lvalue->valType == SymbolLvalue_T) {
-        Symbol *symbol = lvalue->value.symbolVal;
+    if (lvalue->valType == varExpr_T) {
+        Symbol *symbol = lvalue->symbolVal;
         if (symbol->scope == 0 ||
             symbol->type == USER_FUNC ||
             symbol->type == LIB_FUNC ||
             funcDepth == symbol->funcDepth) {
-            primaryValueVal->valType = lvaluePrim_T;
-            primaryValueVal->value.lvalueVal = lvalue;
+            primaryValueVal->valType = varExpr_T;
+            primaryValueVal->symbolVal = lvalue->symbolVal;
         } else {
             std::cerr << BRED "Inaccessible " << type_names[symbol->type] << " \"" << symbol->name << "\" in line " << yylineno << RST << std::endl;
         }
@@ -300,29 +300,29 @@ primaryValue *Manage_primary_lvalue(lvalueValue *lvalue) {
     return primaryValueVal;
 }
 
-primaryValue *Manage_primary_call(callValue *call) {
-    primaryValue *primaryValueVal;
+exprValue *Manage_primary_call(exprValue *call) {
+    exprValue *primaryValueVal;
     return primaryValueVal;
 }
 
-primaryValue *Manage_primary_objectdef(objectdefValue *objdef) {
-    primaryValue *primaryValueVal;
+exprValue *Manage_primary_objectdef(exprValue *objdef) {
+    exprValue *primaryValueVal;
     return primaryValueVal;
 }
 
-primaryValue *Manage_primary_LPfuncdefRP(funcdefValue *funcdef) {
-    primaryValue *primaryValueVal;
+exprValue *Manage_primary_LPfuncdefRP(funcdefValue *funcdef) {
+    exprValue *primaryValueVal;
     return primaryValueVal;
 }
 
-primaryValue *Manage_primary_const(constValue *constVal) {
-    primaryValue *primaryValueVal;
+exprValue *Manage_primary_const(exprValue *constVal) {
+    exprValue *primaryValueVal;
     return primaryValueVal;
 }
 
 /* lvalue */
-lvalueValue *Manage_lvalue_id(std::string id) {
-    lvalueValue *newStructVal = new lvalueValue();
+exprValue *Manage_lvalue_id(std::string id) {
+    exprValue *newStructVal = new exprValue();
     size_t i;
     Symbol *symbol = nullptr;
 
@@ -335,16 +335,16 @@ lvalueValue *Manage_lvalue_id(std::string id) {
         symbolTableObj.insert(id, symbol, scopeLevel);
     }
 
-    newStructVal->value.symbolVal = symbol;
-    newStructVal->valType = SymbolLvalue_T;
+    newStructVal->symbolVal = symbol;
+    newStructVal->valType = varExpr_T;
 
-    assert(newStructVal->value.symbolVal);
+    assert(newStructVal->symbolVal);
 
     return newStructVal;
 }
 
-lvalueValue *Manage_lvalue_localid(std::string id) {
-    lvalueValue *newStructVal = new lvalueValue();
+exprValue *Manage_lvalue_localid(std::string id) {
+    exprValue *newStructVal = new exprValue();
     unsigned int &scope = scopeLevel;
 
     auto symbol_in_table = symbolTableObj.lookup_scope(id, scope);
@@ -354,89 +354,90 @@ lvalueValue *Manage_lvalue_localid(std::string id) {
             symbol_in_table = new Variable(id, scope, yylineno, funcDepth, var_type());
             symbolTableObj.insert(id, symbol_in_table, scope);
 
-            newStructVal->value.symbolVal = symbol_in_table;
-            newStructVal->valType = SymbolLvalue_T;
+            newStructVal->symbolVal = symbol_in_table;
+            newStructVal->valType = varExpr_T;
         } else {
             std::cerr << BRED "Variable \"" << id << "\" in line " << yylineno
                       << " attempts to shadow library function." RST << std::endl;
 
-            newStructVal->valType = InvalidLvalue_T;
+            newStructVal->valType = InvalidExpr_T;
         }
     } else {
 
-        newStructVal->value.symbolVal = symbol_in_table;
-        newStructVal->valType = SymbolLvalue_T;
+        newStructVal->symbolVal = symbol_in_table;
+        newStructVal->valType = varExpr_T;
     }
 
-    assert((newStructVal->valType == InvalidLvalue_T) || (newStructVal->valType == SymbolLvalue_T && newStructVal->value.symbolVal));
+    assert((newStructVal->valType == InvalidExpr_T) || (newStructVal->valType == varExpr_T && newStructVal->symbolVal));
 
     return newStructVal;
 }
 
-lvalueValue *Manage_lvalue_globalid(std::string id) {
-    lvalueValue *newStructVal = new lvalueValue();
+exprValue *Manage_lvalue_globalid(std::string id) {
+    exprValue *newStructVal = new exprValue();
 
     auto symbol = symbolTableObj.lookup_scope(id, 0);
 
     if (symbol == nullptr) {
         std::cerr << BRED "Undefined reference to global symbol \"" << id << "\" in line " << yylineno << "." RST << std::endl;
-        newStructVal->valType = InvalidLvalue_T;
+        newStructVal->valType = InvalidExpr_T;
     } else {
-        newStructVal->valType = SymbolLvalue_T;
-        newStructVal->value.symbolVal = symbol;
+        newStructVal->valType = varExpr_T;
+        newStructVal->symbolVal = symbol;
     }
 
     return newStructVal;
 }
 
-lvalueValue *Manage_lvalue_member(memberValue *member) {
-    lvalueValue *lvalueValueVal;
+exprValue *Manage_lvalue_member(exprValue *member) {
+    exprValue *lvalueValueVal;
     return lvalueValueVal;
 }
 
 /* Members */
-memberValue *Manage_member_lvalueDOTid(lvalueValue *lvalue, std::string id) {
-    memberValue *memberVal;
+exprValue *Manage_member_lvalueDOTid(exprValue *lvalue, std::string id) {
+    exprValue *memberVal;
     return memberVal;
 }
 
-memberValue *Manage_member_lvalueLSBexprRSB(lvalueValue *lvalue, exprValue *expr) {
-    memberValue *memberVal;
+exprValue *Manage_member_lvalueLSBexprRSB(exprValue *lvalue, exprValue *expr) {
+    exprValue *memberVal;
     return memberVal;
 }
 
-memberValue *Manage_member_callDOTid(callValue *call, std::string id) {
-    memberValue *memberVal;
+exprValue *Manage_member_callDOTid(exprValue *call, std::string id) {
+    exprValue *memberVal;
     return memberVal;
 }
 
-memberValue *Manage_member_callLSBexprRSB(callValue *call, exprValue *expr) {
-    memberValue *memberVal;
+exprValue *Manage_member_callLSBexprRSB(exprValue *call, exprValue *expr) {
+    exprValue *memberVal;
     return memberVal;
 }
 
 /* Calls */
-callValue *Manage_call_callLPelistRP(callValue *call, elistValue *elist) {
-    callValue *callVal;
+exprValue *Manage_call_callLPelistRP(exprValue *call, elistValue *elist) {
+    exprValue *callVal;
     return callVal;
 }
 
-callValue *Manage_call_lvaluecallsuffix(lvalueValue *lvalue, callsuffixValue *callsuffix) {
-    callValue *callVal;
+exprValue *Manage_call_lvaluecallsuffix(exprValue *lvalue, callsuffixValue *callsuffix) {
+    exprValue *callVal;
 
-    callVal->valType = InvalidCall_T;
+    callVal->valType = varExpr_T;
 
-    if (lvalue->valType == SymbolLvalue_T) {
+    // TODO
+    /*if (lvalue->valType == SymbolLvalue_T) {
         callVal->valType = lvalueCallSuffCall_T;
-        callVal->value.callLvalueValue.lvalueVal = lvalue;
-        callVal->value.callLvalueValue.callsuffixVal = callsuffix;
-    }
+        callVal->callLvalueValue.lvalueVal = lvalue;
+        callVal->callLvalueValue.callsuffixVal = callsuffix;
+    }*/
 
     return callVal;
 }
 
-callValue *Manage_call_LPfuncdefRPLPelistRP(funcdefValue *funcdef, elistValue *elist) {
-    callValue *callVal;
+exprValue *Manage_call_LPfuncdefRPLPelistRP(funcdefValue *funcdef, elistValue *elist) {
+    exprValue *callVal;
     return callVal;
 }
 
@@ -486,13 +487,13 @@ exprOptRptValue *Manage_exprOR_expr(exprValue *expr) {
 }
 
 /* Objectdef */
-objectdefValue *Manage_objectdef_LSBelistRSB(elistValue *elist) {
-    objectdefValue *newStructVal;
+exprValue *Manage_objectdef_LSBelistRSB(elistValue *elist) {
+    exprValue *newStructVal;
     return newStructVal;
 }
 
-objectdefValue *Manage_objectdef_LSBindexedRSB(indexedValue *indexed) {
-    objectdefValue *newStructVal;
+exprValue *Manage_objectdef_LSBindexedRSB(indexedValue *indexed) {
+    exprValue *newStructVal;
     return newStructVal;
 }
 
@@ -679,33 +680,33 @@ std::string newTmpFuncname() {
 }
 
 /* Constants */
-constValue *Manage_const_int(int intVal) {
-    constValue *newStructVal;
+exprValue *Manage_const_int(int intVal) {
+    exprValue *newStructVal;
     return newStructVal;
 }
 
-constValue *Manage_const_real(double doubleVal) {
-    constValue *newStructVal;
+exprValue *Manage_const_real(double doubleVal) {
+    exprValue *newStructVal;
     return newStructVal;
 }
 
-constValue *Manage_const_string(std::string strVal) {
-    constValue *newStructVal;
+exprValue *Manage_const_string(std::string strVal) {
+    exprValue *newStructVal;
     return newStructVal;
 }
 
-constValue *Manage_const_nil() {
-    constValue *newStructVal;
+exprValue *Manage_const_nil() {
+    exprValue *newStructVal;
     return newStructVal;
 }
 
-constValue *Manage_const_true() {
-    constValue *newStructVal;
+exprValue *Manage_const_true() {
+    exprValue *newStructVal;
     return newStructVal;
 }
 
-constValue *Manage_const_false() {
-    constValue *newStructVal;
+exprValue *Manage_const_false() {
+    exprValue *newStructVal;
     return newStructVal;
 }
 

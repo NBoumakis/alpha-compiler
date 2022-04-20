@@ -20,6 +20,8 @@ public:
     bool isActive;
     SymbolType type;
 
+    unsigned int offset;
+
     friend class Scope;
 
 public:
