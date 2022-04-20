@@ -655,6 +655,7 @@ static bool check_funcargs(idlistValue *idlist) {
 void Manage_funcargs(idlistValue *idlist) {
     idlistValue *idlist_ptr = idlist;
     ++scopeLevel;
+    enterScopespace();
 
     if (check_funcargs(idlist)) {
         while (idlist_ptr->valType == idlistIdIdlist_T) {
@@ -672,6 +673,7 @@ void Manage_funcargs(idlistValue *idlist) {
         }
     }
 
+    resetFunctionLocalOffset();
     --scopeLevel;
 }
 
