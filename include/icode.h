@@ -2,6 +2,7 @@
 #define __ICODE_H
 
 #include "types.h"
+#include <vector>
 
 enum iopcode {
     assign_iop,
@@ -42,4 +43,5 @@ struct quad {
     unsigned long line;
 };
 
+std::vector<quad> quad_vector;
 #endif /* __ICODE_H */
