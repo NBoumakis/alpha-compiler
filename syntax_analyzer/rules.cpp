@@ -321,6 +321,34 @@ exprValue *Manage_primary_const(exprValue *constVal) {
 }
 
 /* lvalue */
+static exprValue *lvalue_expr(Symbol *symbol) {
+    assert(symbol);
+
+    exprValue *e = new exprValue();
+
+    e->symbolVal = symbol;
+    e->next = nullptr;
+
+    switch (symbol->type) {
+    case VARIABLE:
+        e->valType = varExpr_T;
+        break;
+
+    case USER_FUNC:
+        e->valType = userfuncExpr_T;
+        break;
+
+    case LIB_FUNC:
+        e->valType = libfuncExpr_T;
+        break;
+
+    default:
+        assert(false);
+    }
+
+    return e;
+}
+
 exprValue *Manage_lvalue_id(std::string id) {
     exprValue *newStructVal = new exprValue();
     size_t i;
