@@ -24,7 +24,7 @@ ScopespaceType currScopespace() {
     }
 }
 
-unsigned currScopespaceOffset() {
+unsigned long currScopespaceOffset() {
     switch (currScopespace()) {
     case GLOBAL_VAR:
         return programVarOffset;
@@ -62,6 +62,43 @@ void enterScopespace() {
 void exitScopespace() {
     assert(scopespaceCounter > 1);
     --scopespaceCounter;
+}
+
+void resetFunctionLocalOffset() {
+    functionLocalOffset = 0;
+}
+
+void resetFormalArgOffset() {
+    formalArgOffset = 0;
+}
+
+void restoreCurrScopeOffset(unsigned long n) {
+    switch (currScopespace()) {
+    case GLOBAL_VAR:
+        programVarOffset = n;
+        break;
+
+    case LOCAL_VAR:
+        functionLocalOffset = n;
+        break;
+
+    case FORMAL_ARG:
+        formalArgOffset = n;
+        break;
+
+    default:
+        assert(false);
+    }
+}
+
+unsigned long nextQuadLabel() {
+    return quad_vector.size();
+}
+
+void patchLabel(unsigned long quadNo, unsigned long label) {
+    assert(quadNo < quad_vector.size());
+
+    quad_vector[quadNo].label = label;
 }
 
 #endif /* __SCOPESPACE_H */
