@@ -50,6 +50,7 @@
     indexedelemValue *indexedelemVal;
     blockValue *blockVal;
     funcdefValue *funcdefVal;
+    unsigned long ulongVal;
     idlistValue *idlistVal;
 
     ifstmtValue *ifstmtVal;
@@ -96,6 +97,7 @@
 
 %type <stringVal> funcname
 %type <symPointer> funcprefix
+%type <ulongVal> funcbody
 %type <funcdefVal> funcdef
 %type <exprVal> const
 %type <idlistVal> idlist
@@ -475,6 +477,8 @@ funcbody:     block     {
                             std::cout << BGRN
                                 "Rule funcbody -> block, line " << yylineno << RST
                                 << std::endl;
+
+                            $$ = Manage_funcbody();
 
                             --funcDepth;
                         }

@@ -162,6 +162,8 @@ blockValue *Manage_block_LCBstmtRCB(stmtListValue *);
 /* Funcdef */
 Symbol *Manage_funcprefix(std::string);
 
+unsigned long Manage_funcbody();
+
 void Manage_funcargs(idlistValue *);
 
 funcdefValue *Manage_funcdef_id(std::string, idlistValue *, blockValue *);

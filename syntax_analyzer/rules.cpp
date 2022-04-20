@@ -574,6 +574,13 @@ Symbol *Manage_funcprefix(std::string funcName) {
     return newFunc;
 }
 
+unsigned long Manage_funcbody() {
+    unsigned long scopeOffset = currScopespaceOffset();
+    exitScopespace();
+
+    return scopeOffset;
+}
+
 static bool check_funcargs(idlistValue *idlist) {
     std::set<std::string> argSet;
 
