@@ -1,5 +1,6 @@
 #include "rules.h"
 #include "colors.h"
+#include "icode.h"
 #include "scope_space.h"
 #include "symbol.h"
 #include "symbol_table.h"
@@ -259,7 +260,8 @@ exprValue *Manage_assignexpr_lvalueASSIGNexpr(exprValue *lvalue, exprValue *expr
         if (symbol->type == USER_FUNC ||
             symbol->type == LIB_FUNC) {
             std::cerr << BRED "Cannot assign to " << type_names[symbol->type] << " \"" << symbol->name << "\" in line " << yylineno << RST << std::endl;
-        } else if (funcDepth != symbol->funcDepth && symbol->type != GLOBAL_VAR) {
+        } else if (funcDepth != symbol->funcDepth &&
+                   symbol->type == VARIABLE && static_cast<Variable *>(symbol)->space != GLOBAL_VAR) {
             std::cerr << BRED "Inaccessible " << type_names[symbol->type] << " \"" << symbol->name << "\" in line " << yylineno << RST << std::endl;
         } else {
             newStructVal->valType = assignexprExpr_T;
@@ -549,7 +551,7 @@ blockValue *Manage_block_LCBstmtRCB(stmtListValue *stmt) {
 
 /* Funcdef */
 Symbol *Manage_funcprefix(std::string funcName) {
-    Symbol *newFunc = new Function(funcName, scopeLevel, yylineno, funcDepth, USER_FUNC);
+    Function *newFunc = new Function(funcName, scopeLevel, yylineno, funcDepth, USER_FUNC, currScopespaceOffset(), nextQuadLabel());
 
     if (isLibFunction(funcName)) {
         std::cerr << BRED "Cannot define function \"" << funcName << "\" in line " << yylineno
