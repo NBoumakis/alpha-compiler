@@ -1,11 +1,12 @@
 #include "symbol.h"
+#include <cassert>
 #include <string>
 
-Symbol::Symbol(std::string name, unsigned int scope, unsigned int line, unsigned int funcDepth, enum SymbolType type)
-    : name(name), scope(scope), line(line), funcDepth(funcDepth), type(type), isActive(true) {}
+Symbol::Symbol(std::string name, unsigned int scope, unsigned int line, unsigned int funcDepth, SymbolType type, unsigned offset)
+    : name(name), scope(scope), line(line), funcDepth(funcDepth), type(type), isActive(true), offset(offset) {}
 
-Symbol::Symbol(std::string name, unsigned int scope, unsigned int line, unsigned int funcDepth, enum SymbolType type, bool isActive)
-    : name(name), scope(scope), line(line), funcDepth(funcDepth), type(type), isActive(isActive) {}
+Symbol::Symbol(std::string name, unsigned int scope, unsigned int line, unsigned int funcDepth, SymbolType type, unsigned offset, bool isActive)
+    : name(name), scope(scope), line(line), funcDepth(funcDepth), type(type), isActive(isActive), offset(offset) {}
 
 std::string Symbol::to_string() {
     std::string result;
@@ -19,18 +20,12 @@ std::string Symbol::to_string() {
     case USER_FUNC:
         result += "[user function]\t\t";
         break;
-    case FORMAL_ARG:
-        result += "[formal argument]\t\t";
-        break;
-    case LOCAL_VAR:
-        result += "[local variable]\t\t";
-        break;
-    case GLOBAL_VAR:
-        result += "[global variable]\t\t";
+    case VARIABLE:
+        result += "[variable]\t\t";
         break;
 
     default:
-        result += "Error, this is impossible";
+        assert(false);
         break;
     }
 
