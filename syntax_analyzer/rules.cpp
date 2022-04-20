@@ -1,5 +1,6 @@
 #include "rules.h"
 #include "colors.h"
+#include "scope_space.h"
 #include "symbol.h"
 #include "symbol_table.h"
 #include <cassert>
@@ -350,7 +351,6 @@ static exprValue *lvalue_expr(Symbol *symbol) {
 }
 
 exprValue *Manage_lvalue_id(std::string id) {
-    exprValue *newStructVal = new exprValue();
     size_t i;
     Symbol *symbol = nullptr;
 
@@ -359,16 +359,15 @@ exprValue *Manage_lvalue_id(std::string id) {
     }
 
     if (symbol == nullptr) {
-        symbol = new Variable(id, scopeLevel, yylineno, funcDepth, var_type());
+        symbol = new Variable(id, scopeLevel, yylineno, funcDepth, currScopespace(), currScopespaceOffset());
         symbolTableObj.insert(id, symbol, scopeLevel);
+
+        increaseCurrScopeOffset();
     }
 
-    newStructVal->symbolVal = symbol;
-    newStructVal->valType = varExpr_T;
+    assert(symbol);
 
-    assert(newStructVal->symbolVal);
-
-    return newStructVal;
+    return lvalue_expr(symbol);
 }
 
 exprValue *Manage_lvalue_localid(std::string id) {
