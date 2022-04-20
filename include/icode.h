@@ -1,6 +1,8 @@
 #ifndef __ICODE_H
 #define __ICODE_H
 
+#include "types.h"
+
 enum iopcode {
     assign_iop,
     add_iop,
@@ -28,6 +30,16 @@ enum iopcode {
     table_create_iop,
     table_getelem_iop,
     table_setelem_iop
+};
+
+struct quad {
+    iopcode opcode;
+    exprValue *result;
+    exprValue *arg1;
+    exprValue *arg2;
+
+    unsigned long label;
+    unsigned long line;
 };
 
 #endif /* __ICODE_H */
