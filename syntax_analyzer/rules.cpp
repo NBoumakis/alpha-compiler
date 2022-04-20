@@ -557,6 +557,7 @@ Symbol *Manage_funcprefix(std::string funcName) {
         std::cerr << BRED "Cannot define function \"" << funcName << "\" in line " << yylineno
                   << ". It would shadow a library function." RST << std::endl;
 
+        delete newFunc;
         return nullptr;
     }
 
@@ -568,6 +569,7 @@ Symbol *Manage_funcprefix(std::string funcName) {
                   << type_names[symbol_in_table->type] << " defined in line "
                   << symbol_in_table->line << "." RST << std::endl;
 
+        delete newFunc;
         return nullptr;
     } else {
         symbolTableObj.insert(funcName, newFunc, scopeLevel);
