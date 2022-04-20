@@ -645,7 +645,7 @@ void Manage_funcargs(idlistValue *idlist) {
 
     if (check_funcargs(idlist)) {
         while (idlist_ptr->valType == idlistIdIdlist_T) {
-            Symbol *newArg = new Variable(idlist_ptr->value.idlistIdValue.idVal, scopeLevel, yylineno, funcDepth, FORMAL_ARG);
+            Symbol *newArg = new Variable(idlist_ptr->value.idlistIdValue.idVal, scopeLevel, yylineno, funcDepth, currScopespace(), currScopespaceOffset());
 
             symbolTableObj.insert(newArg->name, newArg, scopeLevel);
 
@@ -653,7 +653,7 @@ void Manage_funcargs(idlistValue *idlist) {
         }
 
         if (idlist_ptr->valType == idIdlist_T) {
-            Symbol *newArg = new Variable(idlist_ptr->value.id, scopeLevel, yylineno, funcDepth, FORMAL_ARG);
+            Symbol *newArg = new Variable(idlist_ptr->value.id, scopeLevel, yylineno, funcDepth, currScopespace(), currScopespaceOffset());
 
             symbolTableObj.insert(newArg->name, newArg, scopeLevel);
         }
