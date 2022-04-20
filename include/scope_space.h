@@ -3,10 +3,16 @@
 
 #include "symbol.h"
 #include <cassert>
-unsigned programVarOffset = 0;
-unsigned functionLocalOffset = 0;
-unsigned formalArgOffset = 0;
-unsigned scopespaceCounter = 1;
+#include <stack>
+
+std::vector<quad> quad_vector;
+
+unsigned long programVarOffset = 0;
+unsigned long functionLocalOffset = 0;
+unsigned long formalArgOffset = 0;
+unsigned long scopespaceCounter = 1;
+
+std::stack<unsigned long> scopeOffsetStack;
 
 ScopespaceType currScopespace() {
     if (scopespaceCounter == 1) {

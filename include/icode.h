@@ -43,5 +43,7 @@ struct quad {
     unsigned long line;
 };
 
-std::vector<quad> quad_vector;
+void emit(iopcode opcode, exprValue *arg1, exprValue *arg2, exprValue *result,
+          unsigned long label, unsigned long line);
+
 #endif /* __ICODE_H */
