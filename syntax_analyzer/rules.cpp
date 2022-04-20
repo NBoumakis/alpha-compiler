@@ -677,41 +677,12 @@ void Manage_funcargs(idlistValue *idlist) {
     --scopeLevel;
 }
 
-funcdefValue *Manage_funcdef_id(std::string id, idlistValue *idlist, blockValue *block) {
-    funcdefValue *fval = new funcdefValue();
-    unsigned int &scope = scopeLevel;
-
-    if (isLibFunction(id)) {
-        std::cerr << BRED "Cannot define function \"" << id << "\" in line "
-                  << yylineno << ". It would shadow a library function." RST << std::endl;
-
-        fval->valType = InvalidFuncdef_T;
-        return fval;
-    }
-
-    auto symbol_in_table = symbolTableObj.lookup_scope(id, scope);
-
-    if (symbol_in_table != nullptr) {
-        std::cerr << BRED "Cannot define function \"" << id << "\" in line " << yylineno << ". It shadows previous "
-                  << type_names[symbol_in_table->type] << " defined in line "
-                  << symbol_in_table->line << "." RST << std::endl;
-
-        fval->valType = InvalidFuncdef_T;
-        return fval;
-    }
-
-    Symbol *newFunc = new Function(id, scope, yylineno, funcDepth, USER_FUNC);
-    symbolTableObj.insert(id, newFunc, scope);
-
-    return fval;
-}
-
 funcdefValue *Manage_funcdef(idlistValue *idlist, blockValue *block) {
     static unsigned long long unnamed_function_counter = 0;
 
     std::string function_name = std::string("$f") + std::to_string(unnamed_function_counter);
 
-    return Manage_funcdef_id(function_name, idlist, block);
+    return nullptr;
 }
 
 std::string newTmpFuncname() {
