@@ -401,16 +401,17 @@ exprValue *Manage_lvalue_localid(std::string id) {
 }
 
 exprValue *Manage_lvalue_globalid(std::string id) {
-    exprValue *newStructVal = new exprValue();
+    exprValue *newStructVal;
 
     auto symbol = symbolTableObj.lookup_scope(id, 0);
 
     if (symbol == nullptr) {
         std::cerr << BRED "Undefined reference to global symbol \"" << id << "\" in line " << yylineno << "." RST << std::endl;
+
+        newStructVal = new exprValue();
         newStructVal->valType = InvalidExpr_T;
     } else {
-        newStructVal->valType = varExpr_T;
-        newStructVal->symbolVal = symbol;
+        newStructVal = lvalue_expr(symbol);
     }
 
     return newStructVal;
