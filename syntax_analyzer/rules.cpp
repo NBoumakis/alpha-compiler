@@ -371,31 +371,31 @@ exprValue *Manage_lvalue_id(std::string id) {
 }
 
 exprValue *Manage_lvalue_localid(std::string id) {
-    exprValue *newStructVal = new exprValue();
+    exprValue *newStructVal;
     unsigned int &scope = scopeLevel;
 
-    auto symbol_in_table = symbolTableObj.lookup_scope(id, scope);
+    auto symbol = symbolTableObj.lookup_scope(id, scope);
 
-    if (symbol_in_table == nullptr) {
+    if (symbol == nullptr) {
         if (!isLibFunction(id)) {
-            symbol_in_table = new Variable(id, scope, yylineno, funcDepth, var_type());
-            symbolTableObj.insert(id, symbol_in_table, scope);
+            symbol = new Variable(id, scope, yylineno, funcDepth, currScopespace(), currScopespaceOffset());
+            symbolTableObj.insert(id, symbol, scope);
 
-            newStructVal->symbolVal = symbol_in_table;
-            newStructVal->valType = varExpr_T;
+            increaseCurrScopeOffset();
+
+            newStructVal = lvalue_expr(symbol);
         } else {
             std::cerr << BRED "Variable \"" << id << "\" in line " << yylineno
                       << " attempts to shadow library function." RST << std::endl;
 
+            newStructVal = new exprValue();
             newStructVal->valType = InvalidExpr_T;
         }
     } else {
-
-        newStructVal->symbolVal = symbol_in_table;
-        newStructVal->valType = varExpr_T;
+        newStructVal = lvalue_expr(symbol);
     }
 
-    assert((newStructVal->valType == InvalidExpr_T) || (newStructVal->valType == varExpr_T && newStructVal->symbolVal));
+    assert((newStructVal->valType == InvalidExpr_T) || (newStructVal->valType == varExpr_T));
 
     return newStructVal;
 }
