@@ -502,7 +502,14 @@ exprValue *Manage_call_lvaluecallsuffix(exprValue *lvalue, callValue *callsuffix
         callVal->callLvalueValue.callsuffixVal = callsuffix;
     }*/
 
-    return callVal;
+    lvalue = emit_iftableitem(lvalue);
+    if (callsuffix->method) {
+        exprValue *t = lvalue;
+        lvalue = emit_iftableitem(member_item(t, callsuffix->name));
+        callsuffix->elist->next = t;
+    }
+
+    return make_call(lvalue, callsuffix->elist);
 }
 
 exprValue *Manage_call_LPfuncdefRPLPelistRP(Function *funcdef, exprValue *elist) {
