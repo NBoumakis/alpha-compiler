@@ -576,8 +576,21 @@ exprOptRptValue *Manage_exprOR_expr(exprValue *expr) {
 
 /* Objectdef */
 exprValue *Manage_objectdef_LSBelistRSB(exprValue *elist) {
-    exprValue *newStructVal;
-    return newStructVal;
+    exprValue *objdefVal = new exprValue();
+    objdefVal->valType = newtableExpr_T;
+
+    objdefVal->symbolVal = newTempvar();
+    emit(table_create_iop, objdefVal, NULL, NULL);
+
+    for (int i = 0; elist; elist = elist->next) {
+        exprValue *constVal = new exprValue();
+        constVal->valType = constnumExpr_T;
+        constVal->numConstval = i++;
+
+        emit(table_setelem_iop, objdefVal, constVal, elist);
+    }
+
+    return objdefVal;
 }
 
 exprValue *Manage_objectdef_LSBindexedRSB(indexedValue *indexed) {
