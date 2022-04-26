@@ -91,7 +91,7 @@
 %type <stringVal> funcname
 %type <symPointer> funcprefix
 %type <ulongVal> funcbody
-%type <funcdefVal> funcdef
+%type <Function *> funcdef
 %type <exprVal> const
 %type <idlistVal> idlist
 %type <ifstmtVal> ifstmt

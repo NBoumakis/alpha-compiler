@@ -118,7 +118,7 @@ exprValue *Manage_call_callLPelistRP(exprValue *, exprValue *);
 
 exprValue *Manage_call_lvaluecallsuffix(exprValue *, callValue *);
 
-exprValue *Manage_call_LPfuncdefRPLPelistRP(funcdefValue *, exprValue *);
+exprValue *Manage_call_LPfuncdefRPLPelistRP(Function *, exprValue *);
 
 /* Call suffix */
 callValue *Manage_callsuffix_normcall(callValue *);

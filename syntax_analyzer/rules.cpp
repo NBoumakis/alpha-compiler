@@ -503,9 +503,13 @@ exprValue *Manage_call_lvaluecallsuffix(exprValue *lvalue, callValue *callsuffix
     return callVal;
 }
 
-exprValue *Manage_call_LPfuncdefRPLPelistRP(funcdefValue *funcdef, exprValue *elist) {
-    exprValue *callVal;
-    return callVal;
+exprValue *Manage_call_LPfuncdefRPLPelistRP(Function *funcdef, exprValue *elist) {
+    exprValue *func = new exprValue();
+    func->valType = userfuncExpr_T;
+
+    func->symbolVal = funcdef;
+
+    return make_call(func, elist);
 }
 
 /* Call suffix */
