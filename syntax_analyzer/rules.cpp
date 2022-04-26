@@ -38,6 +38,20 @@ static exprValue *make_call(exprValue *lvalue, exprValue *elist_r) {
     return result;
 }
 
+static exprValue *member_item(exprValue *lvalue, std::string name) {
+    lvalue = emit_iftableitem(lvalue);
+
+    exprValue *tableitem = new exprValue();
+    tableitem->valType = TableitemExpr_T;
+    tableitem->symbolVal = lvalue->symbolVal;
+
+    tableitem->indexVal = new exprValue();
+    tableitem->indexVal->valType = conststringExpr_T;
+    tableitem->indexVal->strConstVal = name;
+
+    return tableitem;
+}
+
 programValue *Manage_program(stmtListValue *stmtList) {
     programValue *newStructVal;
     return newStructVal;
@@ -443,19 +457,7 @@ exprValue *Manage_lvalue_member(exprValue *member) {
 
 /* Members */
 exprValue *Manage_member_lvalueDOTid(exprValue *lvalue, std::string id) {
-    exprValue *tableitem;
-
-    lvalue = emit_iftableitem(lvalue);
-
-    tableitem = new exprValue();
-    tableitem->valType = TableitemExpr_T;
-    tableitem->symbolVal = lvalue->symbolVal;
-
-    tableitem->indexVal = new exprValue();
-    tableitem->indexVal->valType = conststringExpr_T;
-    tableitem->indexVal->strConstVal = id;
-
-    return tableitem;
+    return member_item(lvalue, id);
 }
 
 exprValue *Manage_member_lvalueLSBexprRSB(exprValue *lvalue, exprValue *expr) {
