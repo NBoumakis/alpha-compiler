@@ -52,6 +52,18 @@ static exprValue *member_item(exprValue *lvalue, std::string name) {
     return tableitem;
 }
 
+void check_arithm(exprValue *expr) {
+    if (expr->valType == constboolExpr_T ||
+        expr->valType == conststringExpr_T ||
+        expr->valType == nilExpr_T ||
+        expr->valType == newtableExpr_T ||
+        expr->valType == userfuncExpr_T ||
+        expr->valType == libfuncExpr_T ||
+        expr->valType == boolexprExpr_T) {
+        std::cerr << BRED "Illegal expression used in line " << yylineno << RST << std::endl;
+    }
+}
+
 programValue *Manage_program(stmtListValue *stmtList) {
     programValue *newStructVal;
     return newStructVal;
@@ -196,17 +208,22 @@ exprValue *Manage_expr_term(exprValue *term) {
 
 /* Terms */
 exprValue *Manage_term_LPexprRP(exprValue *expr) {
-    exprValue *termValueVal;
-    return termValueVal;
+    return expr;
 }
 
 exprValue *Manage_term_notexpr(exprValue *expr) {
-    exprValue *termValueVal;
-    return termValueVal;
+    exprValue *termVal = new exprValue();
+    termVal->valType = boolexprExpr_T;
+
+    termVal->symbolVal = newTempvar();
+
+    emit(not_iop, expr, nullptr, termVal);
+
+    return termVal;
 }
 
 exprValue *Manage_term_PPlval(exprValue *lvalue) {
-    exprValue *termValueVal;
+    exprValue *termVal;
 
     if (lvalue->valType == varExpr_T) {
         if (lvalue->symbolVal->type == USER_FUNC ||
@@ -218,11 +235,30 @@ exprValue *Manage_term_PPlval(exprValue *lvalue) {
         }
     }
 
-    return termValueVal;
+    check_arithm(lvalue);
+
+    exprValue *const_num = new exprValue();
+    const_num->valType = constnumExpr_T;
+    const_num->numConstval = 1;
+
+    if (lvalue->valType == TableitemExpr_T) {
+        termVal = emit_iftableitem(lvalue);
+        emit(add_iop, termVal, const_num, termVal);
+        emit(table_setelem_iop, lvalue, lvalue->indexVal, termVal);
+    } else {
+        emit(add_iop, lvalue, const_num, lvalue);
+        termVal = new exprValue();
+        termVal->valType = arithmexprExpr_T;
+
+        termVal->symbolVal = newTempvar();
+        emit(assign_iop, lvalue, NULL, termVal);
+    }
+
+    return termVal;
 }
 
 exprValue *Manage_term_lvaluePP(exprValue *lvalue) {
-    exprValue *termValueVal;
+    exprValue *termVal;
 
     if (lvalue->valType == varExpr_T) {
         if (lvalue->symbolVal->type == USER_FUNC ||
@@ -234,11 +270,33 @@ exprValue *Manage_term_lvaluePP(exprValue *lvalue) {
         }
     }
 
-    return termValueVal;
+    check_arithm(lvalue);
+    termVal = new exprValue();
+    termVal->valType = varExpr_T;
+
+    termVal->symbolVal = newTempvar();
+
+    exprValue *const_num = new exprValue();
+
+    const_num->valType = constnumExpr_T;
+    const_num->numConstval = 1;
+
+    if (lvalue->valType == TableitemExpr_T) {
+        exprValue *val = emit_iftableitem(lvalue);
+
+        emit(assign_iop, val, NULL, termVal);
+        emit(add_iop, val, const_num, val);
+        emit(table_setelem_iop, lvalue, lvalue->indexVal, val);
+    } else {
+        emit(assign_iop, lvalue, NULL, termVal);
+        emit(add_iop, lvalue, const_num, lvalue);
+    }
+
+    return termVal;
 }
 
 exprValue *Manage_term_MMlval(exprValue *lvalue) {
-    exprValue *termValueVal;
+    exprValue *termVal;
 
     if (lvalue->valType == varExpr_T) {
         if (lvalue->symbolVal->type == USER_FUNC ||
@@ -250,11 +308,30 @@ exprValue *Manage_term_MMlval(exprValue *lvalue) {
         }
     }
 
-    return termValueVal;
+    check_arithm(lvalue);
+
+    exprValue *const_num = new exprValue();
+    const_num->valType = constnumExpr_T;
+    const_num->numConstval = 1;
+
+    if (lvalue->valType == TableitemExpr_T) {
+        termVal = emit_iftableitem(lvalue);
+        emit(sub_iop, termVal, const_num, termVal);
+        emit(table_setelem_iop, lvalue, lvalue->indexVal, termVal);
+    } else {
+        emit(sub_iop, lvalue, const_num, lvalue);
+        termVal = new exprValue();
+        termVal->valType = arithmexprExpr_T;
+
+        termVal->symbolVal = newTempvar();
+        emit(assign_iop, lvalue, NULL, termVal);
+    }
+
+    return termVal;
 }
 
 exprValue *Manage_term_lvalueMM(exprValue *lvalue) {
-    exprValue *termValueVal;
+    exprValue *termVal;
 
     if (lvalue->valType == varExpr_T) {
         if (lvalue->symbolVal->type == USER_FUNC ||
@@ -266,17 +343,45 @@ exprValue *Manage_term_lvalueMM(exprValue *lvalue) {
         }
     }
 
-    return termValueVal;
+    check_arithm(lvalue);
+    termVal = new exprValue();
+    termVal->valType = varExpr_T;
+
+    termVal->symbolVal = newTempvar();
+
+    exprValue *const_num = new exprValue();
+
+    const_num->valType = constnumExpr_T;
+    const_num->numConstval = 1;
+
+    if (lvalue->valType == TableitemExpr_T) {
+        exprValue *val = emit_iftableitem(lvalue);
+
+        emit(assign_iop, val, NULL, termVal);
+        emit(sub_iop, val, const_num, val);
+        emit(table_setelem_iop, lvalue, lvalue->indexVal, val);
+    } else {
+        emit(assign_iop, lvalue, NULL, termVal);
+        emit(sub_iop, lvalue, const_num, lvalue);
+    }
+
+    return termVal;
 }
 
 exprValue *Manage_term_primary(exprValue *primary) {
-    exprValue *termValueVal;
-    return termValueVal;
+    return primary;
 }
 
 exprValue *Manage_term_minusexpr(exprValue *expr) {
-    exprValue *termValueVal;
-    return termValueVal;
+    exprValue *termVal = new exprValue();
+    termVal->valType = arithmexprExpr_T;
+
+    check_arithm(expr);
+
+    termVal->symbolVal = newTempvar();
+    emit(uminus_iop, expr, nullptr, termVal);
+
+    return termVal;
 }
 
 /* Assign expression */
