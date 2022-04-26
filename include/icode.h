@@ -45,5 +45,7 @@ struct quad {
 
 void emit(iopcode opcode, exprValue *arg1, exprValue *arg2, exprValue *result,
           unsigned long label, unsigned long line);
+void emit(iopcode opcode, exprValue *arg1, exprValue *arg2, exprValue *result);
 
+exprValue *emit_iftableitem(exprValue *expr);
 #endif /* __ICODE_H */
