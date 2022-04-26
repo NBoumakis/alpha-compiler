@@ -133,7 +133,7 @@ struct exprValue {
     Symbol *symbolVal;
     exprValue *indexVal;
     double numConstval;
-    char *strConstVal;
+    std::string strConstVal;
     bool boolConstVal;
     exprValue *next;
 
