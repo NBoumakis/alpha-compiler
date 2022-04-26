@@ -267,22 +267,9 @@ enum callType {
 };
 
 struct callValue {
-    union {
-        struct {
-            callValue *callVal;
-            elistValue *elistVal;
-        } callCallElistValue;
-        struct {
-            lvalueValue *lvalueVal;
-            callsuffixValue *callsuffixVal;
-        } callLvalueValue;
-        struct {
-            funcdefValue *funcdefVal;
-            elistValue *elistVal;
-        } callFuncdefValue;
-    } value;
-
-    callType valType;
+    exprValue *elist;
+    bool method;
+    std::string name;
 };
 
 enum callsuffixType {
