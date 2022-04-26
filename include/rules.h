@@ -29,7 +29,7 @@ stmtValue *Manage_stmt_continue();
 
 stmtValue *Manage_stmt_block(blockValue *);
 
-stmtValue *Manage_stmt_funcdef(funcdefValue *);
+stmtValue *Manage_stmt_funcdef(Function *);
 
 stmtValue *Manage_stmt_semicolon();
 
@@ -91,7 +91,7 @@ exprValue *Manage_primary_call(exprValue *);
 
 exprValue *Manage_primary_objectdef(exprValue *);
 
-exprValue *Manage_primary_LPfuncdefRP(funcdefValue *);
+exprValue *Manage_primary_LPfuncdefRP(Function *);
 
 exprValue *Manage_primary_const(exprValue *);
 
@@ -166,9 +166,9 @@ unsigned long Manage_funcbody();
 
 void Manage_funcargs(idlistValue *);
 
-funcdefValue *Manage_funcdef_id(std::string, idlistValue *, blockValue *);
+Function *Manage_funcdef_id(std::string, idlistValue *, blockValue *);
 
-funcdefValue *Manage_funcdef(idlistValue *, blockValue *);
+Function *Manage_funcdef(idlistValue *, blockValue *);
 
 std::string newTmpFuncname();
 

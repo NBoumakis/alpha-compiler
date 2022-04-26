@@ -5,6 +5,7 @@
     #include <string.h>
     #include "types.h"
     #include "scope.h"
+    #include "symbol.h"
     #include "symbol_table.h"
 
     #include "rules.h"
@@ -42,7 +43,6 @@
     indelemlistValue *indelemlistVal;
     indexedelemValue *indexedelemVal;
     blockValue *blockVal;
-    funcdefValue *funcdefVal;
     unsigned long ulongVal;
     idlistValue *idlistVal;
 
@@ -54,6 +54,7 @@
     retValue *retVal;
     char* stringVal;
     Symbol* symPointer;
+    Function *funcPointer;
 };
 
 
@@ -91,7 +92,7 @@
 %type <stringVal> funcname
 %type <symPointer> funcprefix
 %type <ulongVal> funcbody
-%type <Function *> funcdef
+%type <funcPointer> funcdef
 %type <exprVal> const
 %type <idlistVal> idlist
 %type <ifstmtVal> ifstmt

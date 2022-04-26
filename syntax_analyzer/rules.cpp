@@ -94,7 +94,7 @@ stmtValue *Manage_stmt_block(blockValue *block) {
     return stmtValueVal;
 }
 
-stmtValue *Manage_stmt_funcdef(funcdefValue *funcdef) {
+stmtValue *Manage_stmt_funcdef(Function *funcdef) {
     stmtValue *stmtValueVal;
     return stmtValueVal;
 }
@@ -330,7 +330,7 @@ exprValue *Manage_primary_objectdef(exprValue *objdef) {
     return primaryValueVal;
 }
 
-exprValue *Manage_primary_LPfuncdefRP(funcdefValue *funcdef) {
+exprValue *Manage_primary_LPfuncdefRP(Function *funcdef) {
     exprValue *primaryValueVal;
     return primaryValueVal;
 }
@@ -731,7 +731,7 @@ void Manage_funcargs(idlistValue *idlist) {
     --scopeLevel;
 }
 
-funcdefValue *Manage_funcdef(idlistValue *idlist, blockValue *block) {
+Function *Manage_funcdef(idlistValue *idlist, blockValue *block) {
     static unsigned long long unnamed_function_counter = 0;
 
     std::string function_name = std::string("$f") + std::to_string(unnamed_function_counter);
