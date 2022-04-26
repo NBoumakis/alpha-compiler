@@ -4,6 +4,7 @@
 #include "scope_space.h"
 #include "symbol.h"
 #include "symbol_table.h"
+#include "temp_vars.h"
 #include <cassert>
 #include <iostream>
 #include <set>
@@ -247,15 +248,12 @@ exprValue *Manage_term_minusexpr(exprValue *expr) {
 
 /* Assign expression */
 exprValue *Manage_assignexpr_lvalueASSIGNexpr(exprValue *lvalue, exprValue *expr) {
-    exprValue *newStructVal = new exprValue();
+    exprValue *assignexprVal;
 
-    Symbol *symbol;
     unsigned int i;
 
-    newStructVal->valType = InvalidExpr_T;
-
     if (lvalue->valType == varExpr_T) {
-        symbol = lvalue->symbolVal;
+        Symbol *symbol = lvalue->symbolVal;
 
         if (symbol->type == USER_FUNC ||
             symbol->type == LIB_FUNC) {
@@ -264,29 +262,37 @@ exprValue *Manage_assignexpr_lvalueASSIGNexpr(exprValue *lvalue, exprValue *expr
                    symbol->type == VARIABLE && static_cast<Variable *>(symbol)->space != GLOBAL_VAR) {
             std::cerr << BRED "Inaccessible " << type_names[symbol->type] << " \"" << symbol->name << "\" in line " << yylineno << RST << std::endl;
         } else {
-            newStructVal->valType = assignexprExpr_T;
-            newStructVal->symbolVal = lvalue->symbolVal;
-            /*newStructVal-> = expr;*/
+            emit(assign_iop, expr, nullptr, lvalue);
+
+            assignexprVal = new exprValue();
+            assignexprVal->valType = assignexprExpr_T;
+
+            assignexprVal->symbolVal = newTempvar();
+            emit(assign_iop, lvalue, NULL, assignexprVal);
         }
+    } else if (lvalue->valType == TableitemExpr_T) {
+        emit(table_setelem_iop, lvalue, lvalue->indexVal, expr);
+
+        assignexprVal = emit_iftableitem(lvalue);
+        assignexprVal->valType = assignexprExpr_T;
     }
 
-    return newStructVal;
+    return assignexprVal;
 }
 
 /* Primary */
 exprValue *Manage_primary_lvalue(exprValue *lvalue) {
-    exprValue *primaryValueVal = new exprValue();
+    exprValue *primaryValueVal;
 
-    primaryValueVal->valType = InvalidExpr_T;
-
+    // TODO
     if (lvalue->valType == varExpr_T) {
         Symbol *symbol = lvalue->symbolVal;
         if (symbol->scope == 0 ||
             symbol->type == USER_FUNC ||
             symbol->type == LIB_FUNC ||
             funcDepth == symbol->funcDepth) {
-            primaryValueVal->valType = varExpr_T;
-            primaryValueVal->symbolVal = lvalue->symbolVal;
+
+            primaryValueVal = emit_iftableitem(lvalue);
         } else {
             std::cerr << BRED "Inaccessible " << type_names[symbol->type] << " \"" << symbol->name << "\" in line " << yylineno << RST << std::endl;
         }
@@ -418,13 +424,33 @@ exprValue *Manage_lvalue_member(exprValue *member) {
 
 /* Members */
 exprValue *Manage_member_lvalueDOTid(exprValue *lvalue, std::string id) {
-    exprValue *memberVal;
-    return memberVal;
+    exprValue *tableitem;
+
+    lvalue = emit_iftableitem(lvalue);
+
+    tableitem = new exprValue();
+    tableitem->valType = TableitemExpr_T;
+    tableitem->symbolVal = lvalue->symbolVal;
+
+    tableitem->indexVal = new exprValue();
+    tableitem->indexVal->valType = conststringExpr_T;
+    tableitem->indexVal->strConstVal = id;
+
+    return tableitem;
 }
 
 exprValue *Manage_member_lvalueLSBexprRSB(exprValue *lvalue, exprValue *expr) {
-    exprValue *memberVal;
-    return memberVal;
+    exprValue *tableitem;
+
+    lvalue = emit_iftableitem(lvalue);
+
+    tableitem = new exprValue();
+    tableitem->valType = TableitemExpr_T;
+    tableitem->symbolVal = lvalue->symbolVal;
+
+    tableitem->indexVal = expr;
+
+    return tableitem;
 }
 
 exprValue *Manage_member_callDOTid(exprValue *call, std::string id) {
@@ -438,12 +464,12 @@ exprValue *Manage_member_callLSBexprRSB(exprValue *call, exprValue *expr) {
 }
 
 /* Calls */
-exprValue *Manage_call_callLPelistRP(exprValue *call, elistValue *elist) {
-    exprValue *callVal;
+exprValue *Manage_call_callLPelistRP(exprValue *call, exprValue *elist) {
+    exprValue *callVal = make_call(call, elist);
     return callVal;
 }
 
-exprValue *Manage_call_lvaluecallsuffix(exprValue *lvalue, callsuffixValue *callsuffix) {
+exprValue *Manage_call_lvaluecallsuffix(exprValue *lvalue, callValue *callsuffix) {
     exprValue *callVal;
 
     callVal->valType = varExpr_T;
@@ -458,42 +484,47 @@ exprValue *Manage_call_lvaluecallsuffix(exprValue *lvalue, callsuffixValue *call
     return callVal;
 }
 
-exprValue *Manage_call_LPfuncdefRPLPelistRP(funcdefValue *funcdef, elistValue *elist) {
+exprValue *Manage_call_LPfuncdefRPLPelistRP(funcdefValue *funcdef, exprValue *elist) {
     exprValue *callVal;
     return callVal;
 }
 
 /* Call suffix */
-callsuffixValue *Manage_callsuffix_normcall(normcallValue *normcall) {
-    callsuffixValue *newStructVal;
+callValue *Manage_callsuffix_normcall(callValue *normcall) {
+    callValue *newStructVal;
     return newStructVal;
 }
 
-callsuffixValue *Manage_callsuffix_methodcall(methodcallValue *methodcall) {
-    callsuffixValue *newStructVal;
+callValue *Manage_callsuffix_methodcall(callValue *methodcall) {
+    callValue *newStructVal;
     return newStructVal;
 }
 
 /* Normal call */
-normcallValue *Manage_normcall_LPelistRP(elistValue *elist) {
-    normcallValue *newStructVal;
+callValue *Manage_normcall_LPelistRP(exprValue *elist) {
+    callValue *newStructVal;
     return newStructVal;
 }
 
 /* Method call */
-methodcallValue *Manage_methodcall_DDOTidLPelistRP(std::string id, elistValue *elist) {
-    methodcallValue *newStructVal;
-    return newStructVal;
+callValue *Manage_methodcall_DDOTidLPelistRP(std::string id, exprValue *elist) {
+    callValue *methodcallVal = new callValue();
+
+    methodcallVal->elist = elist;
+    methodcallVal->method = true;
+    methodcallVal->name = id;
+
+    return methodcallVal;
 }
 
 /* elist */
-elistValue *Manage_elist_exprOptRpt(exprOptRptValue *exprOptRpt) {
-    elistValue *newStructVal;
+exprValue *Manage_elist_exprOptRpt(exprOptRptValue *exprOptRpt) {
+    exprValue *newStructVal;
     return newStructVal;
 }
 
-elistValue *Manage_elist() {
-    elistValue *newStructVal;
+exprValue *Manage_elist() {
+    exprValue *newStructVal;
     return newStructVal;
 }
 
@@ -509,7 +540,7 @@ exprOptRptValue *Manage_exprOR_expr(exprValue *expr) {
 }
 
 /* Objectdef */
-exprValue *Manage_objectdef_LSBelistRSB(elistValue *elist) {
+exprValue *Manage_objectdef_LSBelistRSB(exprValue *elist) {
     exprValue *newStructVal;
     return newStructVal;
 }
@@ -579,7 +610,7 @@ Symbol *Manage_funcprefix(std::string funcName) {
     funcprefix->valType = userfuncExpr_T;
     funcprefix->symbolVal = newFunc;
 
-    emit(funcstart_iop, funcprefix, nullptr, nullptr, 0, 0);
+    emit(funcstart_iop, funcprefix, nullptr, nullptr);
 
     scopeOffsetStack.push(currScopespaceOffset());
     enterScopespace();
@@ -782,7 +813,7 @@ whilestmtValue *Manage_whilestmt(exprValue *expr, stmtValue *stmt) {
 }
 
 /* For statement */
-forstmtValue *Manage_for(elistValue *elistFirst, exprValue *expr, elistValue *elistLast, stmtValue *stmt) {
+forstmtValue *Manage_for(exprValue *elistFirst, exprValue *expr, exprValue *elistLast, stmtValue *stmt) {
     forstmtValue *newStructVal;
     return newStructVal;
 }

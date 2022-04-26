@@ -114,27 +114,27 @@ exprValue *Manage_member_callDOTid(exprValue *, std::string);
 exprValue *Manage_member_callLSBexprRSB(exprValue *, exprValue *);
 
 /* Calls */
-exprValue *Manage_call_callLPelistRP(exprValue *, elistValue *);
+exprValue *Manage_call_callLPelistRP(exprValue *, exprValue *);
 
-exprValue *Manage_call_lvaluecallsuffix(exprValue *, callsuffixValue *);
+exprValue *Manage_call_lvaluecallsuffix(exprValue *, callValue *);
 
-exprValue *Manage_call_LPfuncdefRPLPelistRP(funcdefValue *, elistValue *);
+exprValue *Manage_call_LPfuncdefRPLPelistRP(funcdefValue *, exprValue *);
 
 /* Call suffix */
-callsuffixValue *Manage_callsuffix_normcall(normcallValue *);
+callValue *Manage_callsuffix_normcall(callValue *);
 
-callsuffixValue *Manage_callsuffix_methodcall(methodcallValue *);
+callValue *Manage_callsuffix_methodcall(callValue *);
 
 /* Normal call */
-normcallValue *Manage_normcall_LPelistRP(elistValue *);
+callValue *Manage_normcall_LPelistRP(exprValue *);
 
 /* Method call */
-methodcallValue *Manage_methodcall_DDOTidLPelistRP(std::string, elistValue *);
+callValue *Manage_methodcall_DDOTidLPelistRP(std::string, exprValue *);
 
 /* elist */
-elistValue *Manage_elist_exprOptRpt(exprOptRptValue *);
+exprValue *Manage_elist_exprOptRpt(exprOptRptValue *);
 
-elistValue *Manage_elist();
+exprValue *Manage_elist();
 
 /* Expression optional and repeatable */
 exprOptRptValue *Manage_exprOR_exprOR(exprValue *, exprOptRptValue *);
@@ -142,7 +142,7 @@ exprOptRptValue *Manage_exprOR_exprOR(exprValue *, exprOptRptValue *);
 exprOptRptValue *Manage_exprOR_expr(exprValue *);
 
 /* Objectdef */
-exprValue *Manage_objectdef_LSBelistRSB(elistValue *);
+exprValue *Manage_objectdef_LSBelistRSB(exprValue *);
 
 exprValue *Manage_objectdef_LSBindexedRSB(indexedValue *);
 
@@ -204,7 +204,7 @@ elseValue *Manage_else();
 whilestmtValue *Manage_whilestmt(exprValue *, stmtValue *);
 
 /* For statement */
-forstmtValue *Manage_for(elistValue *, exprValue *, elistValue *, stmtValue *);
+forstmtValue *Manage_for(exprValue *, exprValue *, exprValue *, stmtValue *);
 
 /* Return statement */
 returnstmtValue *Manage_returnstmt(retValue *);
