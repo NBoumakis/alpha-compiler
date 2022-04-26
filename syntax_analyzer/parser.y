@@ -40,10 +40,7 @@
     stmtValue *stmtVal;
     exprValue *exprVal;
     primaryValue *primaryVal;
-    callsuffixValue *callsuffixVal;
-    normcallValue *normcallVal;
-    methodcallValue *methodcallVal;
-    elistValue *elistVal;
+    callValue *callVal;
     exprOptRptValue *exprOptRptVal;
     indexedValue *indexedVal;
     indelemlistValue *indelemlistVal;
@@ -84,12 +81,12 @@
 %type <exprVal> lvalue
 %type <exprVal> member
 %type <exprVal> call
-%type <callsuffixVal> callsuffix
-%type <normcallVal> normcall
-%type <methodcallVal> methodcall
-%type <elistVal> elist
-%type <exprOptRptVal> exprOptRpt
 %type <exprVal> objectdef
+%type <exprVal> elist
+%type <callVal> callsuffix
+%type <callVal> normcall
+%type <callVal> methodcall
+%type <exprOptRptVal> exprOptRpt
 %type <indexedVal> indexed
 %type <indelemlistVal> indelemlist
 %type <indexedelemVal>  indexedelem
