@@ -593,9 +593,18 @@ exprValue *Manage_objectdef_LSBelistRSB(exprValue *elist) {
     return objdefVal;
 }
 
-exprValue *Manage_objectdef_LSBindexedRSB(indexedValue *indexed) {
-    exprValue *newStructVal;
-    return newStructVal;
+exprValue *Manage_objectdef_LSBindexedRSB(exprValue *indexed) {
+    exprValue *objdefVal = new exprValue();
+    objdefVal->valType = newtableExpr_T;
+
+    objdefVal->symbolVal = newTempvar();
+    emit(table_create_iop, objdefVal, nullptr, nullptr);
+
+    for (; indexed; indexed = indexed->next) {
+        emit(table_setelem_iop, objdefVal, indexed->indexVal, indexed);
+    }
+
+    return objdefVal;
 }
 
 /* Indexed */
