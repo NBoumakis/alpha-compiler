@@ -19,6 +19,25 @@ std::string type_names[] = {
     std::string("user function"),
     std::string("library function")};
 
+static exprValue *make_call(exprValue *lvalue, exprValue *elist_r) {
+    exprValue *func = emit_iftableitem(lvalue);
+
+    while (elist_r) {
+        emit(param_iop, elist_r, NULL, NULL);
+        elist_r = elist_r->next;
+    }
+
+    emit(call_iop, func, NULL, NULL);
+
+    exprValue *result = new exprValue();
+    result->valType = varExpr_T;
+
+    result->symbolVal = newTempvar();
+    emit(get_retval_iop, NULL, NULL, result);
+
+    return result;
+}
+
 programValue *Manage_program(stmtListValue *stmtList) {
     programValue *newStructVal;
     return newStructVal;
