@@ -599,19 +599,19 @@ exprValue *Manage_objectdef_LSBindexedRSB(indexedValue *indexed) {
 }
 
 /* Indexed */
-indexedValue *Manage_indexed(indelemlistValue *indelemlist) {
-    indexedValue *newStructVal;
+exprValue *Manage_indexed(exprValue *indelemlist) {
+    exprValue *newStructVal;
     return newStructVal;
 }
 
 /* Indexed element list */
-indelemlistValue *Manage_indelemlist(indexedelemValue *indexedelem, indelemlistValue *indelemlist) {
-    indelemlistValue *newStructVal;
+exprValue *Manage_indelemlist(indexedelemValue *indexedelem, exprValue *indelemlist) {
+    exprValue *newStructVal;
     return newStructVal;
 }
 
-indelemlistValue *Manage_indelemlist_indexedelem(indexedelemValue *indexedelem) {
-    indelemlistValue *newStructVal;
+exprValue *Manage_indelemlist_indexedelem(indexedelemValue *indexedelem) {
+    exprValue *newStructVal;
     return newStructVal;
 }
 

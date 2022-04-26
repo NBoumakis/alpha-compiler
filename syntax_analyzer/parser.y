@@ -84,8 +84,8 @@
 %type <callVal> normcall
 %type <callVal> methodcall
 %type <exprOptRptVal> exprOptRpt
-%type <indexedVal> indexed
-%type <indelemlistVal> indelemlist
+%type <exprVal> indexed
+%type <exprVal> indelemlist
 %type <indexedelemVal>  indexedelem
 %type <blockVal> block
 

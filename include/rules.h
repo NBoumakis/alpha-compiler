@@ -144,15 +144,15 @@ exprOptRptValue *Manage_exprOR_expr(exprValue *);
 /* Objectdef */
 exprValue *Manage_objectdef_LSBelistRSB(exprValue *);
 
-exprValue *Manage_objectdef_LSBindexedRSB(indexedValue *);
+exprValue *Manage_objectdef_LSBindexedRSB(exprValue *);
 
 /* Indexed */
-indexedValue *Manage_indexed(indelemlistValue *);
+exprValue *Manage_indexed(exprValue *);
 
 /* Indexed element list */
-indelemlistValue *Manage_indelemlist(indexedelemValue *, indelemlistValue *);
+exprValue *Manage_indelemlist(indexedelemValue *, exprValue *);
 
-indelemlistValue *Manage_indelemlist_indexedelem(indexedelemValue *);
+exprValue *Manage_indelemlist_indexedelem(indexedelemValue *);
 
 indexedelemValue *Manage_indexedelem_LCB_expr_COLON_expr_RCB(exprValue *, exprValue *);
 
