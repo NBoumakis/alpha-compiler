@@ -523,19 +523,22 @@ exprValue *Manage_call_LPfuncdefRPLPelistRP(Function *funcdef, exprValue *elist)
 
 /* Call suffix */
 callValue *Manage_callsuffix_normcall(callValue *normcall) {
-    callValue *newStructVal;
-    return newStructVal;
+    return normcall;
 }
 
 callValue *Manage_callsuffix_methodcall(callValue *methodcall) {
-    callValue *newStructVal;
-    return newStructVal;
+    return methodcall;
 }
 
 /* Normal call */
 callValue *Manage_normcall_LPelistRP(exprValue *elist) {
-    callValue *newStructVal;
-    return newStructVal;
+    callValue *normcallVal = new callValue();
+
+    normcallVal->elist = elist;
+    normcallVal->method = 0;
+    normcallVal->name = nullptr;
+
+    return normcallVal;
 }
 
 /* Method call */
