@@ -345,8 +345,11 @@ exprValue *Manage_primary_objectdef(exprValue *objdef) {
 }
 
 exprValue *Manage_primary_LPfuncdefRP(Function *funcdef) {
-    exprValue *primaryValueVal;
-    return primaryValueVal;
+    exprValue *primaryVal = new exprValue();
+    primaryVal->valType = userfuncExpr_T;
+    primaryVal->symbolVal = funcdef;
+
+    return primaryVal;
 }
 
 exprValue *Manage_primary_const(exprValue *constVal) {
