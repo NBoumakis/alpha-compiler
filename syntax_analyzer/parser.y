@@ -5,6 +5,7 @@
     #include <string.h>
     #include "types.h"
     #include "scope.h"
+    #include "symbol_table.h"
 
     #include "rules.h"
 
@@ -23,11 +24,6 @@
     extern int yylex();
     extern int yyparse();
     extern FILE* yyin;
-
-    extern Scope symbolTableObj;
-    extern unsigned int scopeLevel;
-    extern std::unordered_set<std::string> libFunctions;
-    extern unsigned int funcDepth;
 %}
 
 %union{

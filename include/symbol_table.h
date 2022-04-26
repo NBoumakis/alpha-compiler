@@ -6,22 +6,11 @@
 #include <stack>
 #include <unordered_set>
 
-Scope symbolTableObj;
-unsigned int scopeLevel = 0;
-std::unordered_set<std::string> libFunctions = {"print",
-                                                "input",
-                                                "objectmemberkeys",
-                                                "objecttotalmembers",
-                                                "objectcopy",
-                                                "totalarguments",
-                                                "argument",
-                                                "typeof",
-                                                "strtonum",
-                                                "sqrt", "cos", "sin"};
+extern Scope symbolTableObj;
+extern unsigned int scopeLevel;
+extern std::unordered_set<std::string> libFunctions;
 
-bool isLibFunction(std::string name) {
-    return libFunctions.find(name) != libFunctions.end();
-}
+bool isLibFunction(std::string name);
 
-unsigned int funcDepth = 0;
+extern unsigned int funcDepth;
 #endif
