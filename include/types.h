@@ -138,6 +138,9 @@ struct exprValue {
     exprValue *next;
 
     exprType valType;
+
+    std::string type_string();
+    std::string to_string();
 };
 
 enum termType {
@@ -337,16 +340,10 @@ enum exprOptRptType {
 };
 
 struct exprOptRptValue {
-    union {
-        struct {
-            exprOptRptValue *exprOptRptVal;
-            exprValue *exprVal;
-        } exprOptRptExprValue;
+    exprValue *index;
+    exprValue *value;
 
-        exprValue *exprVal;
-    } value;
-
-    exprOptRptType valType;
+    exprOptRptValue *next;
 };
 
 enum objectdefType {
