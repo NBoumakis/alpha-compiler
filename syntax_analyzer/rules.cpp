@@ -64,6 +64,73 @@ void check_arithm(exprValue *expr) {
     }
 }
 
+bool valid_op_expr(exprValue *expr) {
+    return !(expr->valType == userfuncExpr_T || expr->valType == libfuncExpr_T ||
+             expr->valType == boolexprExpr_T || expr->valType == newtableExpr_T ||
+             expr->valType == constboolExpr_T || expr->valType == conststringExpr_T ||
+             expr->valType == nilExpr_T);
+}
+
+static exprValue *expr_op_emit(iopcode op, exprValue *expr_left, exprValue *expr_right) {
+    exprValue *expr_res = new exprValue();
+
+    if (valid_op_expr(expr_left) && valid_op_expr(expr_right)) {
+        expr_res->valType = arithmexprExpr_T;
+
+        expr_res->symbolVal = newTempvar();
+        emit(op, expr_res, expr_left, expr_right);
+
+    } else {
+        std::cerr << BRED "Invalid operation between " << expr_left->to_string() << " (" << expr_left->type_string() << ") and "
+                  << expr_right->to_string() << " (" << expr_right->type_string() << ") in line " << yylineno << RST << std::endl;
+
+        expr_res->valType = InvalidExpr_T;
+    }
+
+    return expr_res;
+}
+
+static exprValue *expr_relop_emit(iopcode relop, exprValue *expr_left, exprValue *expr_right) {
+    exprValue *expr_res = new exprValue();
+
+    if (valid_op_expr(expr_left) && valid_op_expr(expr_right)) {
+        expr_res->valType = boolexprExpr_T;
+
+        expr_res->symbolVal = newTempvar();
+
+        emit(relop, expr_left, expr_right, nextQuadLabel() + 3);
+
+        exprValue *constbool = new exprValue();
+        constbool->valType = constboolExpr_T;
+        constbool->boolConstVal = false;
+        emit(assign_iop, expr_res, constbool);
+
+        emit(jump_iop, nextQuadLabel() + 2);
+
+        constbool = new exprValue();
+        constbool->valType = constboolExpr_T;
+        constbool->boolConstVal = true;
+        emit(assign_iop, expr_res, constbool);
+    } else {
+        std::cerr << BRED "Invalid relational operation between " << expr_left->to_string() << " (" << expr_left->type_string() << ") and "
+                  << expr_right->to_string() << " (" << expr_right->type_string() << ") in line " << yylineno << RST << std::endl;
+
+        expr_res->valType = InvalidExpr_T;
+    }
+
+    return expr_res;
+}
+
+static exprValue *expr_boolop_emit(iopcode boolop, exprValue *expr_left, exprValue *expr_right) {
+    exprValue *expr_res = new exprValue();
+    expr_res->valType = boolexprExpr_T;
+
+    expr_res->symbolVal = newTempvar();
+    emit(boolop, expr_res, expr_left, expr_right);
+
+    return expr_res;
+}
+
 programValue *Manage_program(stmtListValue *stmtList) {
     programValue *newStructVal;
     return newStructVal;
@@ -137,68 +204,185 @@ exprValue *Manage_expr_assignexpr(exprValue *assignexpr) {
 }
 
 exprValue *Manage_expr_expr_PLUS_expr(exprValue *exprLeft, exprValue *exprRight) {
-    exprValue *exprValueVal;
-    return exprValueVal;
+    exprValue *expr_res;
+
+    if (exprLeft->valType == constnumExpr_T && exprRight->valType == constnumExpr_T) {
+        expr_res = new exprValue();
+        expr_res->valType = constnumExpr_T;
+
+        expr_res->numConstval = exprLeft->numConstval + exprRight->numConstval;
+    } else {
+        expr_res = expr_op_emit(add_iop, exprLeft, exprRight);
+    }
+
+    return expr_res;
 }
 
 exprValue *Manage_expr_expr_MINUS_expr(exprValue *exprLeft, exprValue *exprRight) {
-    exprValue *exprValueVal;
-    return exprValueVal;
+    exprValue *expr_res;
+
+    if (exprLeft->valType == constnumExpr_T && exprRight->valType == constnumExpr_T) {
+        expr_res = new exprValue();
+        expr_res->valType = constnumExpr_T;
+
+        expr_res->numConstval = exprLeft->numConstval - exprRight->numConstval;
+    } else {
+        expr_res = expr_op_emit(sub_iop, exprLeft, exprRight);
+    }
+
+    return expr_res;
 }
 
 exprValue *Manage_expr_expr_MUL_expr(exprValue *exprLeft, exprValue *exprRight) {
-    exprValue *exprValueVal;
-    return exprValueVal;
+    exprValue *expr_res;
+
+    if (exprLeft->valType == constnumExpr_T && exprRight->valType == constnumExpr_T) {
+        expr_res = new exprValue();
+        expr_res->valType = constnumExpr_T;
+
+        expr_res->numConstval = exprLeft->numConstval * exprRight->numConstval;
+    } else {
+        expr_res = expr_op_emit(mul_iop, exprLeft, exprRight);
+    }
+
+    return expr_res;
 }
 
 exprValue *Manage_expr_expr_DIV_expr(exprValue *exprLeft, exprValue *exprRight) {
-    exprValue *exprValueVal;
-    return exprValueVal;
+    exprValue *expr_res;
+
+    if (exprLeft->valType == constnumExpr_T && exprRight->valType == constnumExpr_T) {
+        expr_res = new exprValue();
+        expr_res->valType = constnumExpr_T;
+
+        if (exprRight->numConstval == 0) {
+            std::cerr << BBLU "Division by zero in line " << yylineno << RST << std::endl;
+            expr_res->valType = InvalidExpr_T;
+        } else {
+            expr_res->numConstval = exprLeft->numConstval / exprRight->numConstval;
+        }
+    } else {
+        expr_res = expr_op_emit(div_iop, exprLeft, exprRight);
+    }
+
+    return expr_res;
 }
 
 exprValue *Manage_expr_expr_MOD_expr(exprValue *exprLeft, exprValue *exprRight) {
-    exprValue *exprValueVal;
-    return exprValueVal;
+    exprValue *expr_res;
+
+    if (exprLeft->valType == constnumExpr_T && exprRight->valType == constnumExpr_T) {
+        expr_res = new exprValue();
+        expr_res->valType = constnumExpr_T;
+
+        if (exprRight->numConstval == 0) {
+            std::cerr << BBLU "Modulo with zero in line " << yylineno << RST << std::endl;
+            expr_res->valType = InvalidExpr_T;
+        } else {
+            expr_res->numConstval = static_cast<int>(exprLeft->numConstval) % static_cast<int>(exprRight->numConstval);
+        }
+    } else {
+        expr_res = expr_op_emit(mod_iop, exprLeft, exprRight);
+    }
+
+    return expr_res;
 }
 
 exprValue *Manage_expr_expr_GT_expr(exprValue *exprLeft, exprValue *exprRight) {
-    exprValue *exprValueVal;
-    return exprValueVal;
+    exprValue *expr_res;
+
+    if (exprLeft->valType == constnumExpr_T && exprRight->valType == constnumExpr_T) {
+        expr_res = new exprValue();
+        expr_res->valType = boolexprExpr_T;
+
+        expr_res->boolConstVal = (exprLeft->numConstval > exprRight->numConstval);
+    } else {
+        expr_res = expr_relop_emit(if_greater_iop, exprLeft, exprRight);
+    }
+
+    return expr_res;
 }
 
 exprValue *Manage_expr_expr_GE_expr(exprValue *exprLeft, exprValue *exprRight) {
-    exprValue *exprValueVal;
-    return exprValueVal;
+    exprValue *expr_res;
+
+    if (exprLeft->valType == constnumExpr_T && exprRight->valType == constnumExpr_T) {
+        expr_res = new exprValue();
+        expr_res->valType = boolexprExpr_T;
+
+        expr_res->boolConstVal = (exprLeft->numConstval >= exprRight->numConstval);
+    } else {
+        expr_res = expr_relop_emit(if_greater_eq_iop, exprLeft, exprRight);
+    }
+
+    return expr_res;
 }
 
 exprValue *Manage_expr_expr_LT_expr(exprValue *exprLeft, exprValue *exprRight) {
-    exprValue *exprValueVal;
-    return exprValueVal;
+    exprValue *expr_res;
+
+    if (exprLeft->valType == constnumExpr_T && exprRight->valType == constnumExpr_T) {
+        expr_res = new exprValue();
+        expr_res->valType = boolexprExpr_T;
+
+        expr_res->boolConstVal = (exprLeft->numConstval < exprRight->numConstval);
+    } else {
+        expr_res = expr_relop_emit(if_less_iop, exprLeft, exprRight);
+    }
+
+    return expr_res;
 }
 
 exprValue *Manage_expr_expr_LE_expr(exprValue *exprLeft, exprValue *exprRight) {
-    exprValue *exprValueVal;
-    return exprValueVal;
+    exprValue *expr_res;
+
+    if (exprLeft->valType == constnumExpr_T && exprRight->valType == constnumExpr_T) {
+        expr_res = new exprValue();
+        expr_res->valType = boolexprExpr_T;
+
+        expr_res->boolConstVal = (exprLeft->numConstval <= exprRight->numConstval);
+    } else {
+        expr_res = expr_relop_emit(if_less_eq_iop, exprLeft, exprRight);
+    }
+
+    return expr_res;
 }
 
 exprValue *Manage_expr_expr_EQUAL_expr(exprValue *exprLeft, exprValue *exprRight) {
-    exprValue *exprValueVal;
-    return exprValueVal;
+    exprValue *expr_res;
+
+    if (exprLeft->valType == constnumExpr_T && exprRight->valType == constnumExpr_T) {
+        expr_res = new exprValue();
+        expr_res->valType = boolexprExpr_T;
+
+        expr_res->boolConstVal = (exprLeft->numConstval == exprRight->numConstval);
+    } else {
+        expr_res = expr_relop_emit(if_eq_iop, exprLeft, exprRight);
+    }
+    return expr_res;
 }
 
 exprValue *Manage_expr_expr_NEQUAL_expr(exprValue *exprLeft, exprValue *exprRight) {
-    exprValue *exprValueVal;
-    return exprValueVal;
+    exprValue *expr_res;
+
+    if (exprLeft->valType == constnumExpr_T && exprRight->valType == constnumExpr_T) {
+        expr_res = new exprValue();
+        expr_res->valType = boolexprExpr_T;
+
+        expr_res->boolConstVal = (exprLeft->numConstval != exprRight->numConstval);
+    } else {
+        expr_res = expr_relop_emit(if_not_eq_iop, exprLeft, exprRight);
+    }
+
+    return expr_res;
 }
 
 exprValue *Manage_expr_expr_AND_expr(exprValue *exprLeft, exprValue *exprRight) {
-    exprValue *exprValueVal;
-    return exprValueVal;
+    return expr_boolop_emit(and_iop, exprLeft, exprRight);
 }
 
 exprValue *Manage_expr_expr_OR_expr(exprValue *exprLeft, exprValue *exprRight) {
-    exprValue *exprValueVal;
-    return exprValueVal;
+    return expr_boolop_emit(or_iop, exprLeft, exprRight);
 }
 
 exprValue *Manage_expr_term(exprValue *term) {
