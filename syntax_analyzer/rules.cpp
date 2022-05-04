@@ -748,13 +748,21 @@ exprValue *Manage_member_lvalueLSBexprRSB(exprValue *lvalue, exprValue *expr) {
 }
 
 exprValue *Manage_member_callDOTid(exprValue *call, std::string id) {
-    exprValue *memberVal;
-    return memberVal;
+    return member_item(call, id);
 }
 
 exprValue *Manage_member_callLSBexprRSB(exprValue *call, exprValue *expr) {
-    exprValue *memberVal;
-    return memberVal;
+    exprValue *tableitem;
+
+    call = emit_iftableitem(call);
+
+    tableitem = new exprValue();
+    tableitem->valType = TableitemExpr_T;
+    tableitem->symbolVal = call->symbolVal;
+
+    tableitem->indexVal = expr;
+
+    return tableitem;
 }
 
 /* Calls */
