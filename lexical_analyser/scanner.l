@@ -16,6 +16,7 @@ extern Scope symbolTableObj;
 extern unsigned int scopeLevel;
 extern std::unordered_set<std::string> libFunctions;
 
+extern std::string quad_to_string();
 
 int string_line_start;
 %}
@@ -398,7 +399,7 @@ int main(int argc, char*argv[]) {
 
     yyparse();
 
-    symbolTableObj.get_symbols_scope_order();
-
+    //symbolTableObj.get_symbols_scope_order();
+    out<<quad_to_string()<<std::endl;
     return 0;
 }
