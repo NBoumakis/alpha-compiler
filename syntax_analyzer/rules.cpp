@@ -132,75 +132,64 @@ static exprValue *expr_boolop_emit(iopcode boolop, exprValue *expr_left, exprVal
 }
 
 programValue *Manage_program(stmtListValue *stmtList) {
-    programValue *newStructVal;
-    return newStructVal;
+    return nullptr;
 }
 
 stmtListValue *Manage_stmtList_stmt(stmtListValue *stmtList, stmtValue *stmt) {
-    stmtListValue *stmtListVal;
-    return stmtListVal;
+    return nullptr;
 }
 
 stmtListValue *Manage_stmtList() {
-    stmtListValue *stmtListVal;
-    return stmtListVal;
+    return nullptr;
 }
 
 /* Statements */
 stmtValue *Manage_stmt_expr(exprValue *expr) {
-    stmtValue *stmtValueVal;
-    return stmtValueVal;
+    resettemp();
+    return nullptr;
 }
 
-stmtValue *Manage_stmt_ifstmt(ifstmtValue *ifstmt) {
-    stmtValue *stmtValueVal;
-    return stmtValueVal;
+stmtValue *Manage_stmt_ifstmt() {
+    return nullptr;
 }
 
 stmtValue *Manage_stmt_whilestmt(whilestmtValue *whilestmt) {
-    stmtValue *stmtValueVal;
-    return stmtValueVal;
+    return nullptr;
 }
 
 stmtValue *Manage_stmt_forstmt(forstmtValue *forstmt) {
-    stmtValue *stmtValueVal;
-    return stmtValueVal;
+    return nullptr;
 }
 
 stmtValue *Manage_stmt_returnstmt(returnstmtValue *returnstmt) {
-    stmtValue *stmtValueVal;
-    return stmtValueVal;
+    return nullptr;
 }
 
 stmtValue *Manage_stmt_break() {
-    stmtValue *stmtValueVal;
-    return stmtValueVal;
+    return nullptr;
 }
 
 stmtValue *Manage_stmt_continue() {
-    stmtValue *stmtValueVal;
-    return stmtValueVal;
+    return nullptr;
 }
 
 stmtValue *Manage_stmt_block(blockValue *block) {
-    stmtValue *stmtValueVal;
-    return stmtValueVal;
+    return nullptr;
 }
 
 stmtValue *Manage_stmt_funcdef(Function *funcdef) {
-    stmtValue *stmtValueVal;
-    return stmtValueVal;
+    return nullptr;
 }
 
 stmtValue *Manage_stmt_semicolon() {
-    stmtValue *stmtValueVal;
-    return stmtValueVal;
+    resettemp();
+
+    return nullptr;
 }
 
 /* Expressions */
 exprValue *Manage_expr_assignexpr(exprValue *assignexpr) {
-    exprValue *exprValueVal;
-    return exprValueVal;
+    return assignexpr;
 }
 
 exprValue *Manage_expr_expr_PLUS_expr(exprValue *exprLeft, exprValue *exprRight) {
@@ -851,8 +840,7 @@ exprValue *Manage_elist_exprOptRpt(exprOptRptValue *exprOptRpt) {
 }
 
 exprValue *Manage_elist() {
-    exprValue *newStructVal;
-    return newStructVal;
+    return nullptr;
 }
 
 /* Expression optional and repeatable */
@@ -922,10 +910,7 @@ indexedelemValue *Manage_indexedelem_LCB_expr_COLON_expr_RCB(exprValue *key, exp
 
 /* Block */
 blockValue *Manage_block_LCBstmtRCB(stmtListValue *stmt) {
-    /*  1){ scope++
-        2)hide(scope);scope--}*/
-    blockValue *newStructVal;
-    return newStructVal;
+    return nullptr;
 }
 
 /* Funcdef */
@@ -1145,45 +1130,37 @@ ifstmtValue *Manage_ifstmt(exprValue *expr, stmtValue *stmt, elseValue *elseVal)
 
 /* else */
 elseValue *Manage_else_stmt(stmtValue *stmt) {
-    elseValue *newStructVal;
-    return newStructVal;
+    return nullptr;
 }
 
 elseValue *Manage_else() {
-    elseValue *newStructVal;
-    return newStructVal;
+    return nullptr;
 }
 
 /* While statement */
 whilestmtValue *Manage_whilestmt(exprValue *expr, stmtValue *stmt) {
-    whilestmtValue *newStructVal;
-    return newStructVal;
+    return nullptr;
 }
 
 /* For statement */
 forstmtValue *Manage_for(exprValue *elistFirst, exprValue *expr, exprValue *elistLast, stmtValue *stmt) {
-    forstmtValue *newStructVal;
-    return newStructVal;
+    return nullptr;
 }
 
 /* Return statement */
 returnstmtValue *Manage_returnstmt(retValue *ret) {
-    returnstmtValue *newStructVal;
-
     if (funcDepth == 0) {
         std::cerr << BRED "Cannot use return statement outside of function in line " << yylineno << RST << std::endl;
     }
 
-    return newStructVal;
+    return nullptr;
 }
 
 /* Return */
 retValue *Manage_ret_expr(exprValue *expr) {
-    retValue *newStructVal;
-    return newStructVal;
+    return nullptr;
 }
 
 retValue *Manage_ret() {
-    retValue *newStructVal;
-    return newStructVal;
+    return nullptr;
 }
