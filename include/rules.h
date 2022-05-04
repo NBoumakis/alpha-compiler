@@ -132,7 +132,7 @@ callValue *Manage_normcall_LPelistRP(exprValue *);
 callValue *Manage_methodcall_DDOTidLPelistRP(std::string, exprValue *);
 
 /* elist */
-exprValue *Manage_elist_exprOptRpt(exprOptRptValue *);
+exprValue *Manage_elist_exprOptRpt(exprValue *);
 
 exprValue *Manage_elist();
 
