@@ -471,6 +471,7 @@ funcbody:     block     {
 funcdef:  funcprefix funcargs funcbody
             {
                 std::cout << BGRN "Rule funcdef -> funcprefix funcargs funcbody, line " << yylineno << RST << std::endl;
+                Manage_funcdef($funcprefix, $funcbody);
             }
         ;
 

@@ -144,7 +144,7 @@ exprValue *Manage_exprOptRpt_expr(exprValue *);
 /* Objectdef */
 exprValue *Manage_objectdef_LSBelistRSB(exprValue *);
 
-exprValue *Manage_objectdef_LSBindexedRSB(exprValue *);
+exprValue *Manage_objectdef_LSBindexedRSB(exprOptRptValue *);
 
 /* Indexed */
 exprOptRptValue *Manage_indexed_indexedelem_COMMA_indexed(exprOptRptValue *, exprOptRptValue *);
