@@ -51,6 +51,7 @@ public:
 class Function : public Symbol {
 public:
     unsigned long iaddress;
+    unsigned long totalLocals;
 
 public:
     Function(std::string name, unsigned int scope, unsigned int line, unsigned int funcDepth, SymbolType type, unsigned long offset, unsigned long iaddress)
