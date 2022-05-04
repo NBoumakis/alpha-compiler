@@ -6,7 +6,7 @@
 static unsigned long tempcounter = 0;
 
 std::string newtempname() {
-    return "_t" + tempcounter;
+    return "_t" + std::to_string(tempcounter++);
 }
 
 void resettemp() {
