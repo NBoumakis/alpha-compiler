@@ -36,12 +36,9 @@
     stmtListValue *stmtListVal;
     stmtValue *stmtVal;
     exprValue *exprVal;
+    exprOptRptValue *exprOptRptVal;
     primaryValue *primaryVal;
     callValue *callVal;
-    exprOptRptValue *exprOptRptVal;
-    indexedValue *indexedVal;
-    indelemlistValue *indelemlistVal;
-    indexedelemValue *indexedelemVal;
     blockValue *blockVal;
     unsigned long ulongVal;
     idlistValue *idlistVal;
@@ -83,10 +80,9 @@
 %type <callVal> callsuffix
 %type <callVal> normcall
 %type <callVal> methodcall
-%type <exprOptRptVal> exprOptRpt
-%type <exprVal> indexed
-%type <exprVal> indelemlist
-%type <indexedelemVal>  indexedelem
+%type <exprVal> exprOptRpt
+%type <exprOptRptVal> indexed
+%type <exprOptRptVal> indexedelem
 %type <blockVal> block
 
 %type <stringVal> funcname
@@ -383,13 +379,13 @@ elist:   exprOptRpt         {
                             }
        ;
 
-exprOptRpt:   expr COMMA exprOptRpt[derivated]  {
+exprOptRpt:   exprOptRpt[derivated] COMMA expr  {
                                                     std::cout << BGRN "Rule exprOptRpt -> expr, exprOptRpt, line " << yylineno << RST << std::endl;
-                                                    $$ = Manage_exprOR_exprOR($expr, $derivated);
+                                                    $$ = Manage_exprOptRpt_expr_exprOptRpt($expr, $derivated);
                                                 }
             | expr                              {
                                                     std::cout << BGRN "Rule exprOptRpt -> expr, line " << yylineno << RST << std::endl;
-                                                    $$ = Manage_exprOR_expr($expr);
+                                                    $$ = Manage_exprOptRpt_expr($expr);
                                                 }
             ;
 

@@ -672,14 +672,13 @@ exprValue *Manage_elist() {
 }
 
 /* Expression optional and repeatable */
-exprOptRptValue *Manage_exprOR_exprOR(exprValue *expr, exprOptRptValue *exprOptRpt) {
-    exprOptRptValue *newStructVal;
-    return newStructVal;
+exprValue *Manage_exprOptRpt_expr_exprOptRpt(exprValue *expr, exprValue *exprOptRpt) {
+    expr->next = exprOptRpt;
+    return expr;
 }
 
-exprOptRptValue *Manage_exprOR_expr(exprValue *expr) {
-    exprOptRptValue *newStructVal;
-    return newStructVal;
+exprValue *Manage_exprOptRpt_expr(exprValue *expr) {
+    return expr;
 }
 
 /* Objectdef */

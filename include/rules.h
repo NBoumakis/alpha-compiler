@@ -137,9 +137,9 @@ exprValue *Manage_elist_exprOptRpt(exprOptRptValue *);
 exprValue *Manage_elist();
 
 /* Expression optional and repeatable */
-exprOptRptValue *Manage_exprOR_exprOR(exprValue *, exprOptRptValue *);
+exprValue *Manage_exprOptRpt_expr_exprOptRpt(exprValue *, exprValue *);
 
-exprOptRptValue *Manage_exprOR_expr(exprValue *);
+exprValue *Manage_exprOptRpt_expr(exprValue *);
 
 /* Objectdef */
 exprValue *Manage_objectdef_LSBelistRSB(exprValue *);
