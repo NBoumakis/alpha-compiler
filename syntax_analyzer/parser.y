@@ -85,7 +85,7 @@
 %type <blockVal> block
 
 %type <stringVal> funcname
-%type <symPointer> funcprefix
+%type <funcPointer> funcprefix
 %type <ulongVal> funcbody
 %type <funcPointer> funcdef
 %type <exprVal> const
