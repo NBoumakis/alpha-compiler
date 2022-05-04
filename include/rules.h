@@ -147,14 +147,11 @@ exprValue *Manage_objectdef_LSBelistRSB(exprValue *);
 exprValue *Manage_objectdef_LSBindexedRSB(exprValue *);
 
 /* Indexed */
-exprValue *Manage_indexed(exprValue *);
+exprOptRptValue *Manage_indexed_indexedelem_COMMA_indexed(exprOptRptValue *, exprOptRptValue *);
 
-/* Indexed element list */
-exprValue *Manage_indelemlist(indexedelemValue *, exprValue *);
+exprOptRptValue *Manage_indexed_indexedelem(exprOptRptValue *);
 
-exprValue *Manage_indelemlist_indexedelem(indexedelemValue *);
-
-indexedelemValue *Manage_indexedelem_LCB_expr_COLON_expr_RCB(exprValue *, exprValue *);
+exprOptRptValue *Manage_indexedelem_LCB_expr_COLON_expr_RCB(exprValue *, exprValue *);
 
 /* Block */
 blockValue *Manage_block_LCBstmtRCB(stmtListValue *);

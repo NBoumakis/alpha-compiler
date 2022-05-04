@@ -880,18 +880,23 @@ exprValue *Manage_objectdef_LSBindexedRSB(exprValue *indexed) {
 }
 
 /* Indexed element list */
-exprValue *Manage_indelemlist(indexedelemValue *indexedelem, exprValue *indelemlist) {
-    exprValue *newStructVal;
-    return newStructVal;
+exprOptRptValue *Manage_indexed_indexedelem_COMMA_indexed(exprOptRptValue *indexedelem, exprOptRptValue *indelemlist) {
+    indexedelem->next = indelemlist;
+
+    return indexedelem;
 }
 
 exprOptRptValue *Manage_indexed_indexedelem(exprOptRptValue *indexedelem) {
     return indexedelem;
 }
 
-indexedelemValue *Manage_indexedelem_LCB_expr_COLON_expr_RCB(exprValue *key, exprValue *value) {
-    indexedelemValue *newStructVal;
-    return newStructVal;
+exprOptRptValue *Manage_indexedelem_LCB_expr_COLON_expr_RCB(exprValue *key, exprValue *value) {
+    exprOptRptValue *elemVal = new exprOptRptValue();
+
+    elemVal->index = key;
+    elemVal->value = value;
+
+    return elemVal;
 }
 
 /* Block */
