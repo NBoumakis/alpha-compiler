@@ -375,8 +375,7 @@ exprValue *Manage_expr_expr_OR_expr(exprValue *exprLeft, exprValue *exprRight) {
 }
 
 exprValue *Manage_expr_term(exprValue *term) {
-    exprValue *exprValueVal;
-    return exprValueVal;
+    return term;
 }
 
 /* Terms */
@@ -613,13 +612,11 @@ exprValue *Manage_primary_lvalue(exprValue *lvalue) {
 }
 
 exprValue *Manage_primary_call(exprValue *call) {
-    exprValue *primaryValueVal;
-    return primaryValueVal;
+    return call;
 }
 
 exprValue *Manage_primary_objectdef(exprValue *objdef) {
-    exprValue *primaryValueVal;
-    return primaryValueVal;
+    return objdef;
 }
 
 exprValue *Manage_primary_LPfuncdefRP(Function *funcdef) {
@@ -631,8 +628,7 @@ exprValue *Manage_primary_LPfuncdefRP(Function *funcdef) {
 }
 
 exprValue *Manage_primary_const(exprValue *constVal) {
-    exprValue *primaryValueVal;
-    return primaryValueVal;
+    return constVal;
 }
 
 /* lvalue */
@@ -732,8 +728,7 @@ exprValue *Manage_lvalue_globalid(std::string id) {
 }
 
 exprValue *Manage_lvalue_member(exprValue *member) {
-    exprValue *lvalueValueVal;
-    return lvalueValueVal;
+    return member;
 }
 
 /* Members */
@@ -834,9 +829,8 @@ callValue *Manage_methodcall_DDOTidLPelistRP(std::string id, exprValue *elist) {
 }
 
 /* elist */
-exprValue *Manage_elist_exprOptRpt(exprOptRptValue *exprOptRpt) {
-    exprValue *newStructVal;
-    return newStructVal;
+exprValue *Manage_elist_exprOptRpt(exprValue *exprOptRpt) {
+    return exprOptRpt;
 }
 
 exprValue *Manage_elist() {
@@ -898,9 +892,8 @@ exprValue *Manage_indelemlist(indexedelemValue *indexedelem, exprValue *indeleml
     return newStructVal;
 }
 
-exprValue *Manage_indelemlist_indexedelem(indexedelemValue *indexedelem) {
-    exprValue *newStructVal;
-    return newStructVal;
+exprOptRptValue *Manage_indexed_indexedelem(exprOptRptValue *indexedelem) {
+    return indexedelem;
 }
 
 indexedelemValue *Manage_indexedelem_LCB_expr_COLON_expr_RCB(exprValue *key, exprValue *value) {
