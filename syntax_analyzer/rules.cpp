@@ -780,8 +780,18 @@ exprValue *Manage_call_lvaluecallsuffix(exprValue *lvalue, callValue *callsuffix
     lvalue = emit_iftableitem(lvalue);
     if (callsuffix->method) {
         exprValue *t = lvalue;
+        exprValue *p = callsuffix->elist;
+
         lvalue = emit_iftableitem(member_item(t, callsuffix->name));
-        callsuffix->elist->next = t;
+
+        while (p && p->next) {
+            p = p->next;
+        }
+
+        if (p)
+            p->next = t;
+        else
+            callsuffix->elist = t;
     }
 
     return make_call(lvalue, callsuffix->elist);
@@ -811,7 +821,7 @@ callValue *Manage_normcall_LPelistRP(exprValue *elist) {
 
     normcallVal->elist = elist;
     normcallVal->method = 0;
-    normcallVal->name = nullptr;
+    normcallVal->name = "";
 
     return normcallVal;
 }
