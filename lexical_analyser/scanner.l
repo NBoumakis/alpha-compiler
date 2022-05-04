@@ -326,11 +326,9 @@ SPACE [\r \t\v]
                 cmnt_start_line.push(yyget_lineno());
 
                 int c;
-                while (c=yyinput()) {
-                    if (c=='*') {
-                        if ((c=yyinput())=='/') {
-                            int start_line = cmnt_start_line.top();
-                          
+                while ((c = yyinput())) {
+                    if (c == '*') {
+                        if ((c=yyinput()) == '/') {
                             cmnt_start_line.pop();
 
                             if (cmnt_start_line.empty()){
