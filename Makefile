@@ -8,7 +8,7 @@ ParserGen = bison
 
 INCLUDE_DIR = ./include
 
-CppOptions 	= -I$(INCLUDE_DIR) -std=c++14 -g
+CppOptions 	= -I$(INCLUDE_DIR) -std=c++14 -g -Wall #-Wno-uninitialized
 ParserGenOptions = --yacc --defines 
 
 
