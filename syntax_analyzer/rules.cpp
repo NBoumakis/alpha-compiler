@@ -23,17 +23,17 @@ static exprValue *make_call(exprValue *lvalue, exprValue *elist_r) {
     exprValue *func = emit_iftableitem(lvalue);
 
     while (elist_r) {
-        emit(param_iop, elist_r, NULL, NULL);
+        emit(param_iop, elist_r, nullptr, nullptr);
         elist_r = elist_r->next;
     }
 
-    emit(call_iop, func, NULL, NULL);
+    emit(call_iop, func, nullptr, nullptr);
 
     exprValue *result = new exprValue();
     result->valType = varExpr_T;
 
     result->symbolVal = newTempvar();
-    emit(get_retval_iop, NULL, NULL, result);
+    emit(get_retval_iop, result, nullptr, nullptr);
 
     return result;
 }
