@@ -1,4 +1,8 @@
 #include "scope_space.h"
+#include <iostream>
+#include <string>
+
+#define FIELD_WIDTH 24
 
 std::vector<quad> quad_vector;
 
@@ -91,7 +95,67 @@ unsigned long nextQuadLabel() {
 }
 
 void patchLabel(unsigned long quadNo, unsigned long label) {
-    assert(quadNo < quad_vector.size());
+    assert(quadNo < quad_vector.size() && !quad_vector[quadNo].label);
 
     quad_vector[quadNo].label = label;
+}
+
+std::string opcode_name[] = {"assign", "add", "sub", "mul", "div", "mod", "uminus", "and", "or", "not", "if_eq", "if_not_eq", "if_less_eq", "if_greater_eq", "if_less", "if_greater", "jump", "call", "param", "ret", "get_retval", "funcstart", "funcend", "table_create", "table_getelem", "table_setelem"};
+
+static inline void pad_to_width(std::string &str, char pad_char) {
+    long pad_size = FIELD_WIDTH - static_cast<long>(str.length());
+
+    for (; pad_size > 0; --pad_size) {
+        str += pad_char;
+    }
+}
+
+std::string quad_to_string() {
+    std::string result = "";
+    std::string field;
+    for (size_t i = 0; i < quad_vector.size(); ++i) {
+        auto &quad_elem = quad_vector[i];
+
+        field = std::to_string(i + 1) + ":";
+        pad_to_width(field, ' ');
+        result += field;
+
+        field = opcode_name[quad_elem.opcode];
+        pad_to_width(field, ' ');
+        result += field;
+
+        if (quad_elem.arg1) {
+            field = quad_elem.arg1->to_string();
+            pad_to_width(field, ' ');
+            result += field;
+        } else {
+            field = "";
+            pad_to_width(field, ' ');
+            result += field;
+        }
+
+        if (quad_elem.arg2) {
+            field = quad_elem.arg2->to_string();
+            pad_to_width(field, ' ');
+            result += field;
+        } else {
+            field = "";
+            pad_to_width(field, ' ');
+            result += field;
+        }
+
+        if (quad_elem.result) {
+            field = quad_elem.result->to_string();
+            pad_to_width(field, ' ');
+            result += field;
+        } else {
+            field = "";
+            pad_to_width(field, ' ');
+            result += field;
+        }
+
+        result += std::to_string(quad_elem.label) + "\r\n";
+    }
+
+    return result;
 }
