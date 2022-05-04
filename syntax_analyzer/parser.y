@@ -43,7 +43,6 @@
     unsigned long ulongVal;
     idlistValue *idlistVal;
 
-    ifstmtValue *ifstmtVal;
     elseValue *elseVal;
     whilestmtValue *whilestmtVal;
     forstmtValue *forstmtVal;
@@ -91,7 +90,8 @@
 %type <funcPointer> funcdef
 %type <exprVal> const
 %type <idlistVal> idlist
-%type <ifstmtVal> ifstmt
+
+%type <ulongVal> ifprefix
 %type <elseVal> else
 %type <whilestmtVal> whilestmt
 %type <forstmtVal> forstmt
@@ -137,7 +137,7 @@ stmt:     expr SEMICOLON        {
                                 }
         | ifstmt                {
                                     std::cout << BGRN "Rule stmt -> ifstmt, line " << yylineno << RST << std::endl;
-                                    $$ = Manage_stmt_ifstmt($ifstmt);
+                                    $$ = Manage_stmt_ifstmt();
                                 }
         | whilestmt             {
                                     std::cout << BGRN "Rule stmt -> whilestmt, line " << yylineno << RST << std::endl;
@@ -515,10 +515,15 @@ idlist:   ID    {
                                         }
         ;
 
-ifstmt:   IF L_PARENTHESIS expr R_PARENTHESIS stmt else     {
-                                                                std::cout << BGRN "Rule ifstmt -> if (expr) stmt else, line " << yylineno << RST << std::endl;
-                                                                $$ = Manage_ifstmt($expr, $stmt, $else);
-                                                            }
+ifprefix: IF L_PARENTHESIS expr R_PARENTHESIS   {
+                                                    std::cout << BGRN "Rule ifprefix -> if (expr) stmt else, line " << yylineno << RST << std::endl;
+                                                    $$ = Manage_ifprefix($expr);
+                                                }
+
+ifstmt:   ifprefix stmt {
+                            std::cout << BGRN "Rule ifstmt -> if (expr) stmt else, line " << yylineno << RST << std::endl;
+                            Manage_ifstmt_ifprefix_stmt($ifprefix, $stmt);
+                        }
         ;
 
 else:     ELSE stmt     {

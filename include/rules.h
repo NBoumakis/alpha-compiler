@@ -15,7 +15,7 @@ stmtListValue *Manage_stmtList();
 /* Statements */
 stmtValue *Manage_stmt_expr(exprValue *);
 
-stmtValue *Manage_stmt_ifstmt(ifstmtValue *);
+stmtValue *Manage_stmt_ifstmt();
 
 stmtValue *Manage_stmt_whilestmt(whilestmtValue *);
 
@@ -188,7 +188,9 @@ idlistValue *Manage_idlist_idlist_comma_id(idlistValue *, std::string);
 idlistValue *Manage_idlist();
 
 /* If statement */
-ifstmtValue *Manage_ifstmt(exprValue *, stmtValue *, elseValue *);
+unsigned long Manage_ifprefix(exprValue *);
+
+void Manage_ifstmt_ifprefix_stmt(unsigned long, stmtValue *);
 
 /* else */
 elseValue *Manage_else_stmt(stmtValue *);

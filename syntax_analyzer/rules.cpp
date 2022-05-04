@@ -1150,9 +1150,23 @@ idlistValue *Manage_idlist() {
 }
 
 /* If statement */
-ifstmtValue *Manage_ifstmt(exprValue *expr, stmtValue *stmt, elseValue *elseVal) {
-    ifstmtValue *newStructVal;
-    return newStructVal;
+unsigned long Manage_ifprefix(exprValue *expr) {
+    exprValue *constboolVal = new exprValue();
+    constboolVal->valType = constboolExpr_T;
+
+    constboolVal->boolConstVal = true;
+
+    emit(if_eq_iop, expr, constboolVal, nextQuadLabel() + 2);
+
+    unsigned long tmp_nextquad = nextQuadLabel();
+
+    emit(jump_iop, 0);
+
+    return tmp_nextquad;
+}
+
+void Manage_ifstmt_ifprefix_stmt(unsigned long ifprefix, stmtValue *stmt) {
+    patchLabel(ifprefix, nextQuadLabel());
 }
 
 /* else */
