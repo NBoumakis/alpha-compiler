@@ -1074,33 +1074,45 @@ std::string newTmpFuncname() {
 
 /* Constants */
 exprValue *Manage_const_int(int intVal) {
-    exprValue *newStructVal;
-    return newStructVal;
+    exprValue *constVal = new exprValue();
+    constVal->valType = constnumExpr_T;
+    constVal->numConstval = intVal;
+    return constVal;
 }
 
 exprValue *Manage_const_real(double doubleVal) {
-    exprValue *newStructVal;
-    return newStructVal;
+    exprValue *constVal = new exprValue();
+    constVal->valType = constnumExpr_T;
+    constVal->numConstval = doubleVal;
+    return constVal;
 }
 
 exprValue *Manage_const_string(std::string strVal) {
-    exprValue *newStructVal;
-    return newStructVal;
+    exprValue *constVal = new exprValue();
+    constVal->valType = conststringExpr_T;
+    constVal->strConstVal = strVal;
+    return constVal;
 }
 
 exprValue *Manage_const_nil() {
-    exprValue *newStructVal;
-    return newStructVal;
+    exprValue *constVal = new exprValue();
+    constVal->valType = nilExpr_T;
+
+    return constVal;
 }
 
 exprValue *Manage_const_true() {
-    exprValue *newStructVal;
-    return newStructVal;
+    exprValue *constVal = new exprValue();
+    constVal->valType = constboolExpr_T;
+    constVal->boolConstVal = true;
+    return constVal;
 }
 
 exprValue *Manage_const_false() {
-    exprValue *newStructVal;
-    return newStructVal;
+    exprValue *constVal = new exprValue();
+    constVal->valType = constboolExpr_T;
+    constVal->boolConstVal = false;
+    return constVal;
 }
 
 /* ID list */
