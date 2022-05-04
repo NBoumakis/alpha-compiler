@@ -24,8 +24,21 @@ void emit(iopcode opcode, exprValue *arg1, exprValue *arg2, exprValue *result) {
     p.arg1 = arg1;
     p.arg2 = arg2;
     p.result = result;
+    p.label = 0;
 
     quad_vector.push_back(p);
+}
+
+void emit(iopcode opcode, unsigned long label) {
+    emit(opcode, nullptr, nullptr, nullptr, label, 0);
+}
+
+void emit(iopcode opcode, exprValue *arg1, exprValue *arg2, unsigned long label) {
+    emit(opcode, arg1, arg2, nullptr, label, 0);
+}
+
+void emit(iopcode opcode, exprValue *arg1, exprValue *result) {
+    emit(opcode, arg1, nullptr, result, 0, 0);
 }
 
 exprValue *emit_iftableitem(exprValue *expr) {
