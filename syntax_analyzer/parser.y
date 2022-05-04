@@ -400,19 +400,13 @@ objectdef:    L_SQUARE_BRACKET elist R_SQUARE_BRACKET       {
             ;
 
 
-indexed:  indelemlist   {
-                            std::cout << BGRN "Rule indexed -> indelemlist, line " << yylineno << RST << std::endl;
-                            $$ = Manage_indexed($indelemlist);
-                        }
-        ;
-
-indelemlist:  indexedelem COMMA indelemlist[derivated]  {
+indexed:      indexedelem COMMA indexed[derivated]  {
                                                             std::cout << BGRN "Rule indelemlist -> indexedelem, indelemlist, line " << yylineno << RST << std::endl;
-                                                            $$ = Manage_indelemlist($indexedelem, $derivated);
+                                                            $$ = Manage_indexed_indexedelem_COMMA_indexed($indexedelem, $derivated);
                                                         }
             | indexedelem                               {
                                                             std::cout << BGRN "Rule indelemlist -> indexedelem, line " << yylineno << RST << std::endl;
-                                                            $$ = Manage_indelemlist_indexedelem($indexedelem);
+                                                            $$ = Manage_indexed_indexedelem($indexedelem);
                                                         }
             ;
 
