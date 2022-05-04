@@ -524,6 +524,10 @@ ifstmt:   ifprefix stmt {
                             std::cout << BGRN "Rule ifstmt -> if (expr) stmt else, line " << yylineno << RST << std::endl;
                             Manage_ifstmt_ifprefix_stmt($ifprefix, $stmt);
                         }
+        | ifprefix stmt[true_stmt] elseprefix stmt[false_stmt]
+                        {
+                            Manage_ifstmt_ifprefix_stmt_else_prefix_stmt($ifprefix, $elseprefix);
+                        }
         ;
 
 else:     ELSE stmt     {

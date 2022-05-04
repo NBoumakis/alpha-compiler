@@ -1169,6 +1169,11 @@ void Manage_ifstmt_ifprefix_stmt(unsigned long ifprefix, stmtValue *stmt) {
     patchLabel(ifprefix, nextQuadLabel());
 }
 
+void Manage_ifstmt_ifprefix_stmt_else_prefix_stmt(unsigned long ifprefix, unsigned long elseprefix) {
+    patchLabel(ifprefix, elseprefix + 1);
+    patchLabel(elseprefix, nextQuadLabel());
+}
+
 /* else */
 elseValue *Manage_else_stmt(stmtValue *stmt) {
     return nullptr;

@@ -192,8 +192,11 @@ unsigned long Manage_ifprefix(exprValue *);
 
 void Manage_ifstmt_ifprefix_stmt(unsigned long, stmtValue *);
 
+void Manage_ifstmt_ifprefix_stmt_else_prefix_stmt(unsigned long, unsigned long);
+
 /* else */
-elseValue *Manage_else_stmt(stmtValue *);
+elseValue *
+Manage_else_stmt(stmtValue *);
 
 elseValue *Manage_else();
 
