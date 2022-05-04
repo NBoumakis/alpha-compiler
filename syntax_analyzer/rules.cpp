@@ -560,8 +560,6 @@ exprValue *Manage_term_minusexpr(exprValue *expr) {
 exprValue *Manage_assignexpr_lvalueASSIGNexpr(exprValue *lvalue, exprValue *expr) {
     exprValue *assignexprVal;
 
-    unsigned int i;
-
     if (lvalue->valType == varExpr_T) {
         Symbol *symbol = lvalue->symbolVal;
 
@@ -772,10 +770,6 @@ exprValue *Manage_call_callLPelistRP(exprValue *call, exprValue *elist) {
 }
 
 exprValue *Manage_call_lvaluecallsuffix(exprValue *lvalue, callValue *callsuffix) {
-    exprValue *callVal;
-
-    callVal->valType = varExpr_T;
-
     // TODO
     /*if (lvalue->valType == SymbolLvalue_T) {
         callVal->valType = lvalueCallSuffCall_T;
@@ -883,12 +877,6 @@ exprValue *Manage_objectdef_LSBindexedRSB(exprValue *indexed) {
     }
 
     return objdefVal;
-}
-
-/* Indexed */
-exprValue *Manage_indexed(exprValue *indelemlist) {
-    exprValue *newStructVal;
-    return newStructVal;
 }
 
 /* Indexed element list */
