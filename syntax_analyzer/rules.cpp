@@ -1175,12 +1175,12 @@ void Manage_ifstmt_ifprefix_stmt_else_prefix_stmt(unsigned long ifprefix, unsign
 }
 
 /* else */
-elseValue *Manage_else_stmt(stmtValue *stmt) {
-    return nullptr;
-}
+unsigned long Manage_elseprefix() {
+    unsigned long nextquad = nextQuadLabel();
 
-elseValue *Manage_else() {
-    return nullptr;
+    emit(jump_iop, 0);
+
+    return nextquad;
 }
 
 /* While statement */

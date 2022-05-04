@@ -43,7 +43,6 @@
     unsigned long ulongVal;
     idlistValue *idlistVal;
 
-    elseValue *elseVal;
     whilestmtValue *whilestmtVal;
     forstmtValue *forstmtVal;
     returnstmtValue *returnstmtVal;
@@ -92,7 +91,7 @@
 %type <idlistVal> idlist
 
 %type <ulongVal> ifprefix
-%type <elseVal> else
+%type <ulongVal> elseprefix
 %type <whilestmtVal> whilestmt
 %type <forstmtVal> forstmt
 %type <returnstmtVal> returnstmt
@@ -530,15 +529,11 @@ ifstmt:   ifprefix stmt {
                         }
         ;
 
-else:     ELSE stmt     {
-                            std::cout << BGRN "Rule else -> else stmt, line " << yylineno << RST << std::endl;
-                            $$ = Manage_else_stmt($stmt);
-                        }
-        |               {
-                            std::cout << BGRN "Rule else -> ε, line " << yylineno << RST << std::endl;
-                            $$ = Manage_else();
-                        }
-        ;
+elseprefix:   ELSE  {
+                        std::cout << BGRN "Rule else -> else stmt, line " << yylineno << RST << std::endl;
+                        $$ = Manage_elseprefix();
+                    }
+            ;
 
 whilestmt:    WHILE L_PARENTHESIS expr R_PARENTHESIS stmt   {
                                                                 std::cout << BGRN "Rule whilestmt -> (expr) stmt, line " << yylineno << RST << std::endl;
