@@ -905,7 +905,7 @@ blockValue *Manage_block_LCBstmtRCB(stmtListValue *stmt) {
 }
 
 /* Funcdef */
-Symbol *Manage_funcprefix(std::string funcName) {
+Function *Manage_funcprefix(std::string funcName) {
     Function *newFunc = new Function(funcName, scopeLevel, yylineno, funcDepth, USER_FUNC, currScopespaceOffset(), nextQuadLabel());
 
     if (isLibFunction(funcName)) {
@@ -1032,12 +1032,21 @@ void Manage_funcargs(idlistValue *idlist) {
     --scopeLevel;
 }
 
-Function *Manage_funcdef(idlistValue *idlist, blockValue *block) {
-    static unsigned long long unnamed_function_counter = 0;
+Function *Manage_funcdef(Function *funcprefix, unsigned long funcbody) {
+    exitScopespace();
 
-    std::string function_name = std::string("$f") + std::to_string(unnamed_function_counter);
+    funcprefix->totalLocals = funcbody;
+    unsigned long offset = scopeOffsetStack.top();
+    scopeOffsetStack.pop();
+    restoreCurrScopeOffset(offset);
 
-    return nullptr;
+    exprValue *fpre_expr = new exprValue();
+    fpre_expr->valType = userfuncExpr_T;
+    fpre_expr->symbolVal = funcprefix;
+
+    emit(funcend_iop, fpre_expr, nullptr, nullptr);
+
+    return funcprefix;
 }
 
 std::string newTmpFuncname() {
