@@ -389,7 +389,7 @@ exprValue *Manage_term_notexpr(exprValue *expr) {
 
     termVal->symbolVal = newTempvar();
 
-    emit(not_iop, expr, nullptr, termVal);
+    emit(not_iop, termVal, expr, nullptr);
 
     return termVal;
 }
@@ -415,15 +415,15 @@ exprValue *Manage_term_PPlval(exprValue *lvalue) {
 
     if (lvalue->valType == TableitemExpr_T) {
         termVal = emit_iftableitem(lvalue);
-        emit(add_iop, termVal, const_num, termVal);
+        emit(add_iop, termVal, termVal, const_num);
         emit(table_setelem_iop, lvalue, lvalue->indexVal, termVal);
     } else {
-        emit(add_iop, lvalue, const_num, lvalue);
+        emit(add_iop, lvalue, lvalue, const_num);
         termVal = new exprValue();
         termVal->valType = arithmexprExpr_T;
 
         termVal->symbolVal = newTempvar();
-        emit(assign_iop, lvalue, NULL, termVal);
+        emit(assign_iop, termVal, lvalue, nullptr);
     }
 
     return termVal;
@@ -456,12 +456,12 @@ exprValue *Manage_term_lvaluePP(exprValue *lvalue) {
     if (lvalue->valType == TableitemExpr_T) {
         exprValue *val = emit_iftableitem(lvalue);
 
-        emit(assign_iop, val, NULL, termVal);
-        emit(add_iop, val, const_num, val);
+        emit(assign_iop, termVal, val, nullptr);
+        emit(add_iop, val, val, const_num);
         emit(table_setelem_iop, lvalue, lvalue->indexVal, val);
     } else {
-        emit(assign_iop, lvalue, NULL, termVal);
-        emit(add_iop, lvalue, const_num, lvalue);
+        emit(assign_iop, termVal, lvalue, nullptr);
+        emit(add_iop, lvalue, lvalue, const_num);
     }
 
     return termVal;
@@ -488,15 +488,15 @@ exprValue *Manage_term_MMlval(exprValue *lvalue) {
 
     if (lvalue->valType == TableitemExpr_T) {
         termVal = emit_iftableitem(lvalue);
-        emit(sub_iop, termVal, const_num, termVal);
+        emit(sub_iop, termVal, termVal, const_num);
         emit(table_setelem_iop, lvalue, lvalue->indexVal, termVal);
     } else {
-        emit(sub_iop, lvalue, const_num, lvalue);
+        emit(sub_iop, lvalue, lvalue, const_num);
         termVal = new exprValue();
         termVal->valType = arithmexprExpr_T;
 
         termVal->symbolVal = newTempvar();
-        emit(assign_iop, lvalue, NULL, termVal);
+        emit(assign_iop, termVal, lvalue, nullptr);
     }
 
     return termVal;
@@ -529,12 +529,12 @@ exprValue *Manage_term_lvalueMM(exprValue *lvalue) {
     if (lvalue->valType == TableitemExpr_T) {
         exprValue *val = emit_iftableitem(lvalue);
 
-        emit(assign_iop, val, NULL, termVal);
-        emit(sub_iop, val, const_num, val);
+        emit(assign_iop, termVal, val, nullptr);
+        emit(sub_iop, val, val, const_num);
         emit(table_setelem_iop, lvalue, lvalue->indexVal, val);
     } else {
-        emit(assign_iop, lvalue, NULL, termVal);
-        emit(sub_iop, lvalue, const_num, lvalue);
+        emit(assign_iop, termVal, lvalue, nullptr);
+        emit(sub_iop, lvalue, lvalue, const_num);
     }
 
     return termVal;
@@ -551,7 +551,7 @@ exprValue *Manage_term_minusexpr(exprValue *expr) {
     check_arithm(expr);
 
     termVal->symbolVal = newTempvar();
-    emit(uminus_iop, expr, nullptr, termVal);
+    emit(uminus_iop, termVal, expr, nullptr);
 
     return termVal;
 }
@@ -572,13 +572,13 @@ exprValue *Manage_assignexpr_lvalueASSIGNexpr(exprValue *lvalue, exprValue *expr
                    symbol->type == VARIABLE && static_cast<Variable *>(symbol)->space != GLOBAL_VAR) {
             std::cerr << BRED "Inaccessible " << type_names[symbol->type] << " \"" << symbol->name << "\" in line " << yylineno << RST << std::endl;
         } else {
-            emit(assign_iop, expr, nullptr, lvalue);
+            emit(assign_iop, lvalue, expr, nullptr);
 
             assignexprVal = new exprValue();
             assignexprVal->valType = assignexprExpr_T;
 
             assignexprVal->symbolVal = newTempvar();
-            emit(assign_iop, lvalue, NULL, assignexprVal);
+            emit(assign_iop, assignexprVal, lvalue, nullptr);
         }
     } else if (lvalue->valType == TableitemExpr_T) {
         emit(table_setelem_iop, lvalue, lvalue->indexVal, expr);
@@ -853,7 +853,7 @@ exprValue *Manage_objectdef_LSBelistRSB(exprValue *elist) {
     objdefVal->valType = newtableExpr_T;
 
     objdefVal->symbolVal = newTempvar();
-    emit(table_create_iop, objdefVal, NULL, NULL);
+    emit(table_create_iop, objdefVal, nullptr, nullptr);
 
     for (int i = 0; elist; elist = elist->next) {
         exprValue *constVal = new exprValue();
