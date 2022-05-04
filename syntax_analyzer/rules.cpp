@@ -594,18 +594,15 @@ exprValue *Manage_assignexpr_lvalueASSIGNexpr(exprValue *lvalue, exprValue *expr
 exprValue *Manage_primary_lvalue(exprValue *lvalue) {
     exprValue *primaryValueVal;
 
-    // TODO
-    if (lvalue->valType == varExpr_T) {
-        Symbol *symbol = lvalue->symbolVal;
-        if (symbol->scope == 0 ||
-            symbol->type == USER_FUNC ||
-            symbol->type == LIB_FUNC ||
-            funcDepth == symbol->funcDepth) {
+    Symbol *symbol = lvalue->symbolVal;
+    if (symbol->scope == 0 ||
+        symbol->type == USER_FUNC ||
+        symbol->type == LIB_FUNC ||
+        funcDepth == symbol->funcDepth) {
 
-            primaryValueVal = emit_iftableitem(lvalue);
-        } else {
-            std::cerr << BRED "Inaccessible " << type_names[symbol->type] << " \"" << symbol->name << "\" in line " << yylineno << RST << std::endl;
-        }
+        primaryValueVal = emit_iftableitem(lvalue);
+    } else {
+        std::cerr << BRED "Inaccessible " << type_names[symbol->type] << " \"" << symbol->name << "\" in line " << yylineno << RST << std::endl;
     }
 
     return primaryValueVal;
