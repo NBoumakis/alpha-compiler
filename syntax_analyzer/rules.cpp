@@ -153,7 +153,7 @@ stmtValue *Manage_stmt_ifstmt() {
     return nullptr;
 }
 
-stmtValue *Manage_stmt_whilestmt(whilestmtValue *whilestmt) {
+stmtValue *Manage_stmt_whilestmt() {
     return nullptr;
 }
 
@@ -1184,8 +1184,29 @@ unsigned long Manage_elseprefix() {
 }
 
 /* While statement */
-whilestmtValue *Manage_whilestmt(exprValue *expr, stmtValue *stmt) {
-    return nullptr;
+unsigned long Manage_whilestart() {
+    return nextQuadLabel();
+}
+
+unsigned long Manage_whilecond(exprValue *expr) {
+    exprValue *constbool = new exprValue();
+    constbool->valType = constboolExpr_T;
+    constbool->boolConstVal = true;
+
+    emit(if_eq_iop, expr, constbool, nextQuadLabel() + 2);
+
+    unsigned long whilecond = nextQuadLabel();
+
+    emit(jump_iop, 0);
+
+    return whilecond;
+}
+
+void Manage_while(unsigned long whilestart, unsigned long whilecond, stmtValue *stmt) {
+    emit(jump_iop, whilestart);
+    patchLabel(whilecond, nextQuadLabel());
+    patchList(stmt->breaklist, nextQuadLabel());
+    patchList(stmt->contlist, whilestart);
 }
 
 /* For statement */

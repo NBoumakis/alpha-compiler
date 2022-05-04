@@ -100,6 +100,14 @@ void patchLabel(unsigned long quadNo, unsigned long label) {
     quad_vector[quadNo].label = label;
 }
 
+void patchList(unsigned long list, unsigned long label) {
+    while (list) {
+        unsigned long next = quad_vector[list].label;
+        quad_vector[list].label = label;
+        list = next;
+    }
+}
+
 std::string opcode_name[] = {"assign", "add", "sub", "mul", "div", "mod", "uminus", "and", "or", "not", "if_eq", "if_not_eq", "if_less_eq", "if_greater_eq", "if_less", "if_greater", "jump", "call", "param", "ret", "get_retval", "funcstart", "funcend", "table_create", "table_getelem", "table_setelem"};
 
 static inline void pad_to_width(std::string &str, char pad_char) {

@@ -78,17 +78,7 @@ enum stmtType {
 };
 
 struct stmtValue {
-    union {
-        exprValue *exprVal;
-        ifstmtValue *ifstmtVal;
-        whilestmtValue *whilestmtVal;
-        forstmtValue *forstmtVal;
-        returnstmtValue *returnstmtVal;
-        blockValue *blockVal;
-        funcdefValue *funcdefVal;
-    } value;
-
-    stmtType valType;
+    unsigned long breaklist, contlist;
 };
 
 enum exprType {

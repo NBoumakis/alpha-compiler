@@ -35,6 +35,8 @@ unsigned long nextQuadLabel();
 
 void patchLabel(unsigned long quadNo, unsigned long label);
 
+void patchList(unsigned long list, unsigned long label);
+
 std::string quad_to_string();
 
 #endif /* __SCOPESPACE_H */

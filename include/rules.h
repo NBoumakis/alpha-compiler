@@ -17,7 +17,7 @@ stmtValue *Manage_stmt_expr(exprValue *);
 
 stmtValue *Manage_stmt_ifstmt();
 
-stmtValue *Manage_stmt_whilestmt(whilestmtValue *);
+stmtValue *Manage_stmt_whilestmt();
 
 stmtValue *Manage_stmt_forstmt(forstmtValue *);
 
@@ -198,7 +198,11 @@ void Manage_ifstmt_ifprefix_stmt_else_prefix_stmt(unsigned long, unsigned long);
 unsigned long Manage_elseprefix();
 
 /* While statement */
-whilestmtValue *Manage_whilestmt(exprValue *, stmtValue *);
+unsigned long Manage_whilestart();
+
+unsigned long Manage_whilecond(exprValue *expr);
+
+void Manage_while(unsigned long, unsigned long, stmtValue *);
 
 /* For statement */
 forstmtValue *Manage_for(exprValue *, exprValue *, exprValue *, stmtValue *);

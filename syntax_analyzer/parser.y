@@ -43,7 +43,6 @@
     unsigned long ulongVal;
     idlistValue *idlistVal;
 
-    whilestmtValue *whilestmtVal;
     forstmtValue *forstmtVal;
     returnstmtValue *returnstmtVal;
     retValue *retVal;
@@ -92,7 +91,8 @@
 
 %type <ulongVal> ifprefix
 %type <ulongVal> elseprefix
-%type <whilestmtVal> whilestmt
+%type <ulongVal> whilestart
+%type <ulongVal> whilecond
 %type <forstmtVal> forstmt
 %type <returnstmtVal> returnstmt
 %type <retVal> ret
@@ -138,9 +138,9 @@ stmt:     expr SEMICOLON        {
                                     std::cout << BGRN "Rule stmt -> ifstmt, line " << yylineno << RST << std::endl;
                                     $$ = Manage_stmt_ifstmt();
                                 }
-        | whilestmt             {
-                                    std::cout << BGRN "Rule stmt -> whilestmt, line " << yylineno << RST << std::endl;
-                                    $$ = Manage_stmt_whilestmt($whilestmt);
+        | while             {
+                                    std::cout << BGRN "Rule stmt -> while, line " << yylineno << RST << std::endl;
+                                    $$ = Manage_stmt_whilestmt();
                                 }
         | forstmt               {
                                     std::cout << BGRN "Rule stmt -> forstmt, line " << yylineno << RST << std::endl;
@@ -525,21 +525,34 @@ ifstmt:   ifprefix stmt {
                         }
         | ifprefix stmt[true_stmt] elseprefix stmt[false_stmt]
                         {
+                            std::cout << BGRN "Rule ifstmt -> ifprefix stmt elseprefix stmt, line " << yylineno << RST << std::endl;
                             Manage_ifstmt_ifprefix_stmt_else_prefix_stmt($ifprefix, $elseprefix);
                         }
         ;
 
 elseprefix:   ELSE  {
-                        std::cout << BGRN "Rule else -> else stmt, line " << yylineno << RST << std::endl;
+                        std::cout << BGRN "Rule elseprefix -> else stmt, line " << yylineno << RST << std::endl;
                         $$ = Manage_elseprefix();
                     }
             ;
 
-whilestmt:    WHILE L_PARENTHESIS expr R_PARENTHESIS stmt   {
-                                                                std::cout << BGRN "Rule whilestmt -> (expr) stmt, line " << yylineno << RST << std::endl;
-                                                                $$ = Manage_whilestmt($expr, $stmt);
-                                                            }
-            ;
+whilestart: WHILE   {
+                        std::cout << BGRN "Rule whilestart -> WHILE, line " << yylineno << RST << std::endl;
+                        $$ = Manage_whilestart();
+                    }
+
+whilecond:  L_PARENTHESIS expr R_PARENTHESIS
+                    {
+                        std::cout << BGRN "Rule whilecond -> ( expr ), line " << yylineno << RST << std::endl;
+                        $$ = Manage_whilecond($expr);
+                    }
+
+while:    whilestart whilecond stmt
+                    {
+                        std::cout << BGRN "Rule while -> whilestart whilecond stmt, line " << yylineno << RST << std::endl;
+                        Manage_while($whilestart, $whilecond, $stmt);
+                    }
+        ;
 
 forstmt:      FOR L_PARENTHESIS elist[init] SEMICOLON expr SEMICOLON elist[postloop] R_PARENTHESIS stmt {
                                                                                                             std::cout << BGRN "Rule forstmt -> for (elist ; expr ; elist) stmt, line " << yylineno << RST << std::endl;
