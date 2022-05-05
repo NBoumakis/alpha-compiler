@@ -1297,9 +1297,13 @@ returnstmtValue *Manage_returnstmt(retValue *ret) {
 
 /* Return */
 retValue *Manage_ret_expr(exprValue *expr) {
+    emit(ret_iop, expr, nullptr);
+
     return nullptr;
 }
 
 retValue *Manage_ret() {
+    emit(ret_iop, nullptr, nullptr);
+
     return nullptr;
 }
