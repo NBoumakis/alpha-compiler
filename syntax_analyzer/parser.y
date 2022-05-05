@@ -205,7 +205,7 @@ expr:     assignexpr            {
                                         }
         | expr[left] GE expr[right]     {
                                             std::cout << BGRN "Rule expr -> expr >= expr, line " << yylineno << RST << std::endl;
-                                            $$ = Manage_expr_expr_GE_expr($1, $right);
+                                            $$ = Manage_expr_expr_GE_expr($left, $right);
                                         }
         | expr[left] LT expr[right]     {
                                             std::cout << BGRN "Rule expr -> expr < expr, line " << yylineno << RST << std::endl;
@@ -233,7 +233,7 @@ expr:     assignexpr            {
                                         }
         | term                          {
                                             std::cout << BGRN "Rule expr -> term, line " << yylineno << RST << std::endl;
-                                            $$ = Manage_expr_term($1);
+                                            $$ = Manage_expr_term($term);
                                         }
         ;
 
