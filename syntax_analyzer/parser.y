@@ -43,7 +43,7 @@
     unsigned long ulongVal;
     idlistValue *idlistVal;
 
-    forstmtValue *forstmtVal;
+    forprefixValue *forprefixVal;
     returnstmtValue *returnstmtVal;
     retValue *retVal;
     char* stringVal;
@@ -93,7 +93,8 @@
 %type <ulongVal> elseprefix
 %type <ulongVal> whilestart
 %type <ulongVal> whilecond
-%type <forstmtVal> forstmt
+%type <ulongVal> m n
+%type <forprefixVal> forprefix
 %type <returnstmtVal> returnstmt
 %type <retVal> ret
 
@@ -142,9 +143,9 @@ stmt:     expr SEMICOLON        {
                                     std::cout << BGRN "Rule stmt -> while, line " << yylineno << RST << std::endl;
                                     $$ = Manage_stmt_whilestmt();
                                 }
-        | forstmt               {
-                                    std::cout << BGRN "Rule stmt -> forstmt, line " << yylineno << RST << std::endl;
-                                    $$ = Manage_stmt_forstmt($forstmt);
+        | for               {
+                                    std::cout << BGRN "Rule stmt -> for, line " << yylineno << RST << std::endl;
+                                    $$ = Manage_stmt_for();
                                 }
         | returnstmt            {
                                     std::cout << BGRN "Rule stmt -> returnstmt, line " << yylineno << RST << std::endl;
@@ -554,11 +555,30 @@ while:    whilestart whilecond stmt
                     }
         ;
 
-forstmt:      FOR L_PARENTHESIS elist[init] SEMICOLON expr SEMICOLON elist[postloop] R_PARENTHESIS stmt {
-                                                                                                            std::cout << BGRN "Rule forstmt -> for (elist ; expr ; elist) stmt, line " << yylineno << RST << std::endl;
-                                                                                                            $$ = Manage_for($init, $expr, $postloop, $stmt);
-                                                                                                        }
-            ;
+n:  {
+        std::cout << BGRN "Rule n -> ε, line " << yylineno << RST << std::endl;
+        $$ = Manage_n();
+    }
+    ;
+
+m:  {
+        std::cout << BGRN "Rule m -> ε, line " << yylineno << RST << std::endl;
+        $$ = Manage_m();
+    }
+    ;
+
+forprefix:  FOR L_PARENTHESIS elist SEMICOLON m expr SEMICOLON
+    {
+        std::cout << BGRN "Rule forprefix -> for( elist; m expr; , line " << yylineno << RST << std::endl;
+        $forprefix = Manage_forprefix($m, $expr);
+    }
+
+for:  forprefix n[n1] elist R_PARENTHESIS n[n2] stmt n[n3]
+    {
+        std::cout << BGRN "Rule for -> forprefix n1 elist ) n2 stmt n3, line " << yylineno << RST << std::endl;
+        Manage_for($forprefix, $n1, $n2, $n3,$stmt);
+    }
+    ;
 
 returnstmt:   RETURN ret SEMICOLON      {
                                             std::cout << BGRN "Rule returnstmt -> ret;, line " << yylineno << RST << std::endl;

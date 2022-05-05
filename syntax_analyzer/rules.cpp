@@ -157,7 +157,7 @@ stmtValue *Manage_stmt_whilestmt() {
     return nullptr;
 }
 
-stmtValue *Manage_stmt_forstmt(forstmtValue *forstmt) {
+stmtValue *Manage_stmt_for() {
     return nullptr;
 }
 
@@ -1210,8 +1210,41 @@ void Manage_while(unsigned long whilestart, unsigned long whilecond, stmtValue *
 }
 
 /* For statement */
-forstmtValue *Manage_for(exprValue *elistFirst, exprValue *expr, exprValue *elistLast, stmtValue *stmt) {
-    return nullptr;
+unsigned long Manage_n() {
+    unsigned long nextquad = nextQuadLabel();
+
+    emit(jump_iop, 0);
+
+    return nextquad;
+}
+
+unsigned long Manage_m() {
+    return nextQuadLabel();
+}
+
+forprefixValue *Manage_forprefix(unsigned long m, exprValue *expr) {
+    forprefixValue *forprefix = new forprefixValue();
+
+    forprefix->test = m;
+    forprefix->enter = nextQuadLabel();
+
+    exprValue *constbool = new exprValue();
+    constbool->valType = constboolExpr_T;
+    constbool->boolConstVal = true;
+
+    emit(if_eq_iop, expr, constbool);
+
+    return forprefix;
+}
+
+void Manage_for(forprefixValue *forprefix, unsigned long n1, unsigned long n2, unsigned long n3, stmtValue *stmt) {
+    patchLabel(forprefix->enter, n2 + 1);
+    patchLabel(n1, nextQuadLabel());
+    patchLabel(n2, forprefix->test);
+    patchLabel(n3, n1 + 1);
+
+    patchList(stmt->breaklist, nextQuadLabel());
+    patchList(stmt->contlist, n1 + 1);
 }
 
 /* Return statement */

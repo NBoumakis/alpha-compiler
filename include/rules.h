@@ -19,7 +19,7 @@ stmtValue *Manage_stmt_ifstmt();
 
 stmtValue *Manage_stmt_whilestmt();
 
-stmtValue *Manage_stmt_forstmt(forstmtValue *);
+stmtValue *Manage_stmt_for();
 
 stmtValue *Manage_stmt_returnstmt(returnstmtValue *);
 
@@ -205,7 +205,13 @@ unsigned long Manage_whilecond(exprValue *expr);
 void Manage_while(unsigned long, unsigned long, stmtValue *);
 
 /* For statement */
-forstmtValue *Manage_for(exprValue *, exprValue *, exprValue *, stmtValue *);
+unsigned long Manage_n();
+
+unsigned long Manage_m();
+
+forprefixValue *Manage_forprefix(unsigned long, exprValue *);
+
+void Manage_for(forprefixValue *, unsigned long, unsigned long, unsigned long, stmtValue *);
 
 /* Return statement */
 returnstmtValue *Manage_returnstmt(retValue *);

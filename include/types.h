@@ -30,7 +30,7 @@ struct idlistValue;
 struct ifstmtValue;
 struct elseValue;
 struct whilestmtValue;
-struct forstmtValue;
+struct forprefixValue;
 struct returnstmtValue;
 struct retValue;
 
@@ -523,22 +523,13 @@ struct whilestmtValue {
     whilestmtType valType;
 };
 
-enum forstmtType {
-    forstmtForstmt_T,
-    InvalidForstmt_T
+enum forprefixType {
+    forprefixForprefix_T,
+    InvalidForprefix_T
 };
 
-struct forstmtValue {
-    union {
-        struct {
-            elistValue *elistFirstVal;
-            exprValue *exprVal;
-            elistValue *elistLastVal;
-            stmtValue *stmtVal;
-        } elistExprStmt;
-    } value;
-
-    forstmtType valType;
+struct forprefixValue {
+    unsigned long test, enter;
 };
 
 enum returnstmtType {
