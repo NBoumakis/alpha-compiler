@@ -3,6 +3,9 @@
 
 extern std::vector<quad> quad_vector;
 
+unsigned long loopcounter;
+std::stack<unsigned long> loopcounterstack;
+
 void emit(iopcode opcode, exprValue *arg1, exprValue *arg2, exprValue *result,
           unsigned long label, unsigned long line) {
     quad p;
