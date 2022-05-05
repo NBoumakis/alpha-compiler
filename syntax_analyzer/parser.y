@@ -4,6 +4,7 @@
     #include <stack>
     #include <string.h>
     #include "types.h"
+    #include "icode.h"
     #include "scope.h"
     #include "symbol.h"
     #include "symbol_table.h"
@@ -91,6 +92,7 @@
 
 %type <ulongVal> ifprefix
 %type <ulongVal> elseprefix
+%type <stmtVal>  loopstmt
 %type <ulongVal> whilestart
 %type <ulongVal> whilecond
 %type <ulongVal> m n
@@ -457,15 +459,25 @@ funcargs:     L_PARENTHESIS {++funcDepth;} idlist R_PARENTHESIS
                                 }
             ;
 
-funcbody:     block     {
-                            std::cout << BGRN
-                                "Rule funcbody -> block, line " << yylineno << RST
-                                << std::endl;
+funcblockstart: {
+                    loopcounterstack.push(loopcounter);
+                    loopcounter = 0;
+                }
+            ;
 
-                            $$ = Manage_funcbody();
+funcblockend:   {
+                    loopcounter =loopcounterstack.top();
+                    loopcounterstack.pop();
+                }
+            ;
 
-                            --funcDepth;
-                        }
+funcbody: funcblockstart block funcblockend
+    {
+        std::cout << BGRN "Rule funcbody -> block, line " << yylineno << RST << std::endl;
+
+        $$ = Manage_funcbody();
+        --funcDepth;
+    }
             ;
 
 funcdef:  funcprefix funcargs funcbody
@@ -537,6 +549,24 @@ elseprefix:   ELSE  {
                     }
             ;
 
+loopstart:  {
+                std::cout << BGRN "Rule loopstart -> ε, line " << yylineno << RST << std::endl;
+                ++loopcounter;
+            }
+        ;
+
+
+loopend:    {
+                std::cout << BGRN "Rule loopend -> ε, line " << yylineno << RST << std::endl;
+                --loopcounter;
+            }
+        ;
+
+loopstmt: loopstart stmt loopend    {
+                                        std::cout << BGRN "Rule loopstmt -> loopstart stmt loopend, line " << yylineno << RST << std::endl;
+                                        $loopstmt = $stmt;
+                                    }
+
 whilestart: WHILE   {
                         std::cout << BGRN "Rule whilestart -> WHILE, line " << yylineno << RST << std::endl;
                         $$ = Manage_whilestart();
@@ -548,10 +578,10 @@ whilecond:  L_PARENTHESIS expr R_PARENTHESIS
                         $$ = Manage_whilecond($expr);
                     }
 
-while:    whilestart whilecond stmt
+while:    whilestart whilecond loopstmt
                     {
-                        std::cout << BGRN "Rule while -> whilestart whilecond stmt, line " << yylineno << RST << std::endl;
-                        Manage_while($whilestart, $whilecond, $stmt);
+                        std::cout << BGRN "Rule while -> whilestart whilecond loopstmt, line " << yylineno << RST << std::endl;
+                        Manage_while($whilestart, $whilecond, $loopstmt);
                     }
         ;
 
@@ -573,10 +603,10 @@ forprefix:  FOR L_PARENTHESIS elist SEMICOLON m expr SEMICOLON
         $forprefix = Manage_forprefix($m, $expr);
     }
 
-for:  forprefix n[n1] elist R_PARENTHESIS n[n2] stmt n[n3]
+for:  forprefix n[n1] elist R_PARENTHESIS n[n2] loopstmt n[n3]
     {
-        std::cout << BGRN "Rule for -> forprefix n1 elist ) n2 stmt n3, line " << yylineno << RST << std::endl;
-        Manage_for($forprefix, $n1, $n2, $n3,$stmt);
+        std::cout << BGRN "Rule for -> forprefix n1 elist ) n2 loopstmt n3, line " << yylineno << RST << std::endl;
+        Manage_for($forprefix, $n1, $n2, $n3,$loopstmt);
     }
     ;
 
