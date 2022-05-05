@@ -5,12 +5,12 @@
 #include "types.h"
 
 /* Program */
-programValue *Manage_program(stmtListValue *);
+programValue *Manage_program(stmtValue *);
 
 /* Statement list */
-stmtListValue *Manage_stmtList_stmt(stmtListValue *, stmtValue *);
+stmtValue *Manage_stmtList_stmtList_stmt(stmtValue *, stmtValue *);
 
-stmtListValue *Manage_stmtList();
+stmtValue *Manage_stmtList_stmt(stmtValue *);
 
 /* Statements */
 stmtValue *Manage_stmt_expr(exprValue *);
@@ -154,7 +154,7 @@ exprOptRptValue *Manage_indexed_indexedelem(exprOptRptValue *);
 exprOptRptValue *Manage_indexedelem_LCB_expr_COLON_expr_RCB(exprValue *, exprValue *);
 
 /* Block */
-blockValue *Manage_block_LCBstmtRCB(stmtListValue *);
+blockValue *Manage_block_LCBstmtRCB(stmtValue *);
 
 /* Funcdef */
 Function *Manage_funcprefix(std::string);

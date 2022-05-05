@@ -131,16 +131,41 @@ static exprValue *expr_boolop_emit(iopcode boolop, exprValue *expr_left, exprVal
     return expr_res;
 }
 
-programValue *Manage_program(stmtListValue *stmtList) {
+unsigned long newlist(unsigned long i) {
+    quad_vector[i].label = 0;
+    return i;
+}
+
+unsigned long merge_list(unsigned long l1, unsigned long l2) {
+    if (!l1)
+        return l2;
+
+    else if (!l2)
+        return l1;
+    else {
+        int i = l1;
+        while (quad_vector[i].label)
+            i = quad_vector[i].label;
+        quad_vector[i].label = l2;
+        return l1;
+    }
+}
+
+programValue *Manage_program(stmtValue *stmtList) {
     return nullptr;
 }
 
-stmtListValue *Manage_stmtList_stmt(stmtListValue *stmtList, stmtValue *stmt) {
-    return nullptr;
+stmtValue *Manage_stmtList_stmtList_stmt(stmtValue *nextStmts, stmtValue *stmt) {
+    stmtValue *stmtlist = new stmtValue();
+
+    stmtlist->breaklist = merge_list(nextStmts->breaklist, stmt->breaklist);
+    stmtlist->contlist = merge_list(nextStmts->contlist, stmt->contlist);
+
+    return stmtlist;
 }
 
-stmtListValue *Manage_stmtList() {
-    return nullptr;
+stmtValue *Manage_stmtList_stmt(stmtValue *stmt) {
+    return stmt;
 }
 
 /* Statements */
@@ -166,11 +191,25 @@ stmtValue *Manage_stmt_returnstmt(returnstmtValue *returnstmt) {
 }
 
 stmtValue *Manage_stmt_break() {
-    return nullptr;
+    stmtValue *breakVal = new stmtValue();
+    breakVal->breaklist = breakVal->contlist = 0;
+
+    breakVal->breaklist = newlist(nextQuadLabel());
+
+    emit(jump_iop, 0);
+
+    return breakVal;
 }
 
 stmtValue *Manage_stmt_continue() {
-    return nullptr;
+    stmtValue *contVal = new stmtValue();
+    contVal->breaklist = contVal->contlist = 0;
+
+    contVal->contlist = newlist(nextQuadLabel());
+
+    emit(jump_iop, 0);
+
+    return contVal;
 }
 
 stmtValue *Manage_stmt_block(blockValue *block) {
@@ -915,7 +954,7 @@ exprOptRptValue *Manage_indexedelem_LCB_expr_COLON_expr_RCB(exprValue *key, expr
 }
 
 /* Block */
-blockValue *Manage_block_LCBstmtRCB(stmtListValue *stmt) {
+blockValue *Manage_block_LCBstmtRCB(stmtValue *stmt) {
     return nullptr;
 }
 

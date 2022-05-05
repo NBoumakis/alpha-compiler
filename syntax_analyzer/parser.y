@@ -34,7 +34,6 @@
     int intValue;
     double realValue;
     programValue *programVal;
-    stmtListValue *stmtListVal;
     stmtValue *stmtVal;
     exprValue *exprVal;
     exprOptRptValue *exprOptRptVal;
@@ -64,7 +63,7 @@
 
 /* Non-terminal types */
 %type <programVal> program
-%type <stmtListVal> stmtList
+%type <stmtVal> stmtList
 %type <stmtVal> stmt
 %type <exprVal> expr
 %type <exprVal> term
@@ -125,11 +124,11 @@ program:     stmtList       {
 
 stmtList:    stmtList[derivated] stmt   {
                                             std::cout << BGRN "Rule stmtList -> stmtlist stmt, line " << yylineno << RST << std::endl;
-                                            $$ = Manage_stmtList_stmt($derivated, $stmt);
+                                            $$ = Manage_stmtList_stmtList_stmt($derivated, $stmt);
                                         }
-            |                           {
+            | stmt                      {
                                             std::cout << BGRN "Rule stmtList -> ε, line " << yylineno << RST << std::endl;
-                                            $$ = Manage_stmtList();
+                                            $$ = Manage_stmtList_stmt($stmt);
                                         }
             ;
 
