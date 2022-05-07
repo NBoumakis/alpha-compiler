@@ -209,9 +209,14 @@ stmtValue *Manage_stmt_returnstmt() {
 
 stmtValue *Manage_stmt_break() {
     stmtValue *breakVal = new stmtValue();
-    breakVal->breaklist = breakVal->contlist = 0;
 
-    breakVal->breaklist = newlist(nextQuadLabel());
+    breakVal->contlist = 0;
+
+    if (loopcounter > 0) {
+        breakVal->breaklist = newlist(nextQuadLabel());
+    } else {
+        std::cerr << BRED "Cannot use break statement while not a loop in line " << yylineno << RST << std::endl;
+    }
 
     emit(jump_iop, 0);
 
@@ -220,9 +225,13 @@ stmtValue *Manage_stmt_break() {
 
 stmtValue *Manage_stmt_continue() {
     stmtValue *contVal = new stmtValue();
-    contVal->breaklist = contVal->contlist = 0;
+    contVal->breaklist = 0;
 
-    contVal->contlist = newlist(nextQuadLabel());
+    if (loopcounter > 0) {
+        contVal->contlist = newlist(nextQuadLabel());
+    } else {
+        std::cerr << BRED "Cannot use continue statement while not a loop in line " << yylineno << RST << std::endl;
+    }
 
     emit(jump_iop, 0);
 
