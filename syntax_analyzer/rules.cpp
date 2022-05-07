@@ -208,8 +208,8 @@ stmtValue *Manage_stmt_continue() {
     return contVal;
 }
 
-stmtValue *Manage_stmt_block(blockValue *block) {
-    return nullptr;
+stmtValue *Manage_stmt_block(stmtValue *block) {
+    return block;
 }
 
 stmtValue *Manage_stmt_funcdef(Function *funcdef) {
@@ -950,8 +950,8 @@ exprOptRptValue *Manage_indexedelem_LCB_expr_COLON_expr_RCB(exprValue *key, expr
 }
 
 /* Block */
-blockValue *Manage_block_LCBstmtRCB(stmtValue *stmt) {
-    return nullptr;
+stmtValue *Manage_block_LCBstmtRCB(stmtValue *stmt) {
+    return stmt;
 }
 
 /* Funcdef */

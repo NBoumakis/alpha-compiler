@@ -24,7 +24,7 @@ stmtValue *Manage_stmt_break();
 
 stmtValue *Manage_stmt_continue();
 
-stmtValue *Manage_stmt_block(blockValue *);
+stmtValue *Manage_stmt_block(stmtValue *);
 
 stmtValue *Manage_stmt_funcdef(Function *);
 
@@ -151,7 +151,7 @@ exprOptRptValue *Manage_indexed_indexedelem(exprOptRptValue *);
 exprOptRptValue *Manage_indexedelem_LCB_expr_COLON_expr_RCB(exprValue *, exprValue *);
 
 /* Block */
-blockValue *Manage_block_LCBstmtRCB(stmtValue *);
+stmtValue *Manage_block_LCBstmtRCB(stmtValue *);
 
 /* Funcdef */
 Function *Manage_funcprefix(std::string);

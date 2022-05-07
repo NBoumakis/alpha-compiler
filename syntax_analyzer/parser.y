@@ -80,7 +80,7 @@
 %type <exprVal> exprOptRpt
 %type <exprOptRptVal> indexed
 %type <exprOptRptVal> indexedelem
-%type <blockVal> block
+%type <stmtVal> block
 
 %type <stringVal> funcname
 %type <funcPointer> funcprefix
