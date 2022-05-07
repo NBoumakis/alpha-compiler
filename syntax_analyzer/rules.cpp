@@ -167,7 +167,13 @@ stmtValue *Manage_stmtList_stmt(stmtValue *stmt) {
 /* Statements */
 stmtValue *Manage_stmt_expr(exprValue *expr) {
     resettemp();
-    return nullptr;
+
+    stmtValue *stmt = new stmtValue();
+
+    stmt->breaklist = 0;
+    stmt->contlist = 0;
+
+    return stmt;
 }
 
 stmtValue *Manage_stmt_ifstmt(stmtValue *ifstmt) {
@@ -175,11 +181,21 @@ stmtValue *Manage_stmt_ifstmt(stmtValue *ifstmt) {
 }
 
 stmtValue *Manage_stmt_whilestmt() {
-    return nullptr;
+    stmtValue *stmt = new stmtValue();
+
+    stmt->breaklist = 0;
+    stmt->contlist = 0;
+
+    return stmt;
 }
 
 stmtValue *Manage_stmt_for() {
-    return nullptr;
+    stmtValue *stmt = new stmtValue();
+
+    stmt->breaklist = 0;
+    stmt->contlist = 0;
+
+    return stmt;
 }
 
 stmtValue *Manage_stmt_returnstmt() {
@@ -218,13 +234,23 @@ stmtValue *Manage_stmt_block(stmtValue *block) {
 }
 
 stmtValue *Manage_stmt_funcdef(Function *funcdef) {
-    return nullptr;
+    stmtValue *stmt = new stmtValue();
+
+    stmt->breaklist = 0;
+    stmt->contlist = 0;
+
+    return stmt;
 }
 
 stmtValue *Manage_stmt_semicolon() {
     resettemp();
 
-    return nullptr;
+    stmtValue *stmt = new stmtValue();
+
+    stmt->breaklist = 0;
+    stmt->contlist = 0;
+
+    return stmt;
 }
 
 /* Expressions */
