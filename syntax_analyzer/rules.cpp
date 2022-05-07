@@ -1235,6 +1235,11 @@ unsigned long Manage_elseprefix() {
     return nextquad;
 }
 
+/* Loops helpers */
+stmtValue *Manage_loopstart_stmt_loopend(stmtValue *stmt) {
+    return stmt;
+}
+
 /* While statement */
 unsigned long Manage_whilestart() {
     return nextQuadLabel();

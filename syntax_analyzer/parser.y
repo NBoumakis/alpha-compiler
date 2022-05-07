@@ -562,7 +562,7 @@ loopend:    {
 
 loopstmt: loopstart stmt loopend    {
                                         std::cout << BGRN "Rule loopstmt -> loopstart stmt loopend, line " << yylineno << RST << std::endl;
-                                        $loopstmt = $stmt;
+                                        $loopstmt = Manage_loopstart_stmt_loopend($stmt);
                                     }
 
 whilestart: WHILE   {

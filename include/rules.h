@@ -194,6 +194,9 @@ stmtValue *Manage_ifstmt_ifprefix_stmt_else_prefix_stmt(unsigned long, stmtValue
 /* else */
 unsigned long Manage_elseprefix();
 
+/* Loop helpers */
+stmtValue *Manage_loopstart_stmt_loopend(stmtValue *);
+
 /* While statement */
 unsigned long Manage_whilestart();
 
