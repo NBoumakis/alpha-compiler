@@ -182,8 +182,13 @@ stmtValue *Manage_stmt_for() {
     return nullptr;
 }
 
-stmtValue *Manage_stmt_returnstmt(returnstmtValue *returnstmt) {
-    return nullptr;
+stmtValue *Manage_stmt_returnstmt() {
+    stmtValue *stmt = new stmtValue();
+
+    stmt->breaklist = 0;
+    stmt->contlist = 0;
+
+    return stmt;
 }
 
 stmtValue *Manage_stmt_break() {
@@ -1295,23 +1300,17 @@ void Manage_for(forprefixValue *forprefix, unsigned long n1, unsigned long n2, u
 }
 
 /* Return statement */
-returnstmtValue *Manage_returnstmt(retValue *ret) {
+void Manage_returnstmt() {
     if (funcDepth == 0) {
         std::cerr << BRED "Cannot use return statement outside of function in line " << yylineno << RST << std::endl;
     }
-
-    return nullptr;
 }
 
 /* Return */
-retValue *Manage_ret_expr(exprValue *expr) {
+void Manage_ret_expr(exprValue *expr) {
     emit(ret_iop, expr, nullptr);
-
-    return nullptr;
 }
 
-retValue *Manage_ret() {
+void Manage_ret() {
     emit(ret_iop, nullptr, nullptr);
-
-    return nullptr;
 }

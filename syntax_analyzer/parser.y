@@ -97,8 +97,7 @@
 %type <ulongVal> whilecond
 %type <ulongVal> m n
 %type <forprefixVal> forprefix
-%type <returnstmtVal> returnstmt
-%type <retVal> ret
+
 
 /*Associativity and priority */
 %right ASSIGN
@@ -150,7 +149,7 @@ stmt:     expr SEMICOLON        {
                                 }
         | returnstmt            {
                                     std::cout << BGRN "Rule stmt -> returnstmt, line " << yylineno << RST << std::endl;
-                                    $$ = Manage_stmt_returnstmt($returnstmt);
+                                    $$ = Manage_stmt_returnstmt();
                                 }
         | BREAK SEMICOLON       {
                                     std::cout << BGRN "Rule stmt -> break;, line " << yylineno << RST << std::endl;
@@ -611,16 +610,16 @@ for:  forprefix n[n1] elist R_PARENTHESIS n[n2] loopstmt n[n3]
 
 returnstmt:   RETURN ret SEMICOLON      {
                                             std::cout << BGRN "Rule returnstmt -> ret;, line " << yylineno << RST << std::endl;
-                                            $$ = Manage_returnstmt($ret);
+                                            Manage_returnstmt();
                                         }
             ;
 
 ret:      expr      {
                         std::cout << BGRN "Rule ret -> expr, line " << yylineno << RST << std::endl;
-                        $$ = Manage_ret_expr($expr);
+                        Manage_ret_expr($expr);
                     }
         |           {
                         std::cout << BGRN "Rule ret -> ε, line " << yylineno << RST << std::endl;
-                        $$ = Manage_ret();
+                        Manage_ret();
                     }
         ;

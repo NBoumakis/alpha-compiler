@@ -18,7 +18,7 @@ stmtValue *Manage_stmt_whilestmt();
 
 stmtValue *Manage_stmt_for();
 
-stmtValue *Manage_stmt_returnstmt(returnstmtValue *);
+stmtValue *Manage_stmt_returnstmt();
 
 stmtValue *Manage_stmt_break();
 
@@ -211,10 +211,10 @@ forprefixValue *Manage_forprefix(unsigned long, exprValue *);
 void Manage_for(forprefixValue *, unsigned long, unsigned long, unsigned long, stmtValue *);
 
 /* Return statement */
-returnstmtValue *Manage_returnstmt(retValue *);
+void Manage_returnstmt();
 
 /* Return */
-retValue *Manage_ret_expr(exprValue *);
+void Manage_ret_expr(exprValue *);
 
-retValue *Manage_ret();
+void Manage_ret();
 #endif /* __RULES_H */
