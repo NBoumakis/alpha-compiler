@@ -92,6 +92,7 @@
 %type <ulongVal> ifprefix
 %type <ulongVal> elseprefix
 %type <stmtVal>  loopstmt
+%type <stmtVal>  ifstmt
 %type <ulongVal> whilestart
 %type <ulongVal> whilecond
 %type <ulongVal> m n
@@ -137,7 +138,7 @@ stmt:     expr SEMICOLON        {
                                 }
         | ifstmt                {
                                     std::cout << BGRN "Rule stmt -> ifstmt, line " << yylineno << RST << std::endl;
-                                    $$ = Manage_stmt_ifstmt();
+                                    $$ = Manage_stmt_ifstmt($ifstmt);
                                 }
         | while             {
                                     std::cout << BGRN "Rule stmt -> while, line " << yylineno << RST << std::endl;
@@ -532,12 +533,12 @@ ifprefix: IF L_PARENTHESIS expr R_PARENTHESIS   {
 
 ifstmt:   ifprefix stmt {
                             std::cout << BGRN "Rule ifstmt -> if (expr) stmt else, line " << yylineno << RST << std::endl;
-                            Manage_ifstmt_ifprefix_stmt($ifprefix, $stmt);
+                            $$ = Manage_ifstmt_ifprefix_stmt($ifprefix, $stmt);
                         }
         | ifprefix stmt[true_stmt] elseprefix stmt[false_stmt]
                         {
                             std::cout << BGRN "Rule ifstmt -> ifprefix stmt elseprefix stmt, line " << yylineno << RST << std::endl;
-                            Manage_ifstmt_ifprefix_stmt_else_prefix_stmt($ifprefix, $elseprefix);
+                            $$ = Manage_ifstmt_ifprefix_stmt_else_prefix_stmt($ifprefix, $true_stmt, $elseprefix, $false_stmt);
                         }
         ;
 

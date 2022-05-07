@@ -170,8 +170,8 @@ stmtValue *Manage_stmt_expr(exprValue *expr) {
     return nullptr;
 }
 
-stmtValue *Manage_stmt_ifstmt() {
-    return nullptr;
+stmtValue *Manage_stmt_ifstmt(stmtValue *ifstmt) {
+    return ifstmt;
 }
 
 stmtValue *Manage_stmt_whilestmt() {
@@ -1200,13 +1200,25 @@ unsigned long Manage_ifprefix(exprValue *expr) {
     return tmp_nextquad;
 }
 
-void Manage_ifstmt_ifprefix_stmt(unsigned long ifprefix, stmtValue *stmt) {
+stmtValue *Manage_ifstmt_ifprefix_stmt(unsigned long ifprefix, stmtValue *stmt) {
     patchLabel(ifprefix, nextQuadLabel());
+
+    return stmt;
 }
 
-void Manage_ifstmt_ifprefix_stmt_else_prefix_stmt(unsigned long ifprefix, unsigned long elseprefix) {
+stmtValue *Manage_ifstmt_ifprefix_stmt_else_prefix_stmt(unsigned long ifprefix, stmtValue *true_stmt, unsigned long elseprefix, stmtValue *false_stmt) {
+    stmtValue *stmt = new stmtValue();
+
+    stmt->breaklist = merge_list(true_stmt->breaklist, false_stmt->breaklist);
+    stmt->contlist = merge_list(true_stmt->contlist, false_stmt->contlist);
+
+    delete true_stmt;
+    delete false_stmt;
+
     patchLabel(ifprefix, elseprefix + 1);
     patchLabel(elseprefix, nextQuadLabel());
+
+    return stmt;
 }
 
 /* else */

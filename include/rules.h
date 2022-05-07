@@ -12,7 +12,7 @@ stmtValue *Manage_stmtList_stmt(stmtValue *);
 /* Statements */
 stmtValue *Manage_stmt_expr(exprValue *);
 
-stmtValue *Manage_stmt_ifstmt();
+stmtValue *Manage_stmt_ifstmt(stmtValue *ifstmt);
 
 stmtValue *Manage_stmt_whilestmt();
 
@@ -187,9 +187,9 @@ idlistValue *Manage_idlist();
 /* If statement */
 unsigned long Manage_ifprefix(exprValue *);
 
-void Manage_ifstmt_ifprefix_stmt(unsigned long, stmtValue *);
+stmtValue *Manage_ifstmt_ifprefix_stmt(unsigned long, stmtValue *);
 
-void Manage_ifstmt_ifprefix_stmt_else_prefix_stmt(unsigned long, unsigned long);
+stmtValue *Manage_ifstmt_ifprefix_stmt_else_prefix_stmt(unsigned long, stmtValue *, unsigned long, stmtValue *);
 
 /* else */
 unsigned long Manage_elseprefix();
