@@ -996,13 +996,11 @@ stmtValue *Manage_block_LCBstmtRCB(stmtValue *stmt) {
 
 /* Funcdef */
 Function *Manage_funcprefix(std::string funcName) {
-    Function *newFunc = new Function(funcName, scopeLevel, yylineno, funcDepth, USER_FUNC, currScopespaceOffset(), nextQuadLabel());
-
+    Function *newFunc;
     if (isLibFunction(funcName)) {
         std::cerr << BRED "Cannot define function \"" << funcName << "\" in line " << yylineno
                   << ". It would shadow a library function." RST << std::endl;
 
-        delete newFunc;
         return nullptr;
     }
 
@@ -1014,11 +1012,14 @@ Function *Manage_funcprefix(std::string funcName) {
                   << type_names[symbol_in_table->type] << " defined in line "
                   << symbol_in_table->line << "." RST << std::endl;
 
-        delete newFunc;
         return nullptr;
-    } else {
-        symbolTableObj.insert(funcName, newFunc, scopeLevel);
     }
+
+    emit(jump_iop, 0);
+
+    newFunc = new Function(funcName, scopeLevel, yylineno, funcDepth, USER_FUNC, currScopespaceOffset(), nextQuadLabel());
+
+    symbolTableObj.insert(funcName, newFunc, scopeLevel);
 
     exprValue *funcprefix = new exprValue();
     funcprefix->valType = userfuncExpr_T;
@@ -1135,6 +1136,7 @@ Function *Manage_funcdef(Function *funcprefix, unsigned long funcbody) {
     fpre_expr->symbolVal = funcprefix;
 
     emit(funcend_iop, fpre_expr, nullptr, nullptr);
+    patchLabel(funcprefix->iaddress - 1, nextQuadLabel());
 
     return funcprefix;
 }
