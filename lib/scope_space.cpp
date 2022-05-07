@@ -121,10 +121,10 @@ static inline void pad_to_width(std::string &str, char pad_char) {
 std::string quad_to_string() {
     std::string result = "";
     std::string field;
-    for (size_t i = 0; i < quad_vector.size(); ++i) {
+    for (size_t i = 1; i < quad_vector.size(); ++i) {
         auto &quad_elem = quad_vector[i];
 
-        field = std::to_string(i + 1) + ":";
+        field = std::to_string(i) + ":";
         pad_to_width(field, ' ');
         result += field;
 
@@ -162,7 +162,10 @@ std::string quad_to_string() {
             result += field;
         }
 
-        result += std::to_string(quad_elem.label) + "\r\n";
+        if (quad_elem.label)
+            result += std::to_string(quad_elem.label);
+
+        result += "\r\n";
     }
 
     return result;
