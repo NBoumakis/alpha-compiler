@@ -151,10 +151,6 @@ unsigned long merge_list(unsigned long l1, unsigned long l2) {
     }
 }
 
-programValue *Manage_program(stmtValue *stmtList) {
-    return nullptr;
-}
-
 stmtValue *Manage_stmtList_stmtList_stmt(stmtValue *nextStmts, stmtValue *stmt) {
     stmtValue *stmtlist = new stmtValue();
 

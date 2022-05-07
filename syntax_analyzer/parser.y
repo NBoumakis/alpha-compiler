@@ -118,7 +118,6 @@
 
 program:     stmtList       {
                                 std::cout << BGRN "Rule program -> stmtlist, line " << yylineno << RST << std::endl;
-                                $$ = Manage_program($stmtList);
                             }
             ;
 

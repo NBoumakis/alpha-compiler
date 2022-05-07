@@ -4,9 +4,6 @@
 #include "symbol.h"
 #include "types.h"
 
-/* Program */
-programValue *Manage_program(stmtValue *);
-
 /* Statement list */
 stmtValue *Manage_stmtList_stmtList_stmt(stmtValue *, stmtValue *);
 
