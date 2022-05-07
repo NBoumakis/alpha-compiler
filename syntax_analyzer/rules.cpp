@@ -372,7 +372,7 @@ exprValue *Manage_expr_expr_GE_expr(exprValue *exprLeft, exprValue *exprRight) {
 
     if (exprLeft->valType == constnumExpr_T && exprRight->valType == constnumExpr_T) {
         expr_res = new exprValue();
-        expr_res->valType = boolexprExpr_T;
+        expr_res->valType = constboolExpr_T;
 
         expr_res->boolConstVal = (exprLeft->numConstval >= exprRight->numConstval);
     } else {
@@ -387,7 +387,7 @@ exprValue *Manage_expr_expr_LT_expr(exprValue *exprLeft, exprValue *exprRight) {
 
     if (exprLeft->valType == constnumExpr_T && exprRight->valType == constnumExpr_T) {
         expr_res = new exprValue();
-        expr_res->valType = boolexprExpr_T;
+        expr_res->valType = constboolExpr_T;
 
         expr_res->boolConstVal = (exprLeft->numConstval < exprRight->numConstval);
     } else {
@@ -402,7 +402,7 @@ exprValue *Manage_expr_expr_LE_expr(exprValue *exprLeft, exprValue *exprRight) {
 
     if (exprLeft->valType == constnumExpr_T && exprRight->valType == constnumExpr_T) {
         expr_res = new exprValue();
-        expr_res->valType = boolexprExpr_T;
+        expr_res->valType = constboolExpr_T;
 
         expr_res->boolConstVal = (exprLeft->numConstval <= exprRight->numConstval);
     } else {
@@ -417,7 +417,7 @@ exprValue *Manage_expr_expr_EQUAL_expr(exprValue *exprLeft, exprValue *exprRight
 
     if (exprLeft->valType == constnumExpr_T && exprRight->valType == constnumExpr_T) {
         expr_res = new exprValue();
-        expr_res->valType = boolexprExpr_T;
+        expr_res->valType = constboolExpr_T;
 
         expr_res->boolConstVal = (exprLeft->numConstval == exprRight->numConstval);
     } else {
@@ -431,7 +431,7 @@ exprValue *Manage_expr_expr_NEQUAL_expr(exprValue *exprLeft, exprValue *exprRigh
 
     if (exprLeft->valType == constnumExpr_T && exprRight->valType == constnumExpr_T) {
         expr_res = new exprValue();
-        expr_res->valType = boolexprExpr_T;
+        expr_res->valType = constboolExpr_T;
 
         expr_res->boolConstVal = (exprLeft->numConstval != exprRight->numConstval);
     } else {
