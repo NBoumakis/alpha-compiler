@@ -33,19 +33,14 @@
 #include "types.h"
     int intValue;
     double realValue;
-    programValue *programVal;
     stmtValue *stmtVal;
     exprValue *exprVal;
     exprOptRptValue *exprOptRptVal;
-    primaryValue *primaryVal;
     callValue *callVal;
-    blockValue *blockVal;
     unsigned long ulongVal;
     idlistValue *idlistVal;
 
     forprefixValue *forprefixVal;
-    returnstmtValue *returnstmtVal;
-    retValue *retVal;
     char* stringVal;
     Symbol* symPointer;
     Function *funcPointer;
@@ -62,7 +57,6 @@
 %token  <stringVal> STRING
 
 /* Non-terminal types */
-%type <programVal> program
 %type <stmtVal> stmtList
 %type <stmtVal> stmt
 %type <exprVal> expr
