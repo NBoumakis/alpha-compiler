@@ -160,7 +160,12 @@ stmtValue *Manage_stmtList_stmtList_stmt(stmtValue *nextStmts, stmtValue *stmt) 
     return stmtlist;
 }
 
-stmtValue *Manage_stmtList_stmt(stmtValue *stmt) {
+stmtValue *Manage_stmtList_stmt() {
+    stmtValue *stmt = new stmtValue();
+
+    stmt->breaklist = 0;
+    stmt->contlist = 0;
+
     return stmt;
 }
 

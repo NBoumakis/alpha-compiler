@@ -7,7 +7,7 @@
 /* Statement list */
 stmtValue *Manage_stmtList_stmtList_stmt(stmtValue *, stmtValue *);
 
-stmtValue *Manage_stmtList_stmt(stmtValue *);
+stmtValue *Manage_stmtList_stmt();
 
 /* Statements */
 stmtValue *Manage_stmt_expr(exprValue *);

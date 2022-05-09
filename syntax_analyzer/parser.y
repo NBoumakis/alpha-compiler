@@ -125,9 +125,9 @@ stmtList:    stmtList[derivated] stmt   {
                                             std::cout << BGRN "Rule stmtList -> stmtlist stmt, line " << yylineno << RST << std::endl;
                                             $$ = Manage_stmtList_stmtList_stmt($derivated, $stmt);
                                         }
-            | stmt                      {
+            |                           {
                                             std::cout << BGRN "Rule stmtList -> ε, line " << yylineno << RST << std::endl;
-                                            $$ = Manage_stmtList_stmt($stmt);
+                                            $$ = Manage_stmtList_stmt();
                                         }
             ;
 
