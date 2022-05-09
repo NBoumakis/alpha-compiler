@@ -63,13 +63,6 @@ struct exprOptRptValue {
     exprOptRptValue *next;
 };
 
-enum idlistType {
-    idIdlist_T,
-    idlistIdIdlist_T,
-    emptyIdlist_T,
-    InvalidIdlist_T
-};
-
 struct idlistValue {
     std::string id;
     idlistValue *next;
