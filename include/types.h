@@ -71,16 +71,8 @@ enum idlistType {
 };
 
 struct idlistValue {
-    union {
-        char *id;
-        struct {
-            idlistValue *idlistVal;
-            char *idVal;
-        } idlistIdValue;
-
-    } value;
-
-    idlistType valType;
+    std::string id;
+    idlistValue *next;
 };
 
 struct forprefixValue {

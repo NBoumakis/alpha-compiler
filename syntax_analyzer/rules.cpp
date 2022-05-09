@@ -1049,8 +1049,8 @@ unsigned long Manage_funcbody() {
 static bool check_funcargs(idlistValue *idlist) {
     std::set<std::string> argSet;
 
-    while (idlist->valType == idlistIdIdlist_T) {
-        std::string id = idlist->value.idlistIdValue.idVal;
+    while (idlist) {
+        std::string id = idlist->id;
 
         auto symbol_in_table = symbolTableObj.lookup_scope(id, scopeLevel);
 
@@ -1073,31 +1073,7 @@ static bool check_funcargs(idlistValue *idlist) {
         }
 
         argSet.insert(id);
-        idlist = idlist->value.idlistIdValue.idlistVal;
-    }
-
-    if (idlist->valType == idIdlist_T) {
-        std::string id = idlist->value.id;
-
-        auto symbol_in_table = symbolTableObj.lookup_scope(id, scopeLevel);
-
-        if (argSet.count(id) > 0) {
-            std::cerr << BRED "Duplicate argument \"" << id << "\" in line " << yylineno << RST << std::endl;
-
-            return false;
-        } else if (isLibFunction(id)) {
-            std::cerr << BRED "Formal argument \"" << id << "\" in line " << yylineno
-                      << " shadows a library function." RST << std::endl;
-
-            return false;
-        } else if (symbol_in_table != nullptr) {
-            std::cerr << BRED "Formal argument \"" << id << "\" in line "
-                      << yylineno << " attempts to shadow previous "
-                      << type_names[symbol_in_table->type] << " defined in line "
-                      << symbol_in_table->line << "." RST << std::endl;
-
-            return false;
-        }
+        idlist = idlist->next;
     }
 
     return true;
@@ -1109,18 +1085,12 @@ void Manage_funcargs(idlistValue *idlist) {
     enterScopespace();
 
     if (check_funcargs(idlist)) {
-        while (idlist_ptr->valType == idlistIdIdlist_T) {
-            Symbol *newArg = new Variable(idlist_ptr->value.idlistIdValue.idVal, scopeLevel, yylineno, funcDepth, currScopespace(), currScopespaceOffset());
+        while (idlist_ptr) {
+            Symbol *newArg = new Variable(idlist_ptr->id, scopeLevel, yylineno, funcDepth, currScopespace(), currScopespaceOffset());
 
             symbolTableObj.insert(newArg->name, newArg, scopeLevel);
 
-            idlist_ptr = idlist_ptr->value.idlistIdValue.idlistVal;
-        }
-
-        if (idlist_ptr->valType == idIdlist_T) {
-            Symbol *newArg = new Variable(idlist_ptr->value.id, scopeLevel, yylineno, funcDepth, currScopespace(), currScopespaceOffset());
-
-            symbolTableObj.insert(newArg->name, newArg, scopeLevel);
+            idlist_ptr = idlist_ptr->next;
         }
     }
 
@@ -1201,11 +1171,7 @@ exprValue *Manage_const_false() {
 idlistValue *Manage_idlist_ID(std::string id) {
     idlistValue *newStructVal = new idlistValue();
 
-    newStructVal->valType = idIdlist_T;
-
-    newStructVal->value.id = new char[id.length()];
-    std::size_t length = id.copy(newStructVal->value.id, id.length());
-    newStructVal->value.id[length] = '\0';
+    newStructVal->id = id;
 
     return newStructVal;
 }
@@ -1213,22 +1179,14 @@ idlistValue *Manage_idlist_ID(std::string id) {
 idlistValue *Manage_idlist_idlist_comma_id(idlistValue *idlist, std::string id) {
     idlistValue *newStructVal = new idlistValue();
 
-    newStructVal->valType = idlistIdIdlist_T;
-    newStructVal->value.idlistIdValue.idVal = new char[id.length()];
-    std::size_t length = id.copy(newStructVal->value.idlistIdValue.idVal, id.length());
-    newStructVal->value.idlistIdValue.idVal[length] = '\0';
-
-    newStructVal->value.idlistIdValue.idlistVal = idlist;
+    newStructVal->id = id;
+    newStructVal->next = idlist;
 
     return newStructVal;
 }
 
 idlistValue *Manage_idlist() {
-    idlistValue *newStructVal = new idlistValue();
-
-    newStructVal->valType = emptyIdlist_T;
-
-    return newStructVal;
+    return nullptr;
 }
 
 /* If statement */
