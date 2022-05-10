@@ -14,11 +14,11 @@ stmtValue *Manage_stmt_expr(exprValue *);
 
 stmtValue *Manage_stmt_ifstmt(stmtValue *ifstmt);
 
-stmtValue *Manage_stmt_whilestmt();
+stmtValue *Manage_stmt_whilestmt(stmtValue *whilestmt);
 
-stmtValue *Manage_stmt_for();
+stmtValue *Manage_stmt_for(stmtValue *forstmt);
 
-stmtValue *Manage_stmt_returnstmt();
+stmtValue *Manage_stmt_RETURN_ret_SEMICOLON();
 
 stmtValue *Manage_stmt_break();
 
@@ -156,7 +156,7 @@ stmtValue *Manage_block_LCBstmtRCB(stmtValue *);
 /* Funcdef */
 Function *Manage_funcprefix(std::string);
 
-unsigned long Manage_funcbody();
+unsigned long Manage_funcbody(stmtValue *);
 
 void Manage_funcargs(idlistValue *);
 
@@ -202,7 +202,7 @@ unsigned long Manage_whilestart();
 
 unsigned long Manage_whilecond(exprValue *expr);
 
-void Manage_while(unsigned long, unsigned long, stmtValue *);
+stmtValue *Manage_while(unsigned long, unsigned long, stmtValue *);
 
 /* For statement */
 unsigned long Manage_n();
@@ -211,10 +211,7 @@ unsigned long Manage_m();
 
 forprefixValue *Manage_forprefix(unsigned long, exprValue *);
 
-void Manage_for(forprefixValue *, unsigned long, unsigned long, unsigned long, stmtValue *);
-
-/* Return statement */
-void Manage_returnstmt();
+stmtValue *Manage_for(forprefixValue *, unsigned long, unsigned long, unsigned long, stmtValue *);
 
 /* Return */
 void Manage_ret_expr(exprValue *);

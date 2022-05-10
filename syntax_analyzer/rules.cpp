@@ -156,6 +156,7 @@ stmtValue *Manage_stmtList_stmtList_stmt(stmtValue *nextStmts, stmtValue *stmt) 
 
     stmtlist->breaklist = merge_list(nextStmts->breaklist, stmt->breaklist);
     stmtlist->contlist = merge_list(nextStmts->contlist, stmt->contlist);
+    stmtlist->returnlist = merge_list(nextStmts->returnlist, stmt->returnlist);
 
     return stmtlist;
 }
@@ -165,6 +166,7 @@ stmtValue *Manage_stmtList_stmt() {
 
     stmt->breaklist = 0;
     stmt->contlist = 0;
+    stmt->returnlist = 0;
 
     return stmt;
 }
@@ -185,31 +187,33 @@ stmtValue *Manage_stmt_ifstmt(stmtValue *ifstmt) {
     return ifstmt;
 }
 
-stmtValue *Manage_stmt_whilestmt() {
-    stmtValue *stmt = new stmtValue();
+stmtValue *Manage_stmt_whilestmt(stmtValue *whilestmt) {
+    whilestmt->breaklist = 0;
+    whilestmt->contlist = 0;
 
-    stmt->breaklist = 0;
-    stmt->contlist = 0;
-
-    return stmt;
+    return whilestmt;
 }
 
-stmtValue *Manage_stmt_for() {
-    stmtValue *stmt = new stmtValue();
+stmtValue *Manage_stmt_for(stmtValue *forstmt) {
+    forstmt->breaklist = 0;
+    forstmt->contlist = 0;
 
-    stmt->breaklist = 0;
-    stmt->contlist = 0;
-
-    return stmt;
+    return forstmt;
 }
 
-stmtValue *Manage_stmt_returnstmt() {
-    stmtValue *stmt = new stmtValue();
+stmtValue *Manage_stmt_RETURN_ret_SEMICOLON() {
+    if (funcDepth == 0) {
+        std::cerr << BRED "Cannot use return statement outside of function in line " << yylineno << RST << std::endl;
+    }
 
-    stmt->breaklist = 0;
-    stmt->contlist = 0;
+    stmtValue *returnVal = new stmtValue();
+    returnVal->breaklist = 0;
+    returnVal->contlist = 0;
+    returnVal->returnlist = newlist(nextQuadLabel());
 
-    return stmt;
+    emit(jump_iop, 0);
+
+    return returnVal;
 }
 
 stmtValue *Manage_stmt_break() {
@@ -1039,9 +1043,11 @@ Function *Manage_funcprefix(std::string funcName) {
     return newFunc;
 }
 
-unsigned long Manage_funcbody() {
+unsigned long Manage_funcbody(stmtValue *block) {
     unsigned long scopeOffset = currScopespaceOffset();
     exitScopespace();
+
+    patchList(block->returnlist, nextQuadLabel());
 
     return scopeOffset;
 }
@@ -1216,6 +1222,7 @@ stmtValue *Manage_ifstmt_ifprefix_stmt_else_prefix_stmt(unsigned long ifprefix, 
 
     stmt->breaklist = merge_list(true_stmt->breaklist, false_stmt->breaklist);
     stmt->contlist = merge_list(true_stmt->contlist, false_stmt->contlist);
+    stmt->returnlist = merge_list(true_stmt->returnlist, false_stmt->returnlist);
 
     delete true_stmt;
     delete false_stmt;
@@ -1259,11 +1266,13 @@ unsigned long Manage_whilecond(exprValue *expr) {
     return whilecond;
 }
 
-void Manage_while(unsigned long whilestart, unsigned long whilecond, stmtValue *stmt) {
+stmtValue *Manage_while(unsigned long whilestart, unsigned long whilecond, stmtValue *stmt) {
     emit(jump_iop, whilestart);
     patchLabel(whilecond, nextQuadLabel());
     patchList(stmt->breaklist, nextQuadLabel());
     patchList(stmt->contlist, whilestart);
+
+    return stmt;
 }
 
 /* For statement */
@@ -1294,7 +1303,7 @@ forprefixValue *Manage_forprefix(unsigned long m, exprValue *expr) {
     return forprefix;
 }
 
-void Manage_for(forprefixValue *forprefix, unsigned long n1, unsigned long n2, unsigned long n3, stmtValue *stmt) {
+stmtValue *Manage_for(forprefixValue *forprefix, unsigned long n1, unsigned long n2, unsigned long n3, stmtValue *stmt) {
     patchLabel(forprefix->enter, n2 + 1);
     patchLabel(n1, nextQuadLabel());
     patchLabel(n2, forprefix->test);
@@ -1302,13 +1311,8 @@ void Manage_for(forprefixValue *forprefix, unsigned long n1, unsigned long n2, u
 
     patchList(stmt->breaklist, nextQuadLabel());
     patchList(stmt->contlist, n1 + 1);
-}
 
-/* Return statement */
-void Manage_returnstmt() {
-    if (funcDepth == 0) {
-        std::cerr << BRED "Cannot use return statement outside of function in line " << yylineno << RST << std::endl;
-    }
+    return stmt;
 }
 
 /* Return */

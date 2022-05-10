@@ -12,7 +12,7 @@ struct idlistValue;
 struct forprefixValue;
 
 struct stmtValue {
-    unsigned long breaklist, contlist;
+    unsigned long breaklist, contlist, returnlist;
 };
 
 enum exprType {

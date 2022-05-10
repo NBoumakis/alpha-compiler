@@ -90,7 +90,10 @@
 %type <ulongVal> whilestart
 %type <ulongVal> whilecond
 %type <ulongVal> m n
+%type <stmtVal>  while
 %type <forprefixVal> forprefix
+%type <stmtVal> for
+%type <stmtVal> ret
 
 
 /*Associativity and priority */
@@ -135,15 +138,15 @@ stmt:     expr SEMICOLON        {
                                 }
         | while             {
                                     std::cout << BGRN "Rule stmt -> while, line " << yylineno << RST << std::endl;
-                                    $$ = Manage_stmt_whilestmt();
+                                    $$ = Manage_stmt_whilestmt($while);
                                 }
         | for               {
                                     std::cout << BGRN "Rule stmt -> for, line " << yylineno << RST << std::endl;
-                                    $$ = Manage_stmt_for();
+                                    $$ = Manage_stmt_for($for);
                                 }
-        | returnstmt            {
-                                    std::cout << BGRN "Rule stmt -> returnstmt, line " << yylineno << RST << std::endl;
-                                    $$ = Manage_stmt_returnstmt();
+        | RETURN ret SEMICOLON  {
+                                    std::cout << BGRN "Rule stmt -> RETURN ret SEMICOLON, line " << yylineno << RST << std::endl;
+                                    $$ = Manage_stmt_RETURN_ret_SEMICOLON();
                                 }
         | BREAK SEMICOLON       {
                                     std::cout << BGRN "Rule stmt -> break;, line " << yylineno << RST << std::endl;
@@ -467,7 +470,7 @@ funcbody: funcblockstart block funcblockend
     {
         std::cout << BGRN "Rule funcbody -> block, line " << yylineno << RST << std::endl;
 
-        $$ = Manage_funcbody();
+        $$ = Manage_funcbody($block);
         --funcDepth;
     }
             ;
@@ -573,7 +576,7 @@ whilecond:  L_PARENTHESIS expr R_PARENTHESIS
 while:    whilestart whilecond loopstmt
                     {
                         std::cout << BGRN "Rule while -> whilestart whilecond loopstmt, line " << yylineno << RST << std::endl;
-                        Manage_while($whilestart, $whilecond, $loopstmt);
+                        $$ = Manage_while($whilestart, $whilecond, $loopstmt);
                     }
         ;
 
@@ -598,15 +601,9 @@ forprefix:  FOR L_PARENTHESIS elist SEMICOLON m expr SEMICOLON
 for:  forprefix n[n1] elist R_PARENTHESIS n[n2] loopstmt n[n3]
     {
         std::cout << BGRN "Rule for -> forprefix n1 elist ) n2 loopstmt n3, line " << yylineno << RST << std::endl;
-        Manage_for($forprefix, $n1, $n2, $n3,$loopstmt);
+        $$ = Manage_for($forprefix, $n1, $n2, $n3,$loopstmt);
     }
     ;
-
-returnstmt:   RETURN ret SEMICOLON      {
-                                            std::cout << BGRN "Rule returnstmt -> ret;, line " << yylineno << RST << std::endl;
-                                            Manage_returnstmt();
-                                        }
-            ;
 
 ret:      expr      {
                         std::cout << BGRN "Rule ret -> expr, line " << yylineno << RST << std::endl;
