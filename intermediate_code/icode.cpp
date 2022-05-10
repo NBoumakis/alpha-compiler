@@ -51,7 +51,7 @@ exprValue *emit_iftableitem(exprValue *expr) {
         exprValue *result = new exprValue();
         result->valType = varExpr_T;
         result->symbolVal = newTempvar();
-        emit(table_getelem_iop, expr, expr->indexVal, result);
+        emit(table_getelem_iop, result, expr, expr->indexVal);
 
         return result;
     }

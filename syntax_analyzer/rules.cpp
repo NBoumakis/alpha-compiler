@@ -500,7 +500,7 @@ exprValue *Manage_term_PPlval(exprValue *lvalue) {
     if (lvalue->valType == TableitemExpr_T) {
         termVal = emit_iftableitem(lvalue);
         emit(add_iop, termVal, termVal, const_num);
-        emit(table_setelem_iop, lvalue, lvalue->indexVal, termVal);
+        emit(table_setelem_iop, termVal, lvalue, lvalue->indexVal);
     } else {
         emit(add_iop, lvalue, lvalue, const_num);
         termVal = new exprValue();
@@ -542,7 +542,7 @@ exprValue *Manage_term_lvaluePP(exprValue *lvalue) {
 
         emit(assign_iop, termVal, val, nullptr);
         emit(add_iop, val, val, const_num);
-        emit(table_setelem_iop, lvalue, lvalue->indexVal, val);
+        emit(table_setelem_iop, val, lvalue, lvalue->indexVal);
     } else {
         emit(assign_iop, termVal, lvalue, nullptr);
         emit(add_iop, lvalue, lvalue, const_num);
@@ -573,7 +573,7 @@ exprValue *Manage_term_MMlval(exprValue *lvalue) {
     if (lvalue->valType == TableitemExpr_T) {
         termVal = emit_iftableitem(lvalue);
         emit(sub_iop, termVal, termVal, const_num);
-        emit(table_setelem_iop, lvalue, lvalue->indexVal, termVal);
+        emit(table_setelem_iop, termVal, lvalue, lvalue->indexVal);
     } else {
         emit(sub_iop, lvalue, lvalue, const_num);
         termVal = new exprValue();
@@ -615,7 +615,7 @@ exprValue *Manage_term_lvalueMM(exprValue *lvalue) {
 
         emit(assign_iop, termVal, val, nullptr);
         emit(sub_iop, val, val, const_num);
-        emit(table_setelem_iop, lvalue, lvalue->indexVal, val);
+        emit(table_setelem_iop, val, lvalue, lvalue->indexVal);
     } else {
         emit(assign_iop, termVal, lvalue, nullptr);
         emit(sub_iop, lvalue, lvalue, const_num);
@@ -663,7 +663,7 @@ exprValue *Manage_assignexpr_lvalueASSIGNexpr(exprValue *lvalue, exprValue *expr
             emit(assign_iop, assignexprVal, lvalue, nullptr);
         }
     } else if (lvalue->valType == TableitemExpr_T) {
-        emit(table_setelem_iop, lvalue, lvalue->indexVal, expr);
+        emit(table_setelem_iop, expr, lvalue, lvalue->indexVal);
 
         assignexprVal = emit_iftableitem(lvalue);
         assignexprVal->valType = assignexprExpr_T;
@@ -854,13 +854,6 @@ exprValue *Manage_call_callLPelistRP(exprValue *call, exprValue *elist) {
 }
 
 exprValue *Manage_call_lvaluecallsuffix(exprValue *lvalue, callValue *callsuffix) {
-    // TODO
-    /*if (lvalue->valType == SymbolLvalue_T) {
-        callVal->valType = lvalueCallSuffCall_T;
-        callVal->callLvalueValue.lvalueVal = lvalue;
-        callVal->callLvalueValue.callsuffixVal = callsuffix;
-    }*/
-
     lvalue = emit_iftableitem(lvalue);
     if (callsuffix->method) {
         exprValue *t = lvalue;
@@ -953,7 +946,7 @@ exprValue *Manage_objectdef_LSBelistRSB(exprValue *elist) {
         constVal->valType = constnumExpr_T;
         constVal->numConstval = i++;
 
-        emit(table_setelem_iop, objdefVal, constVal, elist);
+        emit(table_setelem_iop, elist, objdefVal, constVal);
     }
 
     return objdefVal;
@@ -967,7 +960,7 @@ exprValue *Manage_objectdef_LSBindexedRSB(exprOptRptValue *indexed) {
     emit(table_create_iop, objdefVal, nullptr, nullptr);
 
     while (indexed) {
-        emit(table_setelem_iop, objdefVal, indexed->index, indexed->value);
+        emit(table_setelem_iop, indexed->value, objdefVal, indexed->index);
 
         exprOptRptValue *prev = indexed;
         indexed = indexed->next;
