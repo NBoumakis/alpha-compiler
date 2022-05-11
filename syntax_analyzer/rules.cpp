@@ -84,7 +84,7 @@ static exprValue *expr_op_emit(iopcode op, exprValue *expr_left, exprValue *expr
         std::cerr << BRED "Invalid operation between " << expr_left->to_string() << " (" << expr_left->type_string() << ") and "
                   << expr_right->to_string() << " (" << expr_right->type_string() << ") in line " << yylineno << RST << std::endl;
 
-        expr_res->valType = InvalidExpr_T;
+        expr_res->valType = nilExpr_T;
     }
 
     return expr_res;
@@ -115,7 +115,7 @@ static exprValue *expr_relop_emit(iopcode relop, exprValue *expr_left, exprValue
         std::cerr << BRED "Invalid relational operation between " << expr_left->to_string() << " (" << expr_left->type_string() << ") and "
                   << expr_right->to_string() << " (" << expr_right->type_string() << ") in line " << yylineno << RST << std::endl;
 
-        expr_res->valType = InvalidExpr_T;
+        expr_res->valType = nilExpr_T;
     }
 
     return expr_res;
@@ -330,7 +330,7 @@ exprValue *Manage_expr_expr_DIV_expr(exprValue *exprLeft, exprValue *exprRight) 
 
         if (exprRight->numConstval == 0) {
             std::cerr << BBLU "Division by zero in line " << yylineno << RST << std::endl;
-            expr_res->valType = InvalidExpr_T;
+            expr_res->valType = nilExpr_T;
         } else {
             expr_res->numConstval = exprLeft->numConstval / exprRight->numConstval;
         }
@@ -350,7 +350,7 @@ exprValue *Manage_expr_expr_MOD_expr(exprValue *exprLeft, exprValue *exprRight) 
 
         if (exprRight->numConstval == 0) {
             std::cerr << BBLU "Modulo with zero in line " << yylineno << RST << std::endl;
-            expr_res->valType = InvalidExpr_T;
+            expr_res->valType = nilExpr_T;
         } else {
             expr_res->numConstval = static_cast<int>(exprLeft->numConstval) % static_cast<int>(exprRight->numConstval);
         }
@@ -647,11 +647,8 @@ exprValue *Manage_assignexpr_lvalueASSIGNexpr(exprValue *lvalue, exprValue *expr
     if (lvalue->valType == varExpr_T) {
         Symbol *symbol = lvalue->symbolVal;
 
-        if (symbol->type == USER_FUNC ||
-            symbol->type == LIB_FUNC) {
-            std::cerr << BRED "Cannot assign to " << type_names[symbol->type] << " \"" << symbol->name << "\" in line " << yylineno << RST << std::endl;
-        } else if (funcDepth != symbol->funcDepth &&
-                   symbol->type == VARIABLE && static_cast<Variable *>(symbol)->space != GLOBAL_VAR) {
+        if (funcDepth != symbol->funcDepth &&
+            static_cast<Variable *>(symbol)->scope != 0) {
             std::cerr << BRED "Inaccessible " << type_names[symbol->type] << " \"" << symbol->name << "\" in line " << yylineno << RST << std::endl;
         } else {
             emit(assign_iop, lvalue, expr, nullptr);
@@ -674,17 +671,22 @@ exprValue *Manage_assignexpr_lvalueASSIGNexpr(exprValue *lvalue, exprValue *expr
 
 /* Primary */
 exprValue *Manage_primary_lvalue(exprValue *lvalue) {
-    exprValue *primaryValueVal;
+    exprValue *primaryValueVal = lvalue;
 
-    Symbol *symbol = lvalue->symbolVal;
-    if (symbol->scope == 0 ||
-        symbol->type == USER_FUNC ||
-        symbol->type == LIB_FUNC ||
-        funcDepth == symbol->funcDepth) {
+    if (lvalue->valType != nilExpr_T) {
 
-        primaryValueVal = emit_iftableitem(lvalue);
-    } else {
-        std::cerr << BRED "Inaccessible " << type_names[symbol->type] << " \"" << symbol->name << "\" in line " << yylineno << RST << std::endl;
+        Symbol *symbol = lvalue->symbolVal;
+        if (symbol->scope == 0 ||
+            symbol->type == USER_FUNC ||
+            symbol->type == LIB_FUNC ||
+            funcDepth == symbol->funcDepth) {
+
+            primaryValueVal = emit_iftableitem(lvalue);
+        } else {
+            std::cerr << BRED "Inaccessible " << type_names[symbol->type] << " \"" << symbol->name << "\" in line " << yylineno << RST << std::endl;
+            lvalue->valType = nilExpr_T;
+            primaryValueVal = lvalue;
+        }
     }
 
     return primaryValueVal;
@@ -778,13 +780,11 @@ exprValue *Manage_lvalue_localid(std::string id) {
                       << " attempts to shadow library function." RST << std::endl;
 
             newStructVal = new exprValue();
-            newStructVal->valType = InvalidExpr_T;
+            newStructVal->valType = nilExpr_T;
         }
     } else {
         newStructVal = lvalue_expr(symbol);
     }
-
-    assert((newStructVal->valType == InvalidExpr_T) || (newStructVal->valType == varExpr_T));
 
     return newStructVal;
 }
@@ -798,7 +798,7 @@ exprValue *Manage_lvalue_globalid(std::string id) {
         std::cerr << BRED "Undefined reference to global symbol \"" << id << "\" in line " << yylineno << "." RST << std::endl;
 
         newStructVal = new exprValue();
-        newStructVal->valType = InvalidExpr_T;
+        newStructVal->valType = nilExpr_T;
     } else {
         newStructVal = lvalue_expr(symbol);
     }
@@ -1098,21 +1098,23 @@ void Manage_funcargs(idlistValue *idlist) {
 }
 
 Function *Manage_funcdef(Function *funcprefix, unsigned long funcbody) {
-    exitScopespace();
+    if (funcprefix) {
+        exitScopespace();
+        funcprefix->totalLocals = funcbody;
+        unsigned long offset = scopeOffsetStack.top();
+        scopeOffsetStack.pop();
+        restoreCurrScopeOffset(offset);
 
-    funcprefix->totalLocals = funcbody;
-    unsigned long offset = scopeOffsetStack.top();
-    scopeOffsetStack.pop();
-    restoreCurrScopeOffset(offset);
+        exprValue *fpre_expr = new exprValue();
+        fpre_expr->valType = userfuncExpr_T;
+        fpre_expr->symbolVal = funcprefix;
 
-    exprValue *fpre_expr = new exprValue();
-    fpre_expr->valType = userfuncExpr_T;
-    fpre_expr->symbolVal = funcprefix;
-
-    emit(funcend_iop, fpre_expr, nullptr, nullptr);
-    patchLabel(funcprefix->iaddress - 1, nextQuadLabel());
-
-    return funcprefix;
+        emit(funcend_iop, fpre_expr, nullptr, nullptr);
+        patchLabel(funcprefix->iaddress - 1, nextQuadLabel());
+        return funcprefix;
+    } else {
+        return nullptr;
+    }
 }
 
 std::string newTmpFuncname() {
