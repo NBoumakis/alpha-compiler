@@ -47,31 +47,7 @@ struct exprValue {
 
     exprType valType;
 
-    bool to_boolean() const {
-        assert(this);
-
-        switch (this->valType) {
-        case userfuncExpr_T:
-        case libfuncExpr_T:
-        case newtableExpr_T:
-            return true;
-
-        case constnumExpr_T:
-            return this->numConstval != 0;
-
-        case constboolExpr_T:
-            return this->boolConstVal;
-
-        case conststringExpr_T:
-            return this->strConstVal != "";
-
-        case nilExpr_T:
-            return false;
-
-        default:
-            assert(false);
-        }
-    }
+    operator bool() const;
 
     std::string type_string();
     std::string to_string();

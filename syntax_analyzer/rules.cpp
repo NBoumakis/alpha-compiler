@@ -467,7 +467,7 @@ exprValue *Manage_expr_expr_AND_expr(exprValue *exprLeft, exprValue *exprRight) 
         expr_res = new exprValue();
         expr_res->valType = constboolExpr_T;
 
-        expr_res->boolConstVal = exprLeft->to_boolean() && exprRight->to_boolean();
+        expr_res->boolConstVal = static_cast<bool>(*exprLeft) && static_cast<bool>(*exprRight);
     } else {
         expr_res = expr_boolop_emit(and_iop, exprLeft, exprRight);
     }
@@ -482,7 +482,7 @@ exprValue *Manage_expr_expr_OR_expr(exprValue *exprLeft, exprValue *exprRight) {
         expr_res = new exprValue();
         expr_res->valType = constboolExpr_T;
 
-        expr_res->boolConstVal = exprLeft->to_boolean() || exprRight->to_boolean();
+        expr_res->boolConstVal = static_cast<bool>(*exprLeft) || static_cast<bool>(*exprRight);
     } else {
         expr_res = expr_boolop_emit(or_iop, exprLeft, exprRight);
     }
@@ -503,9 +503,13 @@ exprValue *Manage_term_notexpr(exprValue *expr) {
     exprValue *termVal = new exprValue();
     termVal->valType = boolexprExpr_T;
 
-    termVal->symbolVal = newTempvar();
+    if (isCompileBool(expr)) {
+        termVal->boolConstVal = !(static_cast<bool>(*expr));
+    } else {
+        termVal->symbolVal = newTempvar();
 
-    emit(not_iop, termVal, expr, nullptr);
+        emit(not_iop, termVal, expr, nullptr);
+    }
 
     return termVal;
 }
