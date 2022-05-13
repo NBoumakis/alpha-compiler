@@ -121,6 +121,16 @@ static exprValue *expr_relop_emit(iopcode relop, exprValue *expr_left, exprValue
     return expr_res;
 }
 
+static bool isCompileBool(exprValue *expr) {
+    return (expr->valType == nilExpr_T ||
+            expr->valType == libfuncExpr_T ||
+            expr->valType == userfuncExpr_T ||
+            expr->valType == constnumExpr_T ||
+            expr->valType == constboolExpr_T ||
+            expr->valType == conststringExpr_T ||
+            expr->valType == newtableExpr_T);
+}
+
 static exprValue *expr_boolop_emit(iopcode boolop, exprValue *expr_left, exprValue *expr_right) {
     exprValue *expr_res = new exprValue();
     expr_res->valType = boolexprExpr_T;
@@ -451,11 +461,33 @@ exprValue *Manage_expr_expr_NEQUAL_expr(exprValue *exprLeft, exprValue *exprRigh
 }
 
 exprValue *Manage_expr_expr_AND_expr(exprValue *exprLeft, exprValue *exprRight) {
-    return expr_boolop_emit(and_iop, exprLeft, exprRight);
+    exprValue *expr_res;
+
+    if (isCompileBool(exprLeft) && isCompileBool(exprRight)) {
+        expr_res = new exprValue();
+        expr_res->valType = constboolExpr_T;
+
+        expr_res->boolConstVal = exprLeft->to_boolean() && exprRight->to_boolean();
+    } else {
+        expr_res = expr_boolop_emit(and_iop, exprLeft, exprRight);
+    }
+
+    return expr_res;
 }
 
 exprValue *Manage_expr_expr_OR_expr(exprValue *exprLeft, exprValue *exprRight) {
-    return expr_boolop_emit(or_iop, exprLeft, exprRight);
+    exprValue *expr_res;
+
+    if (isCompileBool(exprLeft) && isCompileBool(exprRight)) {
+        expr_res = new exprValue();
+        expr_res->valType = constboolExpr_T;
+
+        expr_res->boolConstVal = exprLeft->to_boolean() || exprRight->to_boolean();
+    } else {
+        expr_res = expr_boolop_emit(or_iop, exprLeft, exprRight);
+    }
+
+    return expr_res;
 }
 
 exprValue *Manage_expr_term(exprValue *term) {
