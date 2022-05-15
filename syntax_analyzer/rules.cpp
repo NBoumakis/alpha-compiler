@@ -130,16 +130,6 @@ static bool isCompileBool(exprValue *expr) {
             expr->valType == newtableExpr_T);
 }
 
-static exprValue *expr_boolop_emit(iopcode boolop, exprValue *expr_left, exprValue *expr_right) {
-    exprValue *expr_res = new exprValue();
-    expr_res->valType = boolexprExpr_T;
-
-    expr_res->symbolVal = newTempvar();
-    emit(boolop, expr_res, expr_left, expr_right);
-
-    return expr_res;
-}
-
 unsigned long newlist(unsigned long i) {
     quad_vector[i].label = 0;
     return i;
@@ -459,51 +449,57 @@ exprValue *Manage_expr_expr_NEQUAL_expr(exprValue *exprLeft, exprValue *exprRigh
     return expr_res;
 }
 
-exprValue *Manage_expr_expr_AND_expr(exprValue *exprLeft, exprValue *exprRight) {
-    exprValue *expr_res;
+exprValue *Manage_expr_expr_AND_expr(exprValue *exprLeft, exprValue *exprRight, unsigned long l1) {
+    exprValue *expr_res = new exprValue();
 
     if (isCompileBool(exprLeft) && isCompileBool(exprRight)) {
-        expr_res = new exprValue();
         expr_res->valType = constboolExpr_T;
 
         expr_res->boolConstVal = static_cast<bool>(*exprLeft) && static_cast<bool>(*exprRight);
     } else if (isCompileBool(exprLeft) && !exprLeft->boolConstVal) {
-        expr_res = new exprValue();
         expr_res->valType = constboolExpr_T;
 
         expr_res->boolConstVal = false;
     } else if (isCompileBool(exprRight) && !exprRight->boolConstVal) {
-        expr_res = new exprValue();
         expr_res->valType = constboolExpr_T;
 
         expr_res->boolConstVal = false;
     } else {
-        expr_res = expr_boolop_emit(and_iop, exprLeft, exprRight);
+        patchList(exprLeft->truelist, l1);
+
+        expr_res->valType = boolexprExpr_T;
+        expr_res->symbolVal = newTempvar();
+
+        expr_res->truelist = exprRight->truelist;
+        expr_res->falselist = merge_list(exprLeft->falselist, exprRight->falselist);
     }
 
     return expr_res;
 }
 
-exprValue *Manage_expr_expr_OR_expr(exprValue *exprLeft, exprValue *exprRight) {
-    exprValue *expr_res;
+exprValue *Manage_expr_expr_OR_expr(exprValue *exprLeft, exprValue *exprRight, unsigned long l1) {
+    exprValue *expr_res = new exprValue();
 
     if (isCompileBool(exprLeft) && isCompileBool(exprRight)) {
-        expr_res = new exprValue();
         expr_res->valType = constboolExpr_T;
 
         expr_res->boolConstVal = static_cast<bool>(*exprLeft) || static_cast<bool>(*exprRight);
     } else if (isCompileBool(exprLeft) && exprLeft->boolConstVal) {
-        expr_res = new exprValue();
         expr_res->valType = constboolExpr_T;
 
         expr_res->boolConstVal = true;
     } else if (isCompileBool(exprRight) && exprRight->boolConstVal) {
-        expr_res = new exprValue();
         expr_res->valType = constboolExpr_T;
 
         expr_res->boolConstVal = true;
     } else {
-        expr_res = expr_boolop_emit(or_iop, exprLeft, exprRight);
+        patchList(exprLeft->falselist, l1);
+
+        expr_res->valType = boolexprExpr_T;
+        expr_res->symbolVal = newTempvar();
+
+        expr_res->truelist = merge_list(exprLeft->truelist, exprRight->truelist);
+        expr_res->falselist = exprRight->falselist;
     }
 
     return expr_res;
@@ -528,7 +524,8 @@ exprValue *Manage_term_notexpr(exprValue *expr) {
         termVal->valType = boolexprExpr_T;
         termVal->symbolVal = newTempvar();
 
-        emit(not_iop, termVal, expr, nullptr);
+        termVal->falselist = expr->truelist;
+        termVal->truelist = expr->falselist;
     }
 
     return termVal;

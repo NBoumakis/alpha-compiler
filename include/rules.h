@@ -55,9 +55,9 @@ exprValue *Manage_expr_expr_EQUAL_expr(exprValue *, exprValue *);
 
 exprValue *Manage_expr_expr_NEQUAL_expr(exprValue *, exprValue *);
 
-exprValue *Manage_expr_expr_AND_expr(exprValue *, exprValue *);
+exprValue *Manage_expr_expr_AND_expr(exprValue *, exprValue *, unsigned long);
 
-exprValue *Manage_expr_expr_OR_expr(exprValue *, exprValue *);
+exprValue *Manage_expr_expr_OR_expr(exprValue *, exprValue *, unsigned long);
 
 exprValue *Manage_expr_term(exprValue *);
 

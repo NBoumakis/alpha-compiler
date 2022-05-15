@@ -223,13 +223,13 @@ expr:     assignexpr            {
                                             std::cout << BGRN "Rule expr -> expr != expr, line " << yylineno << RST << std::endl;
                                             $$ = Manage_expr_expr_NEQUAL_expr($left, $right);
                                         }
-        | expr[left] AND expr[right]    {
+        | expr[left] AND m expr[right]  {
                                             std::cout << BGRN "Rule expr -> expr and expr, line " << yylineno << RST << std::endl;
-                                            $$ = Manage_expr_expr_AND_expr($left, $right);
+                                            $$ = Manage_expr_expr_AND_expr($left, $right, $m);
                                         }
-        | expr[left] OR expr[right]     {
+        | expr[left] OR m expr[right]   {
                                             std::cout << BGRN "Rule expr -> expr or expr, line " << yylineno << RST << std::endl;
-                                            $$ = Manage_expr_expr_OR_expr($left, $right);
+                                            $$ = Manage_expr_expr_OR_expr($left, $right, $m);
                                         }
         | term                          {
                                             std::cout << BGRN "Rule expr -> term, line " << yylineno << RST << std::endl;
