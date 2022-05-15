@@ -111,11 +111,11 @@ exprValue *Manage_member_callDOTid(exprValue *, std::string);
 exprValue *Manage_member_callLSBexprRSB(exprValue *, exprValue *);
 
 /* Calls */
-exprValue *Manage_call_callLPelistRP(exprValue *, exprValue *);
+exprValue *Manage_call_callLPelistRP(exprValue *, exprList);
 
 exprValue *Manage_call_lvaluecallsuffix(exprValue *, callValue *);
 
-exprValue *Manage_call_LPfuncdefRPLPelistRP(Function *, exprValue *);
+exprValue *Manage_call_LPfuncdefRPLPelistRP(Function *, exprList);
 
 /* Call suffix */
 callValue *Manage_callsuffix_normcall(callValue *);
@@ -123,32 +123,32 @@ callValue *Manage_callsuffix_normcall(callValue *);
 callValue *Manage_callsuffix_methodcall(callValue *);
 
 /* Normal call */
-callValue *Manage_normcall_LPelistRP(exprValue *);
+callValue *Manage_normcall_LPelistRP(exprList);
 
 /* Method call */
-callValue *Manage_methodcall_DDOTidLPelistRP(std::string, exprValue *);
+callValue *Manage_methodcall_DDOTidLPelistRP(std::string, exprList);
 
 /* elist */
-exprValue *Manage_elist_exprOptRpt(exprValue *);
+exprList Manage_elist_exprOptRpt(exprList);
 
-exprValue *Manage_elist();
+exprList Manage_elist();
 
 /* Expression optional and repeatable */
-exprValue *Manage_exprOptRpt_expr_exprOptRpt(exprValue *, exprValue *);
+void Manage_exprOptRpt_expr_exprOptRpt(exprValue *, exprList &);
 
-exprValue *Manage_exprOptRpt_expr(exprValue *);
+void Manage_exprOptRpt_expr(exprValue *, exprList &);
 
 /* Objectdef */
-exprValue *Manage_objectdef_LSBelistRSB(exprValue *);
+exprValue *Manage_objectdef_LSBelistRSB(exprList);
 
-exprValue *Manage_objectdef_LSBindexedRSB(exprOptRptValue *);
+exprValue *Manage_objectdef_LSBindexedRSB(indexedList);
 
 /* Indexed */
-exprOptRptValue *Manage_indexed_indexedelem_COMMA_indexed(exprOptRptValue *, exprOptRptValue *);
+void Manage_indexed_indexedelem_COMMA_indexed(exprPair *, indexedList &);
 
-exprOptRptValue *Manage_indexed_indexedelem(exprOptRptValue *);
+void Manage_indexed_indexedelem(indexedList &, exprPair *);
 
-exprOptRptValue *Manage_indexedelem_LCB_expr_COLON_expr_RCB(exprValue *, exprValue *);
+exprPair *Manage_indexedelem_LCB_expr_COLON_expr_RCB(exprValue *, exprValue *);
 
 /* Block */
 stmtValue *Manage_block_LCBstmtRCB(stmtValue *);
@@ -158,7 +158,7 @@ Function *Manage_funcprefix(std::string);
 
 unsigned long Manage_funcbody(stmtValue *);
 
-void Manage_funcargs(idlistValue *);
+void Manage_funcargs(exprList &);
 
 Function *Manage_funcdef(Function *, unsigned long);
 
@@ -178,11 +178,11 @@ exprValue *Manage_const_true();
 exprValue *Manage_const_false();
 
 /* ID list */
-idlistValue *Manage_idlist_ID(std::string);
+void Manage_idlist_ID(std::string, exprList &);
 
-idlistValue *Manage_idlist_idlist_comma_id(idlistValue *, std::string);
+void Manage_idlist_idlist_comma_id(std::string, exprList &);
 
-idlistValue *Manage_idlist();
+void Manage_idlist(exprList &);
 
 /* If statement */
 unsigned long Manage_ifprefix(exprValue *);

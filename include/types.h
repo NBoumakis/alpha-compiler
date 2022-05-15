@@ -3,14 +3,19 @@
 
 #include "symbol.h"
 #include <cassert>
+#include <list>
 #include <string>
+#include <utility>
 
 struct stmtValue;
 struct exprValue;
 struct callValue;
 struct exprOptRptValue;
-struct idlistValue;
 struct forprefixValue;
+
+typedef std::pair<exprValue *, exprValue *> exprPair;
+typedef std::list<exprPair *> *indexedList;
+typedef std::list<exprValue *> *exprList;
 
 struct stmtValue {
     unsigned long breaklist, contlist, returnlist;
@@ -43,7 +48,6 @@ struct exprValue {
     double numConstval;
     std::string strConstVal;
     bool boolConstVal;
-    exprValue *next;
 
     exprType valType;
 
@@ -54,7 +58,7 @@ struct exprValue {
 };
 
 struct callValue {
-    exprValue *elist;
+    exprList elist;
     bool method;
     std::string name;
 };
@@ -64,11 +68,6 @@ struct exprOptRptValue {
     exprValue *value;
 
     exprOptRptValue *next;
-};
-
-struct idlistValue {
-    std::string id;
-    idlistValue *next;
 };
 
 struct forprefixValue {

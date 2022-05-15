@@ -19,12 +19,11 @@ std::string type_names[] = {
     std::string("user function"),
     std::string("library function")};
 
-static exprValue *make_call(exprValue *lvalue, exprValue *elist_r) {
+static exprValue *make_call(exprValue *lvalue, exprList elist_r) {
     exprValue *func = emit_iftableitem(lvalue);
 
-    while (elist_r) {
-        emit(param_iop, elist_r, nullptr, nullptr);
-        elist_r = elist_r->next;
+    for (auto expr = elist_r->rbegin(); expr != elist_r->rend(); ++expr) {
+        emit(param_iop, *expr, nullptr, nullptr);
     }
 
     emit(call_iop, func, nullptr, nullptr);
@@ -776,7 +775,6 @@ static exprValue *lvalue_expr(Symbol *symbol) {
     exprValue *e = new exprValue();
 
     e->symbolVal = symbol;
-    e->next = nullptr;
 
     switch (symbol->type) {
     case VARIABLE:
@@ -905,7 +903,7 @@ exprValue *Manage_member_callLSBexprRSB(exprValue *call, exprValue *expr) {
 }
 
 /* Calls */
-exprValue *Manage_call_callLPelistRP(exprValue *call, exprValue *elist) {
+exprValue *Manage_call_callLPelistRP(exprValue *call, exprList elist) {
     exprValue *callVal = make_call(call, elist);
     return callVal;
 }
@@ -914,24 +912,17 @@ exprValue *Manage_call_lvaluecallsuffix(exprValue *lvalue, callValue *callsuffix
     lvalue = emit_iftableitem(lvalue);
     if (callsuffix->method) {
         exprValue *t = lvalue;
-        exprValue *p = callsuffix->elist;
+        exprList p = callsuffix->elist;
 
         lvalue = emit_iftableitem(member_item(t, callsuffix->name));
 
-        while (p && p->next) {
-            p = p->next;
-        }
-
-        if (p)
-            p->next = t;
-        else
-            callsuffix->elist = t;
+        p->push_front(t);
     }
 
     return make_call(lvalue, callsuffix->elist);
 }
 
-exprValue *Manage_call_LPfuncdefRPLPelistRP(Function *funcdef, exprValue *elist) {
+exprValue *Manage_call_LPfuncdefRPLPelistRP(Function *funcdef, exprList elist) {
     exprValue *func = new exprValue();
     func->valType = userfuncExpr_T;
 
@@ -950,7 +941,7 @@ callValue *Manage_callsuffix_methodcall(callValue *methodcall) {
 }
 
 /* Normal call */
-callValue *Manage_normcall_LPelistRP(exprValue *elist) {
+callValue *Manage_normcall_LPelistRP(exprList elist) {
     callValue *normcallVal = new callValue();
 
     normcallVal->elist = elist;
@@ -961,7 +952,7 @@ callValue *Manage_normcall_LPelistRP(exprValue *elist) {
 }
 
 /* Method call */
-callValue *Manage_methodcall_DDOTidLPelistRP(std::string id, exprValue *elist) {
+callValue *Manage_methodcall_DDOTidLPelistRP(std::string id, exprList elist) {
     callValue *methodcallVal = new callValue();
 
     methodcallVal->elist = elist;
@@ -972,78 +963,77 @@ callValue *Manage_methodcall_DDOTidLPelistRP(std::string id, exprValue *elist) {
 }
 
 /* elist */
-exprValue *Manage_elist_exprOptRpt(exprValue *exprOptRpt) {
+exprList Manage_elist_exprOptRpt(exprList exprOptRpt) {
     return exprOptRpt;
 }
 
-exprValue *Manage_elist() {
-    return nullptr;
+exprList Manage_elist() {
+    return new std::list<exprValue *>();
 }
 
 /* Expression optional and repeatable */
-exprValue *Manage_exprOptRpt_expr_exprOptRpt(exprValue *expr, exprValue *exprOptRpt) {
-    expr->next = exprOptRpt;
-    return expr;
+void Manage_exprOptRpt_expr_exprOptRpt(exprValue *expr, exprList &list) {
+    list->push_back(expr);
 }
 
-exprValue *Manage_exprOptRpt_expr(exprValue *expr) {
-    return expr;
+void Manage_exprOptRpt_expr(exprValue *expr, exprList &list) {
+    list = new std::list<exprValue *>();
+
+    list->push_back(expr);
 }
 
 /* Objectdef */
-exprValue *Manage_objectdef_LSBelistRSB(exprValue *elist) {
+exprValue *Manage_objectdef_LSBelistRSB(exprList elist) {
     exprValue *objdefVal = new exprValue();
     objdefVal->valType = newtableExpr_T;
 
     objdefVal->symbolVal = newTempvar();
     emit(table_create_iop, objdefVal, nullptr, nullptr);
 
-    for (int i = 0; elist; elist = elist->next) {
+    unsigned long i = 0;
+    for (auto &expr : *elist) {
         exprValue *constVal = new exprValue();
         constVal->valType = constnumExpr_T;
         constVal->numConstval = i++;
 
-        emit(table_setelem_iop, elist, objdefVal, constVal);
+        emit(table_setelem_iop, expr, objdefVal, constVal);
     }
 
     return objdefVal;
 }
 
-exprValue *Manage_objectdef_LSBindexedRSB(exprOptRptValue *indexed) {
+exprValue *Manage_objectdef_LSBindexedRSB(indexedList indexed) {
     exprValue *objdefVal = new exprValue();
     objdefVal->valType = newtableExpr_T;
 
     objdefVal->symbolVal = newTempvar();
     emit(table_create_iop, objdefVal, nullptr, nullptr);
 
-    while (indexed) {
-        emit(table_setelem_iop, indexed->value, objdefVal, indexed->index);
+    for (auto indexedelem : *indexed) {
+        emit(table_setelem_iop, indexedelem->first, objdefVal, indexedelem->second);
 
-        exprOptRptValue *prev = indexed;
-        indexed = indexed->next;
-
-        delete prev;
+        delete indexedelem;
     }
 
     return objdefVal;
 }
 
 /* Indexed element list */
-exprOptRptValue *Manage_indexed_indexedelem_COMMA_indexed(exprOptRptValue *indexedelem, exprOptRptValue *indelemlist) {
-    indexedelem->next = indelemlist;
-
-    return indexedelem;
+void Manage_indexed_indexedelem_COMMA_indexed(exprPair *elem, indexedList &indelemlist) {
+    indelemlist->push_back(elem);
 }
 
-exprOptRptValue *Manage_indexed_indexedelem(exprOptRptValue *indexedelem) {
-    return indexedelem;
+void Manage_indexed_indexedelem(indexedList &indexed_l, exprPair *elem) {
+    indexed_l = new std::list<exprPair *>();
+
+    indexed_l->push_back(elem);
 }
 
-exprOptRptValue *Manage_indexedelem_LCB_expr_COLON_expr_RCB(exprValue *key, exprValue *value) {
-    exprOptRptValue *elemVal = new exprOptRptValue();
+exprPair *Manage_indexedelem_LCB_expr_COLON_expr_RCB(exprValue *key, exprValue *value) {
+    exprPair *elemVal = new exprPair();
 
-    elemVal->index = key;
-    elemVal->value = value;
+    elemVal->first = key;
+    elemVal->second = value;
 
     return elemVal;
 }
@@ -1102,19 +1092,17 @@ unsigned long Manage_funcbody(stmtValue *block) {
     return scopeOffset;
 }
 
-static bool check_funcargs(idlistValue *idlist) {
+static bool check_funcargs(exprList &idlist) {
     std::set<std::string> argSet;
 
-    while (idlist) {
-        std::string id = idlist->id;
+    for (auto &id : *idlist) {
+        auto symbol_in_table = symbolTableObj.lookup_scope(id->strConstVal, scopeLevel);
 
-        auto symbol_in_table = symbolTableObj.lookup_scope(id, scopeLevel);
-
-        if (argSet.count(id) > 0) {
+        if (argSet.count(id->strConstVal) > 0) {
             std::cerr << BRED "Duplicate argument \"" << id << "\" in line " << yylineno << RST << std::endl;
 
             return false;
-        } else if (isLibFunction(id)) {
+        } else if (isLibFunction(id->strConstVal)) {
             std::cerr << BRED "Formal argument \"" << id << "\" in line " << yylineno
                       << " attempts to shadow a library function." RST << std::endl;
 
@@ -1128,25 +1116,22 @@ static bool check_funcargs(idlistValue *idlist) {
             return false;
         }
 
-        argSet.insert(id);
-        idlist = idlist->next;
+        argSet.insert(id->strConstVal);
     }
 
     return true;
 }
 
-void Manage_funcargs(idlistValue *idlist) {
-    idlistValue *idlist_ptr = idlist;
+void Manage_funcargs(exprList &idlist) {
     ++scopeLevel;
     enterScopespace();
 
     if (check_funcargs(idlist)) {
-        while (idlist_ptr) {
-            Symbol *newArg = new Variable(idlist_ptr->id, scopeLevel, yylineno, funcDepth, currScopespace(), currScopespaceOffset());
-
+        for (auto &id : *idlist) {
+            Symbol *newArg = new Variable(id->strConstVal, scopeLevel, yylineno, funcDepth, currScopespace(), currScopespaceOffset());
             symbolTableObj.insert(newArg->name, newArg, scopeLevel);
 
-            idlist_ptr = idlist_ptr->next;
+            increaseCurrScopeOffset();
         }
     }
 
@@ -1226,25 +1211,28 @@ exprValue *Manage_const_false() {
 }
 
 /* ID list */
-idlistValue *Manage_idlist_ID(std::string id) {
-    idlistValue *newStructVal = new idlistValue();
+void Manage_idlist_ID(std::string id, exprList &list) {
+    list = new std::list<exprValue *>();
 
-    newStructVal->id = id;
+    exprValue *id_expr = new exprValue();
+    id_expr->valType = conststringExpr_T;
 
-    return newStructVal;
+    id_expr->strConstVal = id;
+
+    list->push_back(id_expr);
 }
 
-idlistValue *Manage_idlist_idlist_comma_id(idlistValue *idlist, std::string id) {
-    idlistValue *newStructVal = new idlistValue();
+void Manage_idlist_idlist_comma_id(std::string id, exprList &list) {
+    exprValue *id_expr = new exprValue();
+    id_expr->valType = conststringExpr_T;
 
-    newStructVal->id = id;
-    newStructVal->next = idlist;
+    id_expr->strConstVal = id;
 
-    return newStructVal;
+    list->push_back(id_expr);
 }
 
-idlistValue *Manage_idlist() {
-    return nullptr;
+void Manage_idlist(exprList &list) {
+    list = new std::list<exprValue *>();
 }
 
 /* If statement */

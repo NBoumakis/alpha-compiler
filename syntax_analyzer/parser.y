@@ -1,8 +1,9 @@
 %{
+    #include <list>
     #include <iostream>
-    #include <unordered_set>
-    #include <stack>
     #include <string.h>
+    #include <unordered_set>
+    #include <utility>
     #include "types.h"
     #include "icode.h"
     #include "scope.h"
@@ -38,7 +39,11 @@
     exprOptRptValue *exprOptRptVal;
     callValue *callVal;
     unsigned long ulongVal;
-    idlistValue *idlistVal;
+
+    exprList exprListVal;
+
+    exprPair *exprPairVal;
+    indexedList indexedListVal;
 
     forprefixValue *forprefixVal;
     char* stringVal;
@@ -67,13 +72,13 @@
 %type <exprVal> member
 %type <exprVal> call
 %type <exprVal> objectdef
-%type <exprVal> elist
+%type <exprListVal> elist
 %type <callVal> callsuffix
 %type <callVal> normcall
 %type <callVal> methodcall
-%type <exprVal> exprOptRpt
-%type <exprOptRptVal> indexed
-%type <exprOptRptVal> indexedelem
+%type <exprListVal> exprOptRpt
+%type <indexedListVal> indexed
+%type <exprPairVal> indexedelem
 %type <stmtVal> block
 
 %type <stringVal> funcname
@@ -81,7 +86,7 @@
 %type <ulongVal> funcbody
 %type <funcPointer> funcdef
 %type <exprVal> const
-%type <idlistVal> idlist
+%type <exprListVal> idlist
 
 %type <ulongVal> ifprefix
 %type <ulongVal> elseprefix
@@ -378,11 +383,11 @@ elist:   exprOptRpt         {
 
 exprOptRpt:   exprOptRpt[derivated] COMMA expr  {
                                                     std::cout << BGRN "Rule exprOptRpt -> expr, exprOptRpt, line " << yylineno << RST << std::endl;
-                                                    $$ = Manage_exprOptRpt_expr_exprOptRpt($expr, $derivated);
+                                                    Manage_exprOptRpt_expr_exprOptRpt($expr, $derivated);
                                                 }
             | expr                              {
                                                     std::cout << BGRN "Rule exprOptRpt -> expr, line " << yylineno << RST << std::endl;
-                                                    $$ = Manage_exprOptRpt_expr($expr);
+                                                    Manage_exprOptRpt_expr($expr, $exprOptRpt);
                                                 }
             ;
 
@@ -397,14 +402,14 @@ objectdef:    L_SQUARE_BRACKET elist R_SQUARE_BRACKET       {
             ;
 
 
-indexed:      indexedelem COMMA indexed[derivated]  {
-                                                            std::cout << BGRN "Rule indelemlist -> indexedelem, indelemlist, line " << yylineno << RST << std::endl;
-                                                            $$ = Manage_indexed_indexedelem_COMMA_indexed($indexedelem, $derivated);
-                                                        }
-            | indexedelem                               {
-                                                            std::cout << BGRN "Rule indelemlist -> indexedelem, line " << yylineno << RST << std::endl;
-                                                            $$ = Manage_indexed_indexedelem($indexedelem);
-                                                        }
+indexed:      indexed[derivated] COMMA indexedelem  {
+                                                        std::cout << BGRN "Rule indelemlist -> indexedelem, indelemlist, line " << yylineno << RST << std::endl;
+                                                        Manage_indexed_indexedelem_COMMA_indexed($indexedelem, $derivated);
+                                                    }
+            | indexedelem                          {
+                                                        std::cout << BGRN "Rule indelemlist -> indexedelem, line " << yylineno << RST << std::endl;
+                                                        Manage_indexed_indexedelem($indexed,$indexedelem);
+                                                    }
             ;
 
 
@@ -510,15 +515,15 @@ const:    intNumber     {
 
 idlist:   ID    {
                     std::cout << BGRN "Rule idlist -> id, line " << yylineno << RST << std::endl;
-                    $$ = Manage_idlist_ID($ID);
+                    Manage_idlist_ID($ID, $idlist);
                 }
-        | ID COMMA idlist[derivated]    {
+        | idlist[derivated] COMMA ID    {
                                             std::cout << BGRN "Rule idlist -> idlist, id, line " << yylineno << RST << std::endl;
-                                            $$ = Manage_idlist_idlist_comma_id($derivated, $ID);
+                                            Manage_idlist_idlist_comma_id($ID, $derivated);
                                         }
         |                               {
                                             std::cout << BGRN "Rule idlist -> ε, line " << yylineno << RST << std::endl;
-                                            $$ = Manage_idlist();
+                                            Manage_idlist($idlist);
                                         }
         ;
 

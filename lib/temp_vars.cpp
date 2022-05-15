@@ -19,6 +19,7 @@ Symbol *newTempvar() {
     if (symbol == nullptr) {
         symbol = new Variable(name, scopeLevel, 0, funcDepth, currScopespace(), currScopespaceOffset());
         symbolTableObj.insert(name, symbol, scopeLevel);
+        increaseCurrScopeOffset();
         return symbol;
     } else {
         return symbol;
