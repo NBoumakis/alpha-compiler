@@ -51,6 +51,8 @@ struct exprValue {
 
     exprType valType;
 
+    unsigned long truelist, falselist;
+
     operator bool() const;
 
     std::string type_string();
