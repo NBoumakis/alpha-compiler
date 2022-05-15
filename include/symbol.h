@@ -25,27 +25,29 @@ public:
 
     SymbolType type;
 
-    unsigned long offset;
-
     friend class Scope;
 
 public:
-    Symbol(std::string name, unsigned int scope, unsigned int line, unsigned int funcDepth, SymbolType type, unsigned long offset);
-    Symbol(std::string name, unsigned int scope, unsigned int line, unsigned int funcDepth, SymbolType type, unsigned long offset, bool isActive);
+    Symbol(std::string name, unsigned int scope, unsigned int line, unsigned int funcDepth, SymbolType type);
+    Symbol(std::string name, unsigned int scope, unsigned int line, unsigned int funcDepth, SymbolType type, bool isActive);
 
-    std::string to_string();
+    virtual std::string to_string() = 0;
     ~Symbol();
 };
 
 class Variable : public Symbol {
+    unsigned long offset;
+
 public:
     ScopespaceType space;
 
 public:
     Variable(std::string name, unsigned int scope, unsigned int line, unsigned int funcDepth, ScopespaceType type, unsigned long offset)
-        : Symbol(name, scope, line, funcDepth, VARIABLE, offset), space(type) {}
+        : Symbol(name, scope, line, funcDepth, VARIABLE), offset(offset), space(type) {}
     Variable(std::string name, unsigned int scope, unsigned int line, unsigned int funcDepth, ScopespaceType type, unsigned long offset, bool isActive)
-        : Symbol(name, scope, line, funcDepth, VARIABLE, offset, isActive), space(type) {}
+        : Symbol(name, scope, line, funcDepth, VARIABLE, isActive), offset(offset), space(type) {}
+
+    std::string to_string() override;
 };
 
 class Function : public Symbol {
@@ -55,9 +57,11 @@ public:
 
 public:
     Function(std::string name, unsigned int scope, unsigned int line, unsigned int funcDepth, SymbolType type, unsigned long offset, unsigned long iaddress)
-        : Symbol(name, scope, line, funcDepth, type, offset), iaddress(iaddress) {}
+        : Symbol(name, scope, line, funcDepth, type), iaddress(iaddress) {}
     Function(std::string name, unsigned int scope, unsigned int line, unsigned int funcDepth, SymbolType type, unsigned long offset, unsigned long iaddress, bool isActive)
-        : Symbol(name, scope, line, funcDepth, type, offset, isActive), iaddress(iaddress) {}
+        : Symbol(name, scope, line, funcDepth, type, isActive), iaddress(iaddress) {}
+
+    std::string to_string() override;
 };
 
 #endif /* __SYMBOL_H */

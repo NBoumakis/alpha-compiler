@@ -2,31 +2,34 @@
 #include <cassert>
 #include <string>
 
-Symbol::Symbol(std::string name, unsigned int scope, unsigned int line, unsigned int funcDepth, SymbolType type, unsigned long offset)
-    : name(name), scope(scope), line(line), funcDepth(funcDepth), isActive(true), type(type), offset(offset) {}
+Symbol::Symbol(std::string name, unsigned int scope, unsigned int line, unsigned int funcDepth, SymbolType type)
+    : name(name), scope(scope), line(line), funcDepth(funcDepth), isActive(true), type(type) {}
 
-Symbol::Symbol(std::string name, unsigned int scope, unsigned int line, unsigned int funcDepth, SymbolType type, unsigned long offset, bool isActive)
-    : name(name), scope(scope), line(line), funcDepth(funcDepth), isActive(isActive), type(type), offset(offset) {}
+Symbol::Symbol(std::string name, unsigned int scope, unsigned int line, unsigned int funcDepth, SymbolType type, bool isActive)
+    : name(name), scope(scope), line(line), funcDepth(funcDepth), isActive(isActive), type(type) {}
 
-std::string Symbol::to_string() {
+std::string Variable::to_string() {
+    std::string result;
+
+    result += "\"" + name + "\"\t";
+    result += "[variable]\t\t";
+
+    result += "(line " + std::to_string(line) + ")\t";
+    result += "(scope " + std::to_string(scope) + ")";
+    result += "(offset " + std::to_string(offset) + ")";
+
+    return result;
+}
+
+std::string Function::to_string() {
     std::string result;
 
     result += "\"" + name + "\"\t";
 
-    switch (type) {
-    case LIB_FUNC:
-        result += "[library function]\t\t";
-        break;
-    case USER_FUNC:
+    if (type == USER_FUNC) {
         result += "[user function]\t\t";
-        break;
-    case VARIABLE:
-        result += "[variable]\t\t";
-        break;
-
-    default:
-        assert(false);
-        break;
+    } else {
+        result += "[library function]\t\t";
     }
 
     result += "(line " + std::to_string(line) + ")\t";

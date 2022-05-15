@@ -410,7 +410,7 @@ int main(int argc, char*argv[]) {
 
     yyparse();
 
-    //symbolTableObj.get_symbols_scope_order();
+    symbolTableObj.get_symbols_scope_order();
     out<<quad_to_string()<<std::endl;
     return 0;
 }
