@@ -94,22 +94,13 @@ static exprValue *expr_relop_emit(iopcode relop, exprValue *expr_left, exprValue
 
     if (valid_op_expr(expr_left) && valid_op_expr(expr_right)) {
         expr_res->valType = boolexprExpr_T;
-
         expr_res->symbolVal = newTempvar();
 
-        emit(relop, expr_left, expr_right, nextQuadLabel() + 3);
+        expr_res->truelist = newlist(nextQuadLabel());
+        expr_res->falselist = newlist(nextQuadLabel() + 1);
 
-        exprValue *constbool = new exprValue();
-        constbool->valType = constboolExpr_T;
-        constbool->boolConstVal = false;
-        emit(assign_iop, expr_res, constbool);
-
-        emit(jump_iop, nextQuadLabel() + 2);
-
-        constbool = new exprValue();
-        constbool->valType = constboolExpr_T;
-        constbool->boolConstVal = true;
-        emit(assign_iop, expr_res, constbool);
+        emit(relop, expr_left, expr_right, 0UL);
+        emit(jump_iop, 0);
     } else {
         std::cerr << BRED "Invalid relational operation between " << expr_left->to_string() << " (" << expr_left->type_string() << ") and "
                   << expr_right->to_string() << " (" << expr_right->type_string() << ") in line " << yylineno << RST << std::endl;
