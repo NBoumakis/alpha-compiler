@@ -115,6 +115,23 @@ static exprValue *expr_relop_emit(iopcode relop, exprValue *expr_left, exprValue
     return expr_res;
 }
 
+static exprValue *expr_relop_eq_emit(iopcode relop, exprValue *expr_left, exprValue *expr_right) {
+    assert(relop == if_eq_iop || relop == if_not_eq_iop);
+
+    exprValue *expr_res = new exprValue();
+
+    expr_res->valType = boolexprExpr_T;
+    expr_res->symbolVal = newTempvar();
+
+    expr_res->truelist = newlist(nextQuadLabel());
+    expr_res->falselist = newlist(nextQuadLabel() + 1);
+
+    emit(relop, expr_left, expr_right, 0UL);
+    emit(jump_iop, 0);
+
+    return expr_res;
+}
+
 static bool isCompileBool(exprValue *expr) {
     return (expr->valType == nilExpr_T ||
             expr->valType == libfuncExpr_T ||
@@ -419,8 +436,9 @@ exprValue *Manage_expr_expr_EQUAL_expr(exprValue *exprLeft, exprValue *exprRight
 
         expr_res->boolConstVal = (exprLeft->numConstval == exprRight->numConstval);
     } else {
-        expr_res = expr_relop_emit(if_eq_iop, exprLeft, exprRight);
+        expr_res = expr_relop_eq_emit(if_eq_iop, exprLeft, exprRight);
     }
+
     return expr_res;
 }
 
@@ -433,7 +451,7 @@ exprValue *Manage_expr_expr_NEQUAL_expr(exprValue *exprLeft, exprValue *exprRigh
 
         expr_res->boolConstVal = (exprLeft->numConstval != exprRight->numConstval);
     } else {
-        expr_res = expr_relop_emit(if_not_eq_iop, exprLeft, exprRight);
+        expr_res = expr_relop_eq_emit(if_not_eq_iop, exprLeft, exprRight);
     }
 
     return expr_res;
