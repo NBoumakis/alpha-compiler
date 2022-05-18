@@ -464,11 +464,11 @@ exprValue *Manage_expr_expr_AND_expr(exprValue *exprLeft, exprValue *exprRight, 
         expr_res->valType = constboolExpr_T;
 
         expr_res->boolConstVal = static_cast<bool>(*exprLeft) && static_cast<bool>(*exprRight);
-    } else if (isCompileBool(exprLeft) && !exprLeft->boolConstVal) {
+    } else if (isCompileBool(exprLeft) && !static_cast<bool>(*exprLeft)) {
         expr_res->valType = constboolExpr_T;
 
         expr_res->boolConstVal = false;
-    } else if (isCompileBool(exprRight) && !exprRight->boolConstVal) {
+    } else if (isCompileBool(exprRight) && !static_cast<bool>(*exprRight)) {
         expr_res->valType = constboolExpr_T;
 
         expr_res->boolConstVal = false;
