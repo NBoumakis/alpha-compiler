@@ -10,7 +10,7 @@
 void Scope::insert(std::string key, Symbol *symbol, unsigned int scope) {
     hash_table.insert({key, symbol});
 
-    scope_lists[scope].push_front(symbol);
+    scope_lists.at(scope).push_front(symbol);
 }
 
 void Scope::hide(unsigned int scopeLevel) {
