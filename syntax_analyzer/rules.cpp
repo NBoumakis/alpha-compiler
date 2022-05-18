@@ -457,7 +457,25 @@ exprValue *Manage_expr_expr_NEQUAL_expr(exprValue *exprLeft, exprValue *exprRigh
     return expr_res;
 }
 
-exprValue *Manage_expr_expr_AND_expr(exprValue *exprLeft, exprValue *exprRight, unsigned long l1) {
+void short_left(iopcode op, exprValue *&left) {
+    if (left->valType != boolexprExpr_T) {
+        exprValue *trueBool = new exprValue();
+        trueBool->valType = constboolExpr_T;
+        trueBool->boolConstVal = true;
+
+        left = expr_relop_eq_emit(if_eq_iop, left, trueBool);
+
+        if (op == and_iop)
+            patchList(left->truelist, nextQuadLabel());
+        else if (op == or_iop)
+            patchList(left->falselist, nextQuadLabel());
+        else {
+            assert(false);
+        }
+    }
+}
+
+exprValue *Manage_expr_expr_AND_expr(exprValue *exprLeft, exprValue *exprRight, unsigned long &l1) {
     exprValue *expr_res = new exprValue();
 
     if (isCompileBool(exprLeft) && isCompileBool(exprRight)) {
@@ -473,6 +491,14 @@ exprValue *Manage_expr_expr_AND_expr(exprValue *exprLeft, exprValue *exprRight, 
 
         expr_res->boolConstVal = false;
     } else {
+        if (exprRight->valType != boolexprExpr_T) {
+            exprValue *trueBool = new exprValue();
+            trueBool->valType = constboolExpr_T;
+            trueBool->boolConstVal = true;
+
+            exprRight = expr_relop_eq_emit(if_eq_iop, exprRight, trueBool);
+        }
+
         patchList(exprLeft->truelist, l1);
 
         expr_res->valType = boolexprExpr_T;
@@ -485,22 +511,30 @@ exprValue *Manage_expr_expr_AND_expr(exprValue *exprLeft, exprValue *exprRight, 
     return expr_res;
 }
 
-exprValue *Manage_expr_expr_OR_expr(exprValue *exprLeft, exprValue *exprRight, unsigned long l1) {
+exprValue *Manage_expr_expr_OR_expr(exprValue *exprLeft, exprValue *exprRight, unsigned long &l1) {
     exprValue *expr_res = new exprValue();
 
     if (isCompileBool(exprLeft) && isCompileBool(exprRight)) {
         expr_res->valType = constboolExpr_T;
 
         expr_res->boolConstVal = static_cast<bool>(*exprLeft) || static_cast<bool>(*exprRight);
-    } else if (isCompileBool(exprLeft) && exprLeft->boolConstVal) {
+    } else if (isCompileBool(exprLeft) && static_cast<bool>(*exprLeft)) {
         expr_res->valType = constboolExpr_T;
 
         expr_res->boolConstVal = true;
-    } else if (isCompileBool(exprRight) && exprRight->boolConstVal) {
+    } else if (isCompileBool(exprRight) && static_cast<bool>(*exprRight)) {
         expr_res->valType = constboolExpr_T;
 
         expr_res->boolConstVal = true;
     } else {
+        if (exprRight->valType != boolexprExpr_T) {
+            exprValue *trueBool = new exprValue();
+            trueBool->valType = constboolExpr_T;
+            trueBool->boolConstVal = true;
+
+            exprRight = expr_relop_eq_emit(if_eq_iop, exprRight, trueBool);
+        }
+
         patchList(exprLeft->falselist, l1);
 
         expr_res->valType = boolexprExpr_T;
@@ -529,6 +563,14 @@ exprValue *Manage_term_notexpr(exprValue *expr) {
         termVal->valType = constboolExpr_T;
         termVal->boolConstVal = !(static_cast<bool>(*expr));
     } else {
+        if (expr->valType != boolexprExpr_T) {
+            exprValue *trueBool = new exprValue();
+            trueBool->valType = constboolExpr_T;
+            trueBool->boolConstVal = true;
+
+            expr = expr_relop_eq_emit(if_eq_iop, expr, trueBool);
+        }
+
         termVal->valType = boolexprExpr_T;
         termVal->symbolVal = newTempvar();
 
@@ -712,6 +754,28 @@ exprValue *Manage_assignexpr_lvalueASSIGNexpr(exprValue *lvalue, exprValue *expr
             static_cast<Variable *>(symbol)->scope != 0) {
             std::cerr << BRED "Inaccessible " << type_names[symbol->type] << " \"" << symbol->name << "\" in line " << yylineno << RST << std::endl;
         } else {
+            if (expr->valType == boolexprExpr_T) {
+                assignexprVal = new exprValue();
+                assignexprVal->valType = assignexprExpr_T;
+
+                assignexprVal->symbolVal = newTempvar();
+
+                exprValue *trueBool = new exprValue(), *falseBool = new exprValue();
+                trueBool->valType = falseBool->valType = constboolExpr_T;
+
+                trueBool->boolConstVal = true;
+                falseBool->boolConstVal = false;
+
+                patchList(expr->truelist, nextQuadLabel());
+                emit(assign_iop, assignexprVal, trueBool, nullptr);
+                emit(jump_iop, nextQuadLabel() + 2);
+
+                patchList(expr->falselist, nextQuadLabel());
+                emit(assign_iop, assignexprVal, falseBool, nullptr);
+
+                expr = assignexprVal;
+            }
+
             emit(assign_iop, lvalue, expr, nullptr);
 
             assignexprVal = new exprValue();

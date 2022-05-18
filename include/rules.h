@@ -1,6 +1,7 @@
 #ifndef __RULES_H
 #define __RULES_H
 
+#include "icode.h"
 #include "symbol.h"
 #include "types.h"
 
@@ -55,11 +56,13 @@ exprValue *Manage_expr_expr_EQUAL_expr(exprValue *, exprValue *);
 
 exprValue *Manage_expr_expr_NEQUAL_expr(exprValue *, exprValue *);
 
-exprValue *Manage_expr_expr_AND_expr(exprValue *, exprValue *, unsigned long);
+exprValue *Manage_expr_expr_AND_expr(exprValue *, exprValue *, unsigned long &);
 
-exprValue *Manage_expr_expr_OR_expr(exprValue *, exprValue *, unsigned long);
+exprValue *Manage_expr_expr_OR_expr(exprValue *, exprValue *, unsigned long &);
 
 exprValue *Manage_expr_term(exprValue *);
+
+void short_left(iopcode, exprValue *&);
 
 /* Terms */
 exprValue *Manage_term_LPexprRP(exprValue *);
