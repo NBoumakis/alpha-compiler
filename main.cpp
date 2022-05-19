@@ -9,12 +9,9 @@
 extern FILE *yyin;
 extern std::unordered_set<std::string> libFunctions;
 
-extern int yylineno;
-extern char *yytext;
 extern FILE *yyin;
 
 extern Scope symbolTableObj;
-extern unsigned int scopeLevel;
 
 extern std::string quad_to_string();
 extern void yyparse();
