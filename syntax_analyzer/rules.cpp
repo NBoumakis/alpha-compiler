@@ -459,12 +459,16 @@ exprValue *Manage_expr_expr_NEQUAL_expr(exprValue *exprLeft, exprValue *exprRigh
 }
 
 void short_left(iopcode op, exprValue *&left) {
-    if (left->valType != boolexprExpr_T) {
+    if (left->valType != boolexprExpr_T && left->valType != constboolExpr_T) {
         exprValue *trueBool = new exprValue();
         trueBool->valType = constboolExpr_T;
         trueBool->boolConstVal = true;
 
-        left = expr_relop_eq_emit(if_eq_iop, left, trueBool);
+        left->truelist = newlist(nextQuadLabel());
+        left->falselist = newlist(nextQuadLabel() + 1);
+
+        emit(if_eq_iop, left, trueBool, 0UL);
+        emit(jump_iop, 0);
 
         if (op == and_iop)
             patchList(left->truelist, nextQuadLabel());
@@ -492,7 +496,7 @@ exprValue *Manage_expr_expr_AND_expr(exprValue *exprLeft, exprValue *exprRight, 
 
         expr_res->boolConstVal = false;
     } else {
-        if (exprRight->valType != boolexprExpr_T) {
+        if (exprRight->valType != boolexprExpr_T && exprRight->valType != constboolExpr_T) {
             exprValue *trueBool = new exprValue();
             trueBool->valType = constboolExpr_T;
             trueBool->boolConstVal = true;
@@ -500,7 +504,8 @@ exprValue *Manage_expr_expr_AND_expr(exprValue *exprLeft, exprValue *exprRight, 
             exprRight = expr_relop_eq_emit(if_eq_iop, exprRight, trueBool);
         }
 
-        patchList(exprLeft->truelist, l1);
+        if (exprLeft->valType == boolexprExpr_T || exprLeft->valType == constboolExpr_T)
+            patchList(exprLeft->truelist, l1);
 
         expr_res->valType = boolexprExpr_T;
         expr_res->symbolVal = newTempvar();
@@ -528,7 +533,7 @@ exprValue *Manage_expr_expr_OR_expr(exprValue *exprLeft, exprValue *exprRight, u
 
         expr_res->boolConstVal = true;
     } else {
-        if (exprRight->valType != boolexprExpr_T) {
+        if (exprRight->valType != boolexprExpr_T && exprRight->valType != constboolExpr_T) {
             exprValue *trueBool = new exprValue();
             trueBool->valType = constboolExpr_T;
             trueBool->boolConstVal = true;
@@ -536,7 +541,8 @@ exprValue *Manage_expr_expr_OR_expr(exprValue *exprLeft, exprValue *exprRight, u
             exprRight = expr_relop_eq_emit(if_eq_iop, exprRight, trueBool);
         }
 
-        patchList(exprLeft->falselist, l1);
+        if (exprLeft->valType == boolexprExpr_T || exprLeft->valType == constboolExpr_T)
+            patchList(exprLeft->falselist, l1);
 
         expr_res->valType = boolexprExpr_T;
         expr_res->symbolVal = newTempvar();
