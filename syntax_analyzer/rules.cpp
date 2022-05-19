@@ -20,7 +20,6 @@ std::string type_names[] = {
     std::string("library function")};
 
 unsigned long newlist(unsigned long i) {
-    quad_vector[i].label = 0;
     return i;
 }
 
@@ -151,9 +150,9 @@ unsigned long merge_list(unsigned long l1, unsigned long l2) {
         return l1;
     else {
         int i = l1;
-        while (quad_vector[i].label)
-            i = quad_vector[i].label;
-        quad_vector[i].label = l2;
+        while (quad_vector.at(i).label)
+            i = quad_vector.at(i).label;
+        quad_vector.at(i).label = l2;
         return l1;
     }
 }

@@ -95,15 +95,15 @@ unsigned long nextQuadLabel() {
 }
 
 void patchLabel(unsigned long quadNo, unsigned long label) {
-    assert(quadNo < quad_vector.size() && !quad_vector[quadNo].label);
+    assert(quadNo < quad_vector.size() && !quad_vector.at(quadNo).label);
 
-    quad_vector[quadNo].label = label;
+    quad_vector.at(quadNo).label = label;
 }
 
 void patchList(unsigned long list, unsigned long label) {
     while (list) {
-        unsigned long next = quad_vector[list].label;
-        quad_vector[list].label = label;
+        unsigned long next = quad_vector.at(list).label;
+        quad_vector.at(list).label = label;
         list = next;
     }
 }
@@ -122,7 +122,7 @@ std::string quad_to_string() {
     std::string result = "";
     std::string field;
     for (size_t i = 1; i < quad_vector.size(); ++i) {
-        auto &quad_elem = quad_vector[i];
+        auto &quad_elem = quad_vector.at(i);
 
         field = std::to_string(i) + ":";
         pad_to_width(field, ' ');
