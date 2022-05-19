@@ -2,6 +2,25 @@
 #include <cassert>
 #include <iostream>
 
+exprValue::exprValue(exprType type) {
+    this->valType = type;
+}
+
+exprValue::exprValue(bool value) {
+    this->valType = constboolExpr_T;
+    this->boolConstVal = value;
+}
+
+exprValue::exprValue(std::string value) {
+    this->valType = conststringExpr_T;
+    this->strConstVal = value;
+}
+
+exprValue::exprValue(double value) {
+    this->valType = constnumExpr_T;
+    this->numConstval = value;
+}
+
 std::string exprValue::to_string() {
     assert(this);
 

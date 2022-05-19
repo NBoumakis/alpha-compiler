@@ -57,6 +57,11 @@ struct exprValue {
 
     std::string type_string();
     std::string to_string();
+
+    exprValue(exprType type);
+    exprValue(bool value);
+    exprValue(std::string value);
+    exprValue(double value);
 };
 
 struct callValue {

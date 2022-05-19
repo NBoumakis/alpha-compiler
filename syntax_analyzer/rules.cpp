@@ -32,8 +32,7 @@ static exprValue *make_call(exprValue *lvalue, exprList elist_r) {
 
     emit(call_iop, func, nullptr, nullptr);
 
-    exprValue *result = new exprValue();
-    result->valType = varExpr_T;
+    exprValue *result = new exprValue(varExpr_T);
 
     result->symbolVal = newTempvar();
     emit(get_retval_iop, result, nullptr, nullptr);
@@ -44,13 +43,10 @@ static exprValue *make_call(exprValue *lvalue, exprList elist_r) {
 static exprValue *member_item(exprValue *lvalue, std::string name) {
     lvalue = emit_iftableitem(lvalue);
 
-    exprValue *tableitem = new exprValue();
-    tableitem->valType = TableitemExpr_T;
+    exprValue *tableitem = new exprValue(TableitemExpr_T);
     tableitem->symbolVal = lvalue->symbolVal;
 
-    tableitem->indexVal = new exprValue();
-    tableitem->indexVal->valType = conststringExpr_T;
-    tableitem->indexVal->strConstVal = name;
+    tableitem->indexVal = new exprValue(name);
 
     return tableitem;
 }
@@ -75,29 +71,28 @@ bool valid_op_expr(exprValue *expr) {
 }
 
 static exprValue *expr_op_emit(iopcode op, exprValue *expr_left, exprValue *expr_right) {
-    exprValue *expr_res = new exprValue();
+    exprValue *expr_res;
 
     if (valid_op_expr(expr_left) && valid_op_expr(expr_right)) {
-        expr_res->valType = arithmexprExpr_T;
+        expr_res = new exprValue(arithmexprExpr_T);
 
         expr_res->symbolVal = newTempvar();
         emit(op, expr_res, expr_left, expr_right);
-
     } else {
         std::cerr << BRED "Invalid operation between " << expr_left->to_string() << " (" << expr_left->type_string() << ") and "
                   << expr_right->to_string() << " (" << expr_right->type_string() << ") in line " << yylineno << RST << std::endl;
 
-        expr_res->valType = nilExpr_T;
+        expr_res = new exprValue(nilExpr_T);
     }
 
     return expr_res;
 }
 
 static exprValue *expr_relop_emit(iopcode relop, exprValue *expr_left, exprValue *expr_right) {
-    exprValue *expr_res = new exprValue();
+    exprValue *expr_res;
 
     if (valid_op_expr(expr_left) && valid_op_expr(expr_right)) {
-        expr_res->valType = boolexprExpr_T;
+        expr_res = new exprValue(boolexprExpr_T);
         expr_res->symbolVal = newTempvar();
 
         expr_res->truelist = newlist(nextQuadLabel());
@@ -109,7 +104,7 @@ static exprValue *expr_relop_emit(iopcode relop, exprValue *expr_left, exprValue
         std::cerr << BRED "Invalid relational operation between " << expr_left->to_string() << " (" << expr_left->type_string() << ") and "
                   << expr_right->to_string() << " (" << expr_right->type_string() << ") in line " << yylineno << RST << std::endl;
 
-        expr_res->valType = nilExpr_T;
+        expr_res = new exprValue(nilExpr_T);
     }
 
     return expr_res;
@@ -118,9 +113,8 @@ static exprValue *expr_relop_emit(iopcode relop, exprValue *expr_left, exprValue
 static exprValue *expr_relop_eq_emit(iopcode relop, exprValue *expr_left, exprValue *expr_right) {
     assert(relop == if_eq_iop || relop == if_not_eq_iop);
 
-    exprValue *expr_res = new exprValue();
+    exprValue *expr_res = new exprValue(boolexprExpr_T);
 
-    expr_res->valType = boolexprExpr_T;
     expr_res->symbolVal = newTempvar();
 
     expr_res->truelist = newlist(nextQuadLabel());
@@ -286,10 +280,7 @@ exprValue *Manage_expr_expr_PLUS_expr(exprValue *exprLeft, exprValue *exprRight)
     exprValue *expr_res;
 
     if (exprLeft->valType == constnumExpr_T && exprRight->valType == constnumExpr_T) {
-        expr_res = new exprValue();
-        expr_res->valType = constnumExpr_T;
-
-        expr_res->numConstval = exprLeft->numConstval + exprRight->numConstval;
+        expr_res = new exprValue(exprLeft->numConstval + exprRight->numConstval);
     } else {
         expr_res = expr_op_emit(add_iop, exprLeft, exprRight);
     }
@@ -301,10 +292,7 @@ exprValue *Manage_expr_expr_MINUS_expr(exprValue *exprLeft, exprValue *exprRight
     exprValue *expr_res;
 
     if (exprLeft->valType == constnumExpr_T && exprRight->valType == constnumExpr_T) {
-        expr_res = new exprValue();
-        expr_res->valType = constnumExpr_T;
-
-        expr_res->numConstval = exprLeft->numConstval - exprRight->numConstval;
+        expr_res = new exprValue(exprLeft->numConstval - exprRight->numConstval);
     } else {
         expr_res = expr_op_emit(sub_iop, exprLeft, exprRight);
     }
@@ -316,10 +304,7 @@ exprValue *Manage_expr_expr_MUL_expr(exprValue *exprLeft, exprValue *exprRight) 
     exprValue *expr_res;
 
     if (exprLeft->valType == constnumExpr_T && exprRight->valType == constnumExpr_T) {
-        expr_res = new exprValue();
-        expr_res->valType = constnumExpr_T;
-
-        expr_res->numConstval = exprLeft->numConstval * exprRight->numConstval;
+        expr_res = new exprValue(exprLeft->numConstval * exprRight->numConstval);
     } else {
         expr_res = expr_op_emit(mul_iop, exprLeft, exprRight);
     }
@@ -331,14 +316,12 @@ exprValue *Manage_expr_expr_DIV_expr(exprValue *exprLeft, exprValue *exprRight) 
     exprValue *expr_res;
 
     if (exprLeft->valType == constnumExpr_T && exprRight->valType == constnumExpr_T) {
-        expr_res = new exprValue();
-        expr_res->valType = constnumExpr_T;
 
         if (exprRight->numConstval == 0) {
             std::cerr << BBLU "Division by zero in line " << yylineno << RST << std::endl;
-            expr_res->valType = nilExpr_T;
+            expr_res = new exprValue(nilExpr_T);
         } else {
-            expr_res->numConstval = exprLeft->numConstval / exprRight->numConstval;
+            expr_res = new exprValue(exprLeft->numConstval / exprRight->numConstval);
         }
     } else {
         expr_res = expr_op_emit(div_iop, exprLeft, exprRight);
@@ -351,14 +334,11 @@ exprValue *Manage_expr_expr_MOD_expr(exprValue *exprLeft, exprValue *exprRight) 
     exprValue *expr_res;
 
     if (exprLeft->valType == constnumExpr_T && exprRight->valType == constnumExpr_T) {
-        expr_res = new exprValue();
-        expr_res->valType = constnumExpr_T;
-
         if (exprRight->numConstval == 0) {
             std::cerr << BBLU "Modulo with zero in line " << yylineno << RST << std::endl;
-            expr_res->valType = nilExpr_T;
+            expr_res = new exprValue(nilExpr_T);
         } else {
-            expr_res->numConstval = static_cast<int>(exprLeft->numConstval) % static_cast<int>(exprRight->numConstval);
+            expr_res = new exprValue(static_cast<double>(static_cast<int>(exprLeft->numConstval) % static_cast<int>(exprRight->numConstval)));
         }
     } else {
         expr_res = expr_op_emit(mod_iop, exprLeft, exprRight);
@@ -371,10 +351,7 @@ exprValue *Manage_expr_expr_GT_expr(exprValue *exprLeft, exprValue *exprRight) {
     exprValue *expr_res;
 
     if (exprLeft->valType == constnumExpr_T && exprRight->valType == constnumExpr_T) {
-        expr_res = new exprValue();
-        expr_res->valType = boolexprExpr_T;
-
-        expr_res->boolConstVal = (exprLeft->numConstval > exprRight->numConstval);
+        expr_res = new exprValue(exprLeft->numConstval > exprRight->numConstval);
     } else {
         expr_res = expr_relop_emit(if_greater_iop, exprLeft, exprRight);
     }
@@ -386,10 +363,7 @@ exprValue *Manage_expr_expr_GE_expr(exprValue *exprLeft, exprValue *exprRight) {
     exprValue *expr_res;
 
     if (exprLeft->valType == constnumExpr_T && exprRight->valType == constnumExpr_T) {
-        expr_res = new exprValue();
-        expr_res->valType = constboolExpr_T;
-
-        expr_res->boolConstVal = (exprLeft->numConstval >= exprRight->numConstval);
+        expr_res = new exprValue(exprLeft->numConstval >= exprRight->numConstval);
     } else {
         expr_res = expr_relop_emit(if_greater_eq_iop, exprLeft, exprRight);
     }
@@ -401,10 +375,7 @@ exprValue *Manage_expr_expr_LT_expr(exprValue *exprLeft, exprValue *exprRight) {
     exprValue *expr_res;
 
     if (exprLeft->valType == constnumExpr_T && exprRight->valType == constnumExpr_T) {
-        expr_res = new exprValue();
-        expr_res->valType = constboolExpr_T;
-
-        expr_res->boolConstVal = (exprLeft->numConstval < exprRight->numConstval);
+        expr_res = new exprValue(exprLeft->numConstval < exprRight->numConstval);
     } else {
         expr_res = expr_relop_emit(if_less_iop, exprLeft, exprRight);
     }
@@ -416,10 +387,7 @@ exprValue *Manage_expr_expr_LE_expr(exprValue *exprLeft, exprValue *exprRight) {
     exprValue *expr_res;
 
     if (exprLeft->valType == constnumExpr_T && exprRight->valType == constnumExpr_T) {
-        expr_res = new exprValue();
-        expr_res->valType = constboolExpr_T;
-
-        expr_res->boolConstVal = (exprLeft->numConstval <= exprRight->numConstval);
+        expr_res = new exprValue(exprLeft->numConstval <= exprRight->numConstval);
     } else {
         expr_res = expr_relop_emit(if_less_eq_iop, exprLeft, exprRight);
     }
@@ -431,10 +399,7 @@ exprValue *Manage_expr_expr_EQUAL_expr(exprValue *exprLeft, exprValue *exprRight
     exprValue *expr_res;
 
     if (exprLeft->valType == constnumExpr_T && exprRight->valType == constnumExpr_T) {
-        expr_res = new exprValue();
-        expr_res->valType = constboolExpr_T;
-
-        expr_res->boolConstVal = (exprLeft->numConstval == exprRight->numConstval);
+        expr_res = new exprValue(exprLeft->numConstval == exprRight->numConstval);
     } else {
         expr_res = expr_relop_eq_emit(if_eq_iop, exprLeft, exprRight);
     }
@@ -446,10 +411,7 @@ exprValue *Manage_expr_expr_NEQUAL_expr(exprValue *exprLeft, exprValue *exprRigh
     exprValue *expr_res;
 
     if (exprLeft->valType == constnumExpr_T && exprRight->valType == constnumExpr_T) {
-        expr_res = new exprValue();
-        expr_res->valType = constboolExpr_T;
-
-        expr_res->boolConstVal = (exprLeft->numConstval != exprRight->numConstval);
+        expr_res = new exprValue(exprLeft->numConstval != exprRight->numConstval);
     } else {
         expr_res = expr_relop_eq_emit(if_not_eq_iop, exprLeft, exprRight);
     }
@@ -459,9 +421,7 @@ exprValue *Manage_expr_expr_NEQUAL_expr(exprValue *exprLeft, exprValue *exprRigh
 
 void short_left(iopcode op, exprValue *&left) {
     if (left->valType != boolexprExpr_T && left->valType != constboolExpr_T) {
-        exprValue *trueBool = new exprValue();
-        trueBool->valType = constboolExpr_T;
-        trueBool->boolConstVal = true;
+        exprValue *trueBool = new exprValue(true);
 
         left->truelist = newlist(nextQuadLabel());
         left->falselist = newlist(nextQuadLabel() + 1);
@@ -480,25 +440,17 @@ void short_left(iopcode op, exprValue *&left) {
 }
 
 exprValue *Manage_expr_expr_AND_expr(exprValue *exprLeft, exprValue *exprRight, unsigned long &l1) {
-    exprValue *expr_res = new exprValue();
+    exprValue *expr_res;
 
     if (isCompileBool(exprLeft) && isCompileBool(exprRight)) {
-        expr_res->valType = constboolExpr_T;
-
-        expr_res->boolConstVal = static_cast<bool>(*exprLeft) && static_cast<bool>(*exprRight);
+        expr_res = new exprValue(static_cast<bool>(*exprLeft) && static_cast<bool>(*exprRight));
     } else if (isCompileBool(exprLeft) && !static_cast<bool>(*exprLeft)) {
-        expr_res->valType = constboolExpr_T;
-
-        expr_res->boolConstVal = false;
+        expr_res = new exprValue(false);
     } else if (isCompileBool(exprRight) && !static_cast<bool>(*exprRight)) {
-        expr_res->valType = constboolExpr_T;
-
-        expr_res->boolConstVal = false;
+        expr_res = new exprValue(false);
     } else {
         if (exprRight->valType != boolexprExpr_T && exprRight->valType != constboolExpr_T) {
-            exprValue *trueBool = new exprValue();
-            trueBool->valType = constboolExpr_T;
-            trueBool->boolConstVal = true;
+            exprValue *trueBool = new exprValue(true);
 
             exprRight = expr_relop_eq_emit(if_eq_iop, exprRight, trueBool);
         }
@@ -506,7 +458,7 @@ exprValue *Manage_expr_expr_AND_expr(exprValue *exprLeft, exprValue *exprRight, 
         if (exprLeft->valType == boolexprExpr_T || exprLeft->valType == constboolExpr_T)
             patchList(exprLeft->truelist, l1);
 
-        expr_res->valType = boolexprExpr_T;
+        expr_res = new exprValue(boolexprExpr_T);
         expr_res->symbolVal = newTempvar();
 
         expr_res->truelist = exprRight->truelist;
@@ -517,25 +469,17 @@ exprValue *Manage_expr_expr_AND_expr(exprValue *exprLeft, exprValue *exprRight, 
 }
 
 exprValue *Manage_expr_expr_OR_expr(exprValue *exprLeft, exprValue *exprRight, unsigned long &l1) {
-    exprValue *expr_res = new exprValue();
+    exprValue *expr_res;
 
     if (isCompileBool(exprLeft) && isCompileBool(exprRight)) {
-        expr_res->valType = constboolExpr_T;
-
-        expr_res->boolConstVal = static_cast<bool>(*exprLeft) || static_cast<bool>(*exprRight);
+        expr_res = new exprValue(static_cast<bool>(*exprLeft) || static_cast<bool>(*exprRight));
     } else if (isCompileBool(exprLeft) && static_cast<bool>(*exprLeft)) {
-        expr_res->valType = constboolExpr_T;
-
-        expr_res->boolConstVal = true;
+        expr_res = new exprValue(true);
     } else if (isCompileBool(exprRight) && static_cast<bool>(*exprRight)) {
-        expr_res->valType = constboolExpr_T;
-
-        expr_res->boolConstVal = true;
+        expr_res = new exprValue(true);
     } else {
         if (exprRight->valType != boolexprExpr_T && exprRight->valType != constboolExpr_T) {
-            exprValue *trueBool = new exprValue();
-            trueBool->valType = constboolExpr_T;
-            trueBool->boolConstVal = true;
+            exprValue *trueBool = new exprValue(true);
 
             exprRight = expr_relop_eq_emit(if_eq_iop, exprRight, trueBool);
         }
@@ -543,7 +487,7 @@ exprValue *Manage_expr_expr_OR_expr(exprValue *exprLeft, exprValue *exprRight, u
         if (exprLeft->valType == boolexprExpr_T || exprLeft->valType == constboolExpr_T)
             patchList(exprLeft->falselist, l1);
 
-        expr_res->valType = boolexprExpr_T;
+        expr_res = new exprValue(boolexprExpr_T);
         expr_res->symbolVal = newTempvar();
 
         expr_res->truelist = merge_list(exprLeft->truelist, exprRight->truelist);
@@ -563,21 +507,18 @@ exprValue *Manage_term_LPexprRP(exprValue *expr) {
 }
 
 exprValue *Manage_term_notexpr(exprValue *expr) {
-    exprValue *termVal = new exprValue();
+    exprValue *termVal;
 
     if (isCompileBool(expr)) {
-        termVal->valType = constboolExpr_T;
-        termVal->boolConstVal = !(static_cast<bool>(*expr));
+        termVal = new exprValue(!(static_cast<bool>(*expr)));
     } else {
         if (expr->valType != boolexprExpr_T) {
-            exprValue *trueBool = new exprValue();
-            trueBool->valType = constboolExpr_T;
-            trueBool->boolConstVal = true;
+            exprValue *trueBool = new exprValue(true);
 
             expr = expr_relop_eq_emit(if_eq_iop, expr, trueBool);
         }
 
-        termVal->valType = boolexprExpr_T;
+        termVal = new exprValue(boolexprExpr_T);
         termVal->symbolVal = newTempvar();
 
         termVal->falselist = expr->truelist;
@@ -602,9 +543,7 @@ exprValue *Manage_term_PPlval(exprValue *lvalue) {
 
     check_arithm(lvalue);
 
-    exprValue *const_num = new exprValue();
-    const_num->valType = constnumExpr_T;
-    const_num->numConstval = 1;
+    exprValue *const_num = new exprValue(1.0);
 
     if (lvalue->valType == TableitemExpr_T) {
         termVal = emit_iftableitem(lvalue);
@@ -612,8 +551,7 @@ exprValue *Manage_term_PPlval(exprValue *lvalue) {
         emit(table_setelem_iop, termVal, lvalue, lvalue->indexVal);
     } else {
         emit(add_iop, lvalue, lvalue, const_num);
-        termVal = new exprValue();
-        termVal->valType = arithmexprExpr_T;
+        termVal = new exprValue(arithmexprExpr_T);
 
         termVal->symbolVal = newTempvar();
         emit(assign_iop, termVal, lvalue, nullptr);
@@ -636,15 +574,11 @@ exprValue *Manage_term_lvaluePP(exprValue *lvalue) {
     }
 
     check_arithm(lvalue);
-    termVal = new exprValue();
-    termVal->valType = varExpr_T;
+    termVal = new exprValue(varExpr_T);
 
     termVal->symbolVal = newTempvar();
 
-    exprValue *const_num = new exprValue();
-
-    const_num->valType = constnumExpr_T;
-    const_num->numConstval = 1;
+    exprValue *const_num = new exprValue(1.0);
 
     if (lvalue->valType == TableitemExpr_T) {
         exprValue *val = emit_iftableitem(lvalue);
@@ -675,9 +609,7 @@ exprValue *Manage_term_MMlval(exprValue *lvalue) {
 
     check_arithm(lvalue);
 
-    exprValue *const_num = new exprValue();
-    const_num->valType = constnumExpr_T;
-    const_num->numConstval = 1;
+    exprValue *const_num = new exprValue(1.0);
 
     if (lvalue->valType == TableitemExpr_T) {
         termVal = emit_iftableitem(lvalue);
@@ -685,8 +617,7 @@ exprValue *Manage_term_MMlval(exprValue *lvalue) {
         emit(table_setelem_iop, termVal, lvalue, lvalue->indexVal);
     } else {
         emit(sub_iop, lvalue, lvalue, const_num);
-        termVal = new exprValue();
-        termVal->valType = arithmexprExpr_T;
+        termVal = new exprValue(arithmexprExpr_T);
 
         termVal->symbolVal = newTempvar();
         emit(assign_iop, termVal, lvalue, nullptr);
@@ -709,15 +640,11 @@ exprValue *Manage_term_lvalueMM(exprValue *lvalue) {
     }
 
     check_arithm(lvalue);
-    termVal = new exprValue();
-    termVal->valType = varExpr_T;
+    termVal = new exprValue(varExpr_T);
 
     termVal->symbolVal = newTempvar();
 
-    exprValue *const_num = new exprValue();
-
-    const_num->valType = constnumExpr_T;
-    const_num->numConstval = 1;
+    exprValue *const_num = new exprValue(1.0);
 
     if (lvalue->valType == TableitemExpr_T) {
         exprValue *val = emit_iftableitem(lvalue);
@@ -738,8 +665,7 @@ exprValue *Manage_term_primary(exprValue *primary) {
 }
 
 exprValue *Manage_term_minusexpr(exprValue *expr) {
-    exprValue *termVal = new exprValue();
-    termVal->valType = arithmexprExpr_T;
+    exprValue *termVal = new exprValue(arithmexprExpr_T);
 
     check_arithm(expr);
 
@@ -761,16 +687,11 @@ exprValue *Manage_assignexpr_lvalueASSIGNexpr(exprValue *lvalue, exprValue *expr
             std::cerr << BRED "Inaccessible " << type_names[symbol->type] << " \"" << symbol->name << "\" in line " << yylineno << RST << std::endl;
         } else {
             if (expr->valType == boolexprExpr_T) {
-                assignexprVal = new exprValue();
-                assignexprVal->valType = assignexprExpr_T;
+                assignexprVal = new exprValue(assignexprExpr_T);
 
                 assignexprVal->symbolVal = newTempvar();
 
-                exprValue *trueBool = new exprValue(), *falseBool = new exprValue();
-                trueBool->valType = falseBool->valType = constboolExpr_T;
-
-                trueBool->boolConstVal = true;
-                falseBool->boolConstVal = false;
+                exprValue *trueBool = new exprValue(true), *falseBool = new exprValue(false);
 
                 patchList(expr->truelist, nextQuadLabel());
                 emit(assign_iop, assignexprVal, trueBool, nullptr);
@@ -784,8 +705,7 @@ exprValue *Manage_assignexpr_lvalueASSIGNexpr(exprValue *lvalue, exprValue *expr
 
             emit(assign_iop, lvalue, expr, nullptr);
 
-            assignexprVal = new exprValue();
-            assignexprVal->valType = assignexprExpr_T;
+            assignexprVal = new exprValue(assignexprExpr_T);
 
             assignexprVal->symbolVal = newTempvar();
             emit(assign_iop, assignexprVal, lvalue, nullptr);
@@ -832,8 +752,7 @@ exprValue *Manage_primary_objectdef(exprValue *objdef) {
 }
 
 exprValue *Manage_primary_LPfuncdefRP(Function *funcdef) {
-    exprValue *primaryVal = new exprValue();
-    primaryVal->valType = userfuncExpr_T;
+    exprValue *primaryVal = new exprValue(userfuncExpr_T);
     primaryVal->symbolVal = funcdef;
 
     return primaryVal;
@@ -847,26 +766,26 @@ exprValue *Manage_primary_const(exprValue *constVal) {
 static exprValue *lvalue_expr(Symbol *symbol) {
     assert(symbol);
 
-    exprValue *e = new exprValue();
-
-    e->symbolVal = symbol;
+    exprValue *e;
 
     switch (symbol->type) {
     case VARIABLE:
-        e->valType = varExpr_T;
+        e = new exprValue(varExpr_T);
         break;
 
     case USER_FUNC:
-        e->valType = userfuncExpr_T;
+        e = new exprValue(userfuncExpr_T);
         break;
 
     case LIB_FUNC:
-        e->valType = libfuncExpr_T;
+        e = new exprValue(libfuncExpr_T);
         break;
 
     default:
         assert(false);
     }
+
+    e->symbolVal = symbol;
 
     return e;
 }
@@ -909,8 +828,7 @@ exprValue *Manage_lvalue_localid(std::string id) {
             std::cerr << BRED "Variable \"" << id << "\" in line " << yylineno
                       << " attempts to shadow library function." RST << std::endl;
 
-            newStructVal = new exprValue();
-            newStructVal->valType = nilExpr_T;
+            newStructVal = new exprValue(nilExpr_T);
         }
     } else {
         newStructVal = lvalue_expr(symbol);
@@ -927,8 +845,7 @@ exprValue *Manage_lvalue_globalid(std::string id) {
     if (symbol == nullptr) {
         std::cerr << BRED "Undefined reference to global symbol \"" << id << "\" in line " << yylineno << "." RST << std::endl;
 
-        newStructVal = new exprValue();
-        newStructVal->valType = nilExpr_T;
+        newStructVal = new exprValue(nilExpr_T);
     } else {
         newStructVal = lvalue_expr(symbol);
     }
@@ -950,8 +867,7 @@ exprValue *Manage_member_lvalueLSBexprRSB(exprValue *lvalue, exprValue *expr) {
 
     lvalue = emit_iftableitem(lvalue);
 
-    tableitem = new exprValue();
-    tableitem->valType = TableitemExpr_T;
+    tableitem = new exprValue(TableitemExpr_T);
     tableitem->symbolVal = lvalue->symbolVal;
 
     tableitem->indexVal = expr;
@@ -968,8 +884,7 @@ exprValue *Manage_member_callLSBexprRSB(exprValue *call, exprValue *expr) {
 
     call = emit_iftableitem(call);
 
-    tableitem = new exprValue();
-    tableitem->valType = TableitemExpr_T;
+    tableitem = new exprValue(TableitemExpr_T);
     tableitem->symbolVal = call->symbolVal;
 
     tableitem->indexVal = expr;
@@ -998,9 +913,7 @@ exprValue *Manage_call_lvaluecallsuffix(exprValue *lvalue, callValue *callsuffix
 }
 
 exprValue *Manage_call_LPfuncdefRPLPelistRP(Function *funcdef, exprList elist) {
-    exprValue *func = new exprValue();
-    func->valType = userfuncExpr_T;
-
+    exprValue *func = new exprValue(userfuncExpr_T);
     func->symbolVal = funcdef;
 
     return make_call(func, elist);
@@ -1059,17 +972,14 @@ void Manage_exprOptRpt_expr(exprValue *expr, exprList &list) {
 
 /* Objectdef */
 exprValue *Manage_objectdef_LSBelistRSB(exprList elist) {
-    exprValue *objdefVal = new exprValue();
-    objdefVal->valType = newtableExpr_T;
+    exprValue *objdefVal = new exprValue(newtableExpr_T);
 
     objdefVal->symbolVal = newTempvar();
     emit(table_create_iop, objdefVal, nullptr, nullptr);
 
     unsigned long i = 0;
     for (auto &expr : *elist) {
-        exprValue *constVal = new exprValue();
-        constVal->valType = constnumExpr_T;
-        constVal->numConstval = i++;
+        exprValue *constVal = new exprValue(static_cast<double>(i++));
 
         emit(table_setelem_iop, expr, objdefVal, constVal);
     }
@@ -1078,8 +988,7 @@ exprValue *Manage_objectdef_LSBelistRSB(exprList elist) {
 }
 
 exprValue *Manage_objectdef_LSBindexedRSB(indexedList indexed) {
-    exprValue *objdefVal = new exprValue();
-    objdefVal->valType = newtableExpr_T;
+    exprValue *objdefVal = new exprValue(newtableExpr_T);
 
     objdefVal->symbolVal = newTempvar();
     emit(table_create_iop, objdefVal, nullptr, nullptr);
@@ -1145,8 +1054,7 @@ Function *Manage_funcprefix(std::string funcName) {
 
     symbolTableObj.insert(funcName, newFunc, scopeLevel);
 
-    exprValue *funcprefix = new exprValue();
-    funcprefix->valType = userfuncExpr_T;
+    exprValue *funcprefix = new exprValue(userfuncExpr_T);
     funcprefix->symbolVal = newFunc;
 
     emit(funcstart_iop, funcprefix, nullptr, nullptr);
@@ -1222,8 +1130,7 @@ Function *Manage_funcdef(Function *funcprefix, unsigned long funcbody) {
         scopeOffsetStack.pop();
         restoreCurrScopeOffset(offset);
 
-        exprValue *fpre_expr = new exprValue();
-        fpre_expr->valType = userfuncExpr_T;
+        exprValue *fpre_expr = new exprValue(userfuncExpr_T);
         fpre_expr->symbolVal = funcprefix;
 
         emit(funcend_iop, fpre_expr, nullptr, nullptr);
@@ -1244,64 +1151,40 @@ std::string newTmpFuncname() {
 
 /* Constants */
 exprValue *Manage_const_int(int intVal) {
-    exprValue *constVal = new exprValue();
-    constVal->valType = constnumExpr_T;
-    constVal->numConstval = intVal;
-    return constVal;
+    return new exprValue(static_cast<double>(intVal));
 }
 
 exprValue *Manage_const_real(double doubleVal) {
-    exprValue *constVal = new exprValue();
-    constVal->valType = constnumExpr_T;
-    constVal->numConstval = doubleVal;
-    return constVal;
+    return new exprValue(doubleVal);
 }
 
 exprValue *Manage_const_string(std::string strVal) {
-    exprValue *constVal = new exprValue();
-    constVal->valType = conststringExpr_T;
-    constVal->strConstVal = strVal;
-    return constVal;
+    return new exprValue(strVal);
 }
 
 exprValue *Manage_const_nil() {
-    exprValue *constVal = new exprValue();
-    constVal->valType = nilExpr_T;
-
-    return constVal;
+    return new exprValue(nilExpr_T);
 }
 
 exprValue *Manage_const_true() {
-    exprValue *constVal = new exprValue();
-    constVal->valType = constboolExpr_T;
-    constVal->boolConstVal = true;
-    return constVal;
+    return new exprValue(true);
 }
 
 exprValue *Manage_const_false() {
-    exprValue *constVal = new exprValue();
-    constVal->valType = constboolExpr_T;
-    constVal->boolConstVal = false;
-    return constVal;
+    return new exprValue(false);
 }
 
 /* ID list */
 void Manage_idlist_ID(std::string id, exprList &list) {
     list = new std::list<exprValue *>();
 
-    exprValue *id_expr = new exprValue();
-    id_expr->valType = conststringExpr_T;
-
-    id_expr->strConstVal = id;
+    exprValue *id_expr = new exprValue(id);
 
     list->push_back(id_expr);
 }
 
 void Manage_idlist_idlist_comma_id(std::string id, exprList &list) {
-    exprValue *id_expr = new exprValue();
-    id_expr->valType = conststringExpr_T;
-
-    id_expr->strConstVal = id;
+    exprValue *id_expr = new exprValue(id);
 
     list->push_back(id_expr);
 }
@@ -1312,10 +1195,7 @@ void Manage_idlist(exprList &list) {
 
 /* If statement */
 unsigned long Manage_ifprefix(exprValue *expr) {
-    exprValue *constboolVal = new exprValue();
-    constboolVal->valType = constboolExpr_T;
-
-    constboolVal->boolConstVal = true;
+    exprValue *constboolVal = new exprValue(true);
 
     emit(if_eq_iop, expr, constboolVal, nextQuadLabel() + 2);
 
@@ -1368,9 +1248,7 @@ unsigned long Manage_whilestart() {
 }
 
 unsigned long Manage_whilecond(exprValue *expr) {
-    exprValue *constbool = new exprValue();
-    constbool->valType = constboolExpr_T;
-    constbool->boolConstVal = true;
+    exprValue *constbool = new exprValue(true);
 
     emit(if_eq_iop, expr, constbool, nextQuadLabel() + 2);
 
@@ -1409,9 +1287,7 @@ forprefixValue *Manage_forprefix(unsigned long m, exprValue *expr) {
     forprefix->test = m;
     forprefix->enter = nextQuadLabel();
 
-    exprValue *constbool = new exprValue();
-    constbool->valType = constboolExpr_T;
-    constbool->boolConstVal = true;
+    exprValue *constbool = new exprValue(true);
 
     emit(if_eq_iop, expr, constbool);
 
