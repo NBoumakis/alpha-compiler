@@ -2,7 +2,7 @@
 #include "symbol.h"
 
 #include <algorithm>
-#include <assert.h>
+#include <cassert>
 #include <iostream>
 #include <list>
 #include <string>

@@ -3,7 +3,6 @@
 
 #include "icode.h"
 #include "symbol.h"
-#include <cassert>
 #include <stack>
 #include <vector>
 

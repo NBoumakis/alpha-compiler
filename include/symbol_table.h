@@ -1,9 +1,8 @@
 #ifndef __SYMBOL_TABLE_H
 #define __SYMBOL_TABLE_H
+
 #include "scope.h"
 #include "symbol.h"
-
-#include <stack>
 #include <unordered_set>
 
 extern Scope symbolTableObj;

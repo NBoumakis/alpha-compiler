@@ -1,5 +1,5 @@
 #include "scope_space.h"
-#include <iostream>
+#include <cassert>
 #include <string>
 
 #define FIELD_WIDTH 24

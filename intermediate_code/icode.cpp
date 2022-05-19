@@ -1,5 +1,6 @@
 #include "icode.h"
 #include "temp_vars.h"
+#include <vector>
 
 extern std::vector<quad> quad_vector;
 

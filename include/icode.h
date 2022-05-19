@@ -3,7 +3,6 @@
 
 #include "types.h"
 #include <stack>
-#include <vector>
 
 extern unsigned long loopcounter;
 extern std::stack<unsigned long> loopcounterstack;

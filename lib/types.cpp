@@ -1,6 +1,5 @@
 #include "types.h"
 #include <cassert>
-#include <iostream>
 
 exprValue::exprValue(exprType type) {
     this->valType = type;

@@ -2,7 +2,6 @@
 #include <fstream>
 #include <iostream>
 #include <list>
-#include <string>
 
 extern int alpha_yylex(void *);
 extern int yylineno;
