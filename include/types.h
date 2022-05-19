@@ -10,7 +10,6 @@
 struct stmtValue;
 struct exprValue;
 struct callValue;
-struct exprOptRptValue;
 struct forprefixValue;
 
 typedef std::pair<exprValue *, exprValue *> exprPair;
@@ -68,13 +67,6 @@ struct callValue {
     exprList elist;
     bool method;
     std::string name;
-};
-
-struct exprOptRptValue {
-    exprValue *index;
-    exprValue *value;
-
-    exprOptRptValue *next;
 };
 
 struct forprefixValue {

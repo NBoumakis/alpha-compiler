@@ -36,7 +36,6 @@
     double realValue;
     stmtValue *stmtVal;
     exprValue *exprVal;
-    exprOptRptValue *exprOptRptVal;
     callValue *callVal;
     unsigned long ulongVal;
 
