@@ -280,7 +280,7 @@ SPACE [\r \t\v]
 
 {SPACE} {}
 
-<str>\"        { /* saw closing quote - all done */
+<str>\" { /* saw closing quote - all done */
             BEGIN(INITIAL);
             *string_buf_ptr = '\0';
 
@@ -288,21 +288,60 @@ SPACE [\r \t\v]
             return STRING;
         }
 
-<str>\\n  *string_buf_ptr++ = '\n';
-<str>\\t  *string_buf_ptr++ = '\t';
-<str>\\\"  *string_buf_ptr++ = '"';
-<str>\\\\  *string_buf_ptr++ = '\\';
+<str>\\n    {
+                if(string_buf_ptr - string_buf< YY_BUF_SIZE-1) {
+                    *string_buf_ptr++ = '\n';
+                } else {
+                    std::cerr << "Too long string, aborting..."<<std::endl;
+                    exit(1);
+                }
+            }
+<str>\\t    {
+                if(string_buf_ptr - string_buf< YY_BUF_SIZE-1) {
+                    *string_buf_ptr++ = '\t';
+                } else {
+                    std::cerr << "Too long string, aborting..."<<std::endl;
+                    exit(1);
+                }
+            }
+<str>\\\"   {
+                if(string_buf_ptr - string_buf< YY_BUF_SIZE-1) {
+                    *string_buf_ptr++ = '"';
+                } else {
+                    std::cerr << "Too long string, aborting..."<<std::endl;
+                    exit(1);
+                }
+            }
+<str>\\\\   {
+                if(string_buf_ptr - string_buf< YY_BUF_SIZE-1) {
+                    *string_buf_ptr++ = '\\';
+                } else {
+                    std::cerr << "Too long string, aborting..."<<std::endl;
+                    exit(1);
+                }
+            };
 
 <str>\\(.|\n)  {
-    *string_buf_ptr++ = yytext[1];
-    std::cerr << "Invalid escape character \\" << yytext[1] << " in string"<<std::endl;
+    if(string_buf_ptr - string_buf< YY_BUF_SIZE-1) {
+        *string_buf_ptr++ = yytext[1];
+        std::cerr << "Invalid escape character \\" << yytext[1] << " in string"<<std::endl;
+    } else {
+        std::cerr << "Too long string, aborting..."<<std::endl;
+        exit(1);
+    }
 }
 
 <str>[^\\\"]+        {
                 char *yptr = yytext;
 
-                while ( *yptr )
-                    *string_buf_ptr++ = *yptr++;
+                while ( *yptr ) {
+                    if(string_buf_ptr - string_buf< YY_BUF_SIZE-1) {
+                        *string_buf_ptr++ = *yptr++;
+                    } else {
+                        std::cerr << "Too long string, aborting..."<<std::endl;
+                        exit(1);
+                    }
+                }
             }
     
 <str><<EOF>> {
