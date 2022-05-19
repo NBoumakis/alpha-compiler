@@ -2,7 +2,6 @@
 #define __TYPES_H
 
 #include "symbol.h"
-#include <cassert>
 #include <list>
 #include <string>
 #include <utility>
