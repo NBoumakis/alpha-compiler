@@ -1348,6 +1348,10 @@ stmtValue *Manage_for(forprefixValue *forprefix, unsigned long n1, unsigned long
 
 /* Return */
 void Manage_ret_expr(exprValue *expr) {
+    if (expr->valType == boolexprExpr_T) {
+        expr = create_shorted_value(expr);
+    }
+
     emit(ret_iop, expr, nullptr);
 }
 
