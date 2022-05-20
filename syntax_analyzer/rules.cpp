@@ -1040,6 +1040,10 @@ void Manage_indexed_indexedelem(indexedList &indexed_l, exprPair *elem) {
 exprPair *Manage_indexedelem_LCB_expr_COLON_expr_RCB(exprValue *key, exprValue *value) {
     exprPair *elemVal = new exprPair();
 
+    if (value->valType == boolexprExpr_T) {
+        value = create_shorted_value(value);
+    }
+
     elemVal->first = value;
     elemVal->second = key;
 

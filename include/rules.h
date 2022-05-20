@@ -5,6 +5,8 @@
 #include "symbol.h"
 #include "types.h"
 
+exprValue *create_shorted_value(exprValue *);
+
 /* Statement list */
 stmtValue *Manage_stmtList_stmtList_stmt(stmtValue *, stmtValue *);
 
