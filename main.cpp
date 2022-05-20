@@ -2,6 +2,7 @@
 #include "scope_space.h"
 #include "symbol_table.h"
 
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -17,27 +18,42 @@ extern Scope symbolTableObj;
 extern std::string quad_to_string();
 extern void yyparse();
 
+char *getCmdOption(char **begin, char **end, const std::string &option) {
+    char **itr = std::find(begin, end, option);
+    if (itr != end && ++itr != end) {
+        return *itr;
+    }
+    return nullptr;
+}
+
+bool cmdOptionExists(char **begin, char **end, const std::string &option) {
+    return std::find(begin, end, option) != end;
+}
+
 int main(int argc, char *argv[]) {
     std::ofstream outfile;
 
-    if (argc > 1) {
-        if (!(yyin = fopen(argv[1], "r"))) {
-            std::cerr << "Cannot read file: " << argv[1] << std::endl;
+    char *finput = getCmdOption(argv, argv + argc, "--in");
+    char *foutput = getCmdOption(argv, argv + argc, "--out");
+
+    if (finput) {
+        if (!(yyin = fopen(finput, "r"))) {
+            std::cerr << "Cannot read file: " << finput << std::endl;
             return -1;
         }
     } else {
         yyin = stdin;
     }
 
-    if (argc > 2) {
-        outfile.open(argv[2]);
+    if (foutput) {
+        outfile.open(foutput);
         if (!(outfile.is_open())) {
-            std::cerr << "Cannot open output file: " << argv[2] << std::endl;
+            std::cerr << "Cannot open output file: " << foutput << std::endl;
             return -1;
         }
     }
 
-    std::ostream &out = (argc > 2) ? outfile : std::cout;
+    std::ostream &out = (foutput) ? outfile : std::cout;
 
     initSymbolTable();
     init_quad_vector();
