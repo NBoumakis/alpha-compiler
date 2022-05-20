@@ -1,9 +1,0 @@
-Work by Konstantina Papafragaki, Katerina Lionta, Nikos Boumakis.
-
-To compile, run make in the project folder. The executable is stored in $project_folder/build
-and is named 'parser'.
-
-Limitations: Currently does not store the symbols in the symbol table
-in the correct order, therefore causing false positives for inaccessible elements.
-
-Run and tested in papaya.csd.uoc.gr
