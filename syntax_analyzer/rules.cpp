@@ -977,11 +977,19 @@ exprList Manage_elist() {
 
 /* Expression optional and repeatable */
 void Manage_exprOptRpt_expr_exprOptRpt(exprValue *expr, exprList &list) {
+    if (expr->valType == boolexprExpr_T) {
+        expr = create_shorted_value(expr);
+    }
+
     list->push_back(expr);
 }
 
 void Manage_exprOptRpt_expr(exprValue *expr, exprList &list) {
     list = new std::list<exprValue *>();
+
+    if (expr->valType == boolexprExpr_T) {
+        expr = create_shorted_value(expr);
+    }
 
     list->push_back(expr);
 }
