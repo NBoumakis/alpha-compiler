@@ -165,7 +165,7 @@ std::string quad_to_string() {
         if (quad_elem.label)
             result += std::to_string(quad_elem.label);
 
-        result += "\r\n";
+        result += "\n";
     }
 
     return result;
