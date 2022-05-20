@@ -1320,12 +1320,16 @@ unsigned long Manage_m() {
 forprefixValue *Manage_forprefix(unsigned long m, exprValue *expr) {
     forprefixValue *forprefix = new forprefixValue();
 
+    if (expr->valType == boolexprExpr_T) {
+        expr = create_shorted_value(expr);
+    }
+
     forprefix->test = m;
     forprefix->enter = nextQuadLabel();
 
     exprValue *constbool = new exprValue(true);
 
-    emit(if_eq_iop, expr, constbool);
+    emit(if_eq_iop, expr, constbool, 0UL);
 
     return forprefix;
 }
