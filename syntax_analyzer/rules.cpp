@@ -739,6 +739,7 @@ exprValue *Manage_assignexpr_lvalueASSIGNexpr(exprValue *lvalue, exprValue *expr
         assignexprVal = emit_iftableitem(lvalue);
         assignexprVal->valType = assignexprExpr_T;
     } else {
+        ++comp_err;
         std::cerr << BRED "Cannot assign to " << lvalue->type_string() << " \"" << lvalue->to_string() << "\" in line " << yylineno << "." RST << std::endl;
     }
 

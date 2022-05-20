@@ -14,7 +14,10 @@
 
     #include "colors.h"
 
+    extern unsigned comp_err;
+
     int yyerror(const char* yaccProvidedMessage){
+        ++comp_err;
         std::cerr << REDB "Grammar error: " << yaccProvidedMessage<< RST <<std::endl;
         return 0;
     }
