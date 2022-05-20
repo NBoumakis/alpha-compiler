@@ -11,6 +11,7 @@
 #include <string>
 
 extern int yylineno;
+extern unsigned comp_err;
 
 std::string type_names[] = {
     std::string("global variable"),
@@ -59,6 +60,7 @@ void check_arithm(exprValue *expr) {
         expr->valType == userfuncExpr_T ||
         expr->valType == libfuncExpr_T ||
         expr->valType == boolexprExpr_T) {
+        ++comp_err;
         std::cerr << BRED "Illegal expression used in line " << yylineno << RST << std::endl;
     }
 }
@@ -79,6 +81,8 @@ static exprValue *expr_op_emit(iopcode op, exprValue *expr_left, exprValue *expr
         expr_res->symbolVal = newTempvar();
         emit(op, expr_res, expr_left, expr_right);
     } else {
+        ++comp_err;
+
         std::cerr << BRED "Invalid operation between " << expr_left->to_string() << " (" << expr_left->type_string() << ") and "
                   << expr_right->to_string() << " (" << expr_right->type_string() << ") in line " << yylineno << RST << std::endl;
 
@@ -101,6 +105,7 @@ static exprValue *expr_relop_emit(iopcode relop, exprValue *expr_left, exprValue
         emit(relop, expr_left, expr_right, 0UL);
         emit(jump_iop, 0);
     } else {
+        ++comp_err;
         std::cerr << BRED "Invalid relational operation between " << expr_left->to_string() << " (" << expr_left->type_string() << ") and "
                   << expr_right->to_string() << " (" << expr_right->type_string() << ") in line " << yylineno << RST << std::endl;
 
@@ -220,6 +225,7 @@ stmtValue *Manage_stmt_for(stmtValue *forstmt) {
 
 stmtValue *Manage_stmt_RETURN_ret_SEMICOLON() {
     if (funcDepth == 0) {
+        ++comp_err;
         std::cerr << BRED "Cannot use return statement outside of function in line " << yylineno << RST << std::endl;
     }
 
@@ -241,6 +247,7 @@ stmtValue *Manage_stmt_break() {
     if (loopcounter > 0) {
         breakVal->breaklist = newlist(nextQuadLabel());
     } else {
+        ++comp_err;
         std::cerr << BRED "Cannot use break statement while not a loop in line " << yylineno << RST << std::endl;
     }
 
@@ -256,6 +263,7 @@ stmtValue *Manage_stmt_continue() {
     if (loopcounter > 0) {
         contVal->contlist = newlist(nextQuadLabel());
     } else {
+        ++comp_err;
         std::cerr << BRED "Cannot use continue statement while not a loop in line " << yylineno << RST << std::endl;
     }
 
@@ -335,6 +343,7 @@ exprValue *Manage_expr_expr_DIV_expr(exprValue *exprLeft, exprValue *exprRight) 
     if (exprLeft->valType == constnumExpr_T && exprRight->valType == constnumExpr_T) {
 
         if (exprRight->numConstval == 0) {
+            ++comp_err;
             std::cerr << BBLU "Division by zero in line " << yylineno << RST << std::endl;
             expr_res = new exprValue(nilExpr_T);
         } else {
@@ -352,6 +361,7 @@ exprValue *Manage_expr_expr_MOD_expr(exprValue *exprLeft, exprValue *exprRight) 
 
     if (exprLeft->valType == constnumExpr_T && exprRight->valType == constnumExpr_T) {
         if (exprRight->numConstval == 0) {
+            ++comp_err;
             std::cerr << BBLU "Modulo with zero in line " << yylineno << RST << std::endl;
             expr_res = new exprValue(nilExpr_T);
         } else {
@@ -551,6 +561,7 @@ exprValue *Manage_term_PPlval(exprValue *lvalue) {
     if (lvalue->valType == varExpr_T) {
         if (lvalue->symbolVal->type == USER_FUNC ||
             lvalue->symbolVal->type == LIB_FUNC) {
+            ++comp_err;
             std::cerr << BRED "Invalid preincrement of "
                       << type_names[lvalue->symbolVal->type]
                       << " \"" << lvalue->symbolVal->name
@@ -583,6 +594,7 @@ exprValue *Manage_term_lvaluePP(exprValue *lvalue) {
     if (lvalue->valType == varExpr_T) {
         if (lvalue->symbolVal->type == USER_FUNC ||
             lvalue->symbolVal->type == LIB_FUNC) {
+            ++comp_err;
             std::cerr << BRED "Invalid postincrement of "
                       << type_names[lvalue->symbolVal->type]
                       << " \"" << lvalue->symbolVal->name
@@ -617,6 +629,7 @@ exprValue *Manage_term_MMlval(exprValue *lvalue) {
     if (lvalue->valType == varExpr_T) {
         if (lvalue->symbolVal->type == USER_FUNC ||
             lvalue->symbolVal->type == LIB_FUNC) {
+            ++comp_err;
             std::cerr << BRED "Invalid predecrement of "
                       << type_names[lvalue->symbolVal->type]
                       << " \"" << lvalue->symbolVal->name
@@ -649,6 +662,7 @@ exprValue *Manage_term_lvalueMM(exprValue *lvalue) {
     if (lvalue->valType == varExpr_T) {
         if (lvalue->symbolVal->type == USER_FUNC ||
             lvalue->symbolVal->type == LIB_FUNC) {
+            ++comp_err;
             std::cerr << BRED "Invalid postdecrement of "
                       << type_names[lvalue->symbolVal->type]
                       << " \"" << lvalue->symbolVal->name
@@ -701,6 +715,7 @@ exprValue *Manage_assignexpr_lvalueASSIGNexpr(exprValue *lvalue, exprValue *expr
 
         if (funcDepth != symbol->funcDepth &&
             static_cast<Variable *>(symbol)->scope != 0) {
+            ++comp_err;
             std::cerr << BRED "Inaccessible " << type_names[symbol->type] << " \"" << symbol->name << "\" in line " << yylineno << RST << std::endl;
         } else {
             if (expr->valType == boolexprExpr_T) {
@@ -742,6 +757,7 @@ exprValue *Manage_primary_lvalue(exprValue *lvalue) {
 
             primaryValueVal = emit_iftableitem(lvalue);
         } else {
+            ++comp_err;
             std::cerr << BRED "Inaccessible " << type_names[symbol->type] << " \"" << symbol->name << "\" in line " << yylineno << RST << std::endl;
             lvalue->valType = nilExpr_T;
             primaryValueVal = lvalue;
@@ -833,6 +849,7 @@ exprValue *Manage_lvalue_localid(std::string id) {
 
             newStructVal = lvalue_expr(symbol);
         } else {
+            ++comp_err;
             std::cerr << BRED "Variable \"" << id << "\" in line " << yylineno
                       << " attempts to shadow library function." RST << std::endl;
 
@@ -851,6 +868,7 @@ exprValue *Manage_lvalue_globalid(std::string id) {
     auto symbol = symbolTableObj.lookup_scope(id, 0);
 
     if (symbol == nullptr) {
+        ++comp_err;
         std::cerr << BRED "Undefined reference to global symbol \"" << id << "\" in line " << yylineno << "." RST << std::endl;
 
         newStructVal = new exprValue(nilExpr_T);
@@ -1059,6 +1077,7 @@ stmtValue *Manage_block_LCBstmtRCB(stmtValue *stmt) {
 Function *Manage_funcprefix(std::string funcName) {
     Function *newFunc;
     if (isLibFunction(funcName)) {
+        ++comp_err;
         std::cerr << BRED "Cannot define function \"" << funcName << "\" in line " << yylineno
                   << ". It would shadow a library function." RST << std::endl;
 
@@ -1068,6 +1087,7 @@ Function *Manage_funcprefix(std::string funcName) {
     auto symbol_in_table = symbolTableObj.lookup_scope(funcName, scopeLevel);
 
     if (symbol_in_table != nullptr) {
+        ++comp_err;
         std::cerr << BRED "Cannot define function \"" << funcName
                   << "\" in line " << yylineno << ". It shadows previous "
                   << type_names[symbol_in_table->type] << " defined in line "
@@ -1110,10 +1130,12 @@ static bool check_funcargs(exprList &idlist) {
         auto symbol_in_table = symbolTableObj.lookup_scope(id->strConstVal, scopeLevel);
 
         if (argSet.count(id->strConstVal) > 0) {
+            ++comp_err;
             std::cerr << BRED "Duplicate argument \"" << id << "\" in line " << yylineno << RST << std::endl;
 
             return false;
         } else if (isLibFunction(id->strConstVal)) {
+            ++comp_err;
             std::cerr << BRED "Formal argument \"" << id << "\" in line " << yylineno
                       << " attempts to shadow a library function." RST << std::endl;
 

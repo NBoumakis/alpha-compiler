@@ -18,6 +18,8 @@ extern Scope symbolTableObj;
 extern std::string quad_to_string();
 extern void yyparse();
 
+unsigned comp_err = 0;
+
 char *getCmdOption(char **begin, char **end, const std::string &option) {
     char **itr = std::find(begin, end, option);
     if (itr != end && ++itr != end) {
@@ -63,8 +65,11 @@ int main(int argc, char *argv[]) {
     if (cmdOptionExists(argv, argv + argc, "--symbol"))
         symbolTableObj.get_symbols_scope_order();
 
-    if (cmdOptionExists(argv, argv + argc, "--quad"))
-        out << quad_to_string() << std::endl;
-
+    if (!comp_err) {
+        if (cmdOptionExists(argv, argv + argc, "--quad"))
+            out << quad_to_string() << std::endl;
+    } else {
+        out << "Compilation failed. " << comp_err << " errors found." << std::endl;
+    }
     return 0;
 }
