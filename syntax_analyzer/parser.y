@@ -99,6 +99,9 @@
 %type <stmtVal> for
 %type <stmtVal> ret
 
+%type <exprVal> key
+
+
 
 /*Associativity and priority */
 %right ASSIGN
@@ -414,16 +417,19 @@ indexed:      indexed[derivated] COMMA indexedelem  {
             ;
 
 
-indexedelem:  L_CURLY_BRACKET expr[key] COLON
-                                        {
-                                            if ($key->valType== boolexprExpr_T){
-                                                $key = create_shorted_value($key);
-                                            }
-                                        } expr[value] R_CURLY_BRACKET   {
-                                                                            std::cout << BGRN "Rule indexedelem -> {expr:expr}, line " << yylineno << RST << std::endl;
-                                                                            $$ = Manage_indexedelem_LCB_expr_COLON_expr_RCB($key, $value);
-                                                                        }
+indexedelem:  L_CURLY_BRACKET key expr[value] R_CURLY_BRACKET   {
+                                                                    std::cout << BGRN "Rule indexedelem -> {expr:expr}, line " << yylineno << RST << std::endl;
+                                                                    $$ = Manage_indexedelem_LCB_expr_COLON_expr_RCB($key, $value);
+                                                                }
             ;
+
+key: expr[keyExpr] COLON   {
+                                if ($keyExpr->valType== boolexprExpr_T){
+                                    $key = create_shorted_value($keyExpr);
+                                } else {
+                                    $key = $keyExpr;
+                                }
+                            }
 
 block:    L_CURLY_BRACKET {++scopeLevel;} stmtList R_CURLY_BRACKET {symbolTableObj.hide(scopeLevel--);}
             {
