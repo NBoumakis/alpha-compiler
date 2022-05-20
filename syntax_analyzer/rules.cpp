@@ -1282,6 +1282,10 @@ unsigned long Manage_whilestart() {
 unsigned long Manage_whilecond(exprValue *expr) {
     exprValue *constbool = new exprValue(true);
 
+    if (expr->valType == boolexprExpr_T) {
+        expr = create_shorted_value(expr);
+    }
+
     emit(if_eq_iop, expr, constbool, nextQuadLabel() + 2);
 
     unsigned long whilecond = nextQuadLabel();
