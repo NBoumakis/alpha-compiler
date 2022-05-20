@@ -551,7 +551,7 @@ exprValue *Manage_term_notexpr(exprValue *expr) {
 exprValue *Manage_term_PPlval(exprValue *lvalue) {
     exprValue *termVal;
 
-    if (lvalue->valType == varExpr_T) {
+    if (lvalue->valType == TableitemExpr_T) {
         if (lvalue->symbolVal->type == USER_FUNC ||
             lvalue->symbolVal->type == LIB_FUNC) {
             ++comp_err;
@@ -584,7 +584,7 @@ exprValue *Manage_term_PPlval(exprValue *lvalue) {
 exprValue *Manage_term_lvaluePP(exprValue *lvalue) {
     exprValue *termVal;
 
-    if (lvalue->valType == varExpr_T) {
+    if (lvalue->valType == TableitemExpr_T) {
         if (lvalue->symbolVal->type == USER_FUNC ||
             lvalue->symbolVal->type == LIB_FUNC) {
             ++comp_err;
@@ -619,7 +619,7 @@ exprValue *Manage_term_lvaluePP(exprValue *lvalue) {
 exprValue *Manage_term_MMlval(exprValue *lvalue) {
     exprValue *termVal;
 
-    if (lvalue->valType == varExpr_T) {
+    if (lvalue->valType == TableitemExpr_T) {
         if (lvalue->symbolVal->type == USER_FUNC ||
             lvalue->symbolVal->type == LIB_FUNC) {
             ++comp_err;
@@ -652,7 +652,7 @@ exprValue *Manage_term_MMlval(exprValue *lvalue) {
 exprValue *Manage_term_lvalueMM(exprValue *lvalue) {
     exprValue *termVal;
 
-    if (lvalue->valType == varExpr_T) {
+    if (lvalue->valType == TableitemExpr_T) {
         if (lvalue->symbolVal->type == USER_FUNC ||
             lvalue->symbolVal->type == LIB_FUNC) {
             ++comp_err;
@@ -736,6 +736,8 @@ exprValue *Manage_assignexpr_lvalueASSIGNexpr(exprValue *lvalue, exprValue *expr
     } else {
         ++comp_err;
         std::cerr << BRED "Cannot assign to " << lvalue->type_string() << " \"" << lvalue->to_string() << "\" in line " << yylineno << "." RST << std::endl;
+
+        assignexprVal = new exprValue(nilExpr_T);
     }
 
     return assignexprVal;
