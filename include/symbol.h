@@ -32,6 +32,8 @@ public:
     Symbol(std::string name, unsigned int scope, unsigned int line, unsigned int funcDepth, SymbolType type, bool isActive);
 
     virtual std::string to_string() = 0;
+    virtual std::string type_string() = 0;
+
     ~Symbol();
 };
 
@@ -48,6 +50,7 @@ public:
         : Symbol(name, scope, line, funcDepth, VARIABLE, isActive), offset(offset), space(type) {}
 
     std::string to_string() override;
+    std::string type_string() override;
 };
 
 class Function : public Symbol {
@@ -62,6 +65,7 @@ public:
         : Symbol(name, scope, line, funcDepth, type, isActive), iaddress(iaddress) {}
 
     std::string to_string() override;
+    std::string type_string() override;
 };
 
 #endif /* __SYMBOL_H */

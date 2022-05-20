@@ -13,13 +13,6 @@
 extern int yylineno;
 extern unsigned comp_err;
 
-std::string type_names[] = {
-    std::string("global variable"),
-    std::string("local variable"),
-    std::string("formal argument"),
-    std::string("user function"),
-    std::string("library function")};
-
 unsigned long newlist(unsigned long i) {
     return i;
 }
@@ -563,7 +556,7 @@ exprValue *Manage_term_PPlval(exprValue *lvalue) {
             lvalue->symbolVal->type == LIB_FUNC) {
             ++comp_err;
             std::cerr << BRED "Invalid preincrement of "
-                      << type_names[lvalue->symbolVal->type]
+                      << lvalue->symbolVal->type_string()
                       << " \"" << lvalue->symbolVal->name
                       << "\" in line " << yylineno << "." RST << std::endl;
         }
@@ -596,7 +589,7 @@ exprValue *Manage_term_lvaluePP(exprValue *lvalue) {
             lvalue->symbolVal->type == LIB_FUNC) {
             ++comp_err;
             std::cerr << BRED "Invalid postincrement of "
-                      << type_names[lvalue->symbolVal->type]
+                      << lvalue->symbolVal->type_string()
                       << " \"" << lvalue->symbolVal->name
                       << "\" in line " << yylineno << "." RST << std::endl;
         }
@@ -631,7 +624,7 @@ exprValue *Manage_term_MMlval(exprValue *lvalue) {
             lvalue->symbolVal->type == LIB_FUNC) {
             ++comp_err;
             std::cerr << BRED "Invalid predecrement of "
-                      << type_names[lvalue->symbolVal->type]
+                      << lvalue->symbolVal->type_string()
                       << " \"" << lvalue->symbolVal->name
                       << "\" in line " << yylineno << "." RST << std::endl;
         }
@@ -664,7 +657,7 @@ exprValue *Manage_term_lvalueMM(exprValue *lvalue) {
             lvalue->symbolVal->type == LIB_FUNC) {
             ++comp_err;
             std::cerr << BRED "Invalid postdecrement of "
-                      << type_names[lvalue->symbolVal->type]
+                      << lvalue->symbolVal->type_string()
                       << " \"" << lvalue->symbolVal->name
                       << "\" in line " << yylineno << "." RST << std::endl;
         }
@@ -716,7 +709,9 @@ exprValue *Manage_assignexpr_lvalueASSIGNexpr(exprValue *lvalue, exprValue *expr
         if (funcDepth != symbol->funcDepth &&
             static_cast<Variable *>(symbol)->scope != 0) {
             ++comp_err;
-            std::cerr << BRED "Inaccessible " << type_names[symbol->type] << " \"" << symbol->name << "\" in line " << yylineno << RST << std::endl;
+            std::cerr << BRED "Inaccessible " << symbol->type_string() << " \"" << symbol->name << "\" in line " << yylineno << RST << std::endl;
+
+            assignexprVal = new exprValue(nilExpr_T);
         } else {
             if (expr->valType == boolexprExpr_T) {
                 expr = create_shorted_value(expr);
@@ -761,7 +756,7 @@ exprValue *Manage_primary_lvalue(exprValue *lvalue) {
             primaryValueVal = emit_iftableitem(lvalue);
         } else {
             ++comp_err;
-            std::cerr << BRED "Inaccessible " << type_names[symbol->type] << " \"" << symbol->name << "\" in line " << yylineno << RST << std::endl;
+            std::cerr << BRED "Inaccessible " << symbol->type_string() << " \"" << symbol->name << "\" in line " << yylineno << RST << std::endl;
             lvalue->valType = nilExpr_T;
             primaryValueVal = lvalue;
         }
@@ -1093,7 +1088,7 @@ Function *Manage_funcprefix(std::string funcName) {
         ++comp_err;
         std::cerr << BRED "Cannot define function \"" << funcName
                   << "\" in line " << yylineno << ". It shadows previous "
-                  << type_names[symbol_in_table->type] << " defined in line "
+                  << symbol_in_table->type_string() << " defined in line "
                   << symbol_in_table->line << "." RST << std::endl;
 
         return nullptr;
@@ -1146,7 +1141,7 @@ static bool check_funcargs(exprList &idlist) {
         } else if (symbol_in_table != nullptr) {
             std::cerr << BRED "Formal argument \"" << id << "\" in line "
                       << yylineno << " attempts to shadow with previous "
-                      << type_names[symbol_in_table->type] << " defined in line "
+                      << symbol_in_table->type_string() << " defined in line "
                       << symbol_in_table->line << "." RST << std::endl;
 
             return false;

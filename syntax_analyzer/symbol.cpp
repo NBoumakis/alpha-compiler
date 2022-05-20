@@ -12,7 +12,7 @@ std::string Variable::to_string() {
     std::string result;
 
     result += "\"" + name + "\"\t";
-    result += "[variable]\t\t";
+    result += "[" + type_string() + "]\t\t";
 
     result += "(line " + std::to_string(line) + ")\t";
     result += "(scope " + std::to_string(scope) + ")";
@@ -21,21 +21,50 @@ std::string Variable::to_string() {
     return result;
 }
 
+std::string Variable::type_string() {
+    assert(this);
+
+    switch (this->space) {
+    case GLOBAL_VAR:
+        return "global variable";
+
+    case LOCAL_VAR:
+        return "local variable";
+
+    case FORMAL_ARG:
+        return "formal argument";
+
+    default:
+        assert(false);
+    }
+}
+
 std::string Function::to_string() {
     std::string result;
 
     result += "\"" + name + "\"\t";
 
-    if (type == USER_FUNC) {
-        result += "[user function]\t\t";
-    } else {
-        result += "[library function]\t\t";
-    }
+    result += "[" + type_string() + "]\t\t";
 
     result += "(line " + std::to_string(line) + ")\t";
     result += "(scope " + std::to_string(scope) + ")";
 
     return result;
+}
+
+std::string Function::type_string() {
+    assert(this);
+
+    switch (this->type) {
+    case USER_FUNC:
+        return "user function";
+
+    case LIB_FUNC:
+        return "library function";
+
+    default:
+        assert(false);
+    }
 }
 
 Symbol::~Symbol() {}
