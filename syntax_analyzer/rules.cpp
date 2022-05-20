@@ -464,10 +464,6 @@ exprValue *Manage_expr_expr_AND_expr(exprValue *exprLeft, exprValue *exprRight, 
 
     if (isCompileBool(exprLeft) && isCompileBool(exprRight)) {
         expr_res = new exprValue(static_cast<bool>(*exprLeft) && static_cast<bool>(*exprRight));
-    } else if (isCompileBool(exprLeft) && !static_cast<bool>(*exprLeft)) {
-        expr_res = new exprValue(false);
-    } else if (isCompileBool(exprRight) && !static_cast<bool>(*exprRight)) {
-        expr_res = new exprValue(false);
     } else {
         if (exprRight->valType != boolexprExpr_T && exprRight->valType != constboolExpr_T) {
             exprValue *trueBool = new exprValue(true);
@@ -493,10 +489,6 @@ exprValue *Manage_expr_expr_OR_expr(exprValue *exprLeft, exprValue *exprRight, u
 
     if (isCompileBool(exprLeft) && isCompileBool(exprRight)) {
         expr_res = new exprValue(static_cast<bool>(*exprLeft) || static_cast<bool>(*exprRight));
-    } else if (isCompileBool(exprLeft) && static_cast<bool>(*exprLeft)) {
-        expr_res = new exprValue(true);
-    } else if (isCompileBool(exprRight) && static_cast<bool>(*exprRight)) {
-        expr_res = new exprValue(true);
     } else {
         if (exprRight->valType != boolexprExpr_T && exprRight->valType != constboolExpr_T) {
             exprValue *trueBool = new exprValue(true);
@@ -529,21 +521,17 @@ exprValue *Manage_term_LPexprRP(exprValue *expr) {
 exprValue *Manage_term_notexpr(exprValue *expr) {
     exprValue *termVal;
 
-    if (isCompileBool(expr)) {
-        termVal = new exprValue(!(static_cast<bool>(*expr)));
-    } else {
-        if (expr->valType != boolexprExpr_T) {
-            exprValue *trueBool = new exprValue(true);
+    if (expr->valType != boolexprExpr_T) {
+        exprValue *trueBool = new exprValue(true);
 
-            expr = expr_relop_eq_emit(if_eq_iop, expr, trueBool);
-        }
-
-        termVal = new exprValue(boolexprExpr_T);
-        termVal->symbolVal = newTempvar();
-
-        termVal->falselist = expr->truelist;
-        termVal->truelist = expr->falselist;
+        expr = expr_relop_eq_emit(if_eq_iop, expr, trueBool);
     }
+
+    termVal = new exprValue(boolexprExpr_T);
+    termVal->symbolVal = newTempvar();
+
+    termVal->falselist = expr->truelist;
+    termVal->truelist = expr->falselist;
 
     return termVal;
 }
