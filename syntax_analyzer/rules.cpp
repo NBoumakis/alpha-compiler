@@ -1119,17 +1119,17 @@ static bool check_funcargs(exprList &idlist) {
 
         if (argSet.count(id->strConstVal) > 0) {
             ++comp_err;
-            std::cerr << BRED "Duplicate argument \"" << id << "\" in line " << yylineno << RST << std::endl;
+            std::cerr << BRED "Duplicate argument \"" << id->strConstVal << "\" in line " << yylineno << RST << std::endl;
 
             return false;
         } else if (isLibFunction(id->strConstVal)) {
             ++comp_err;
-            std::cerr << BRED "Formal argument \"" << id << "\" in line " << yylineno
+            std::cerr << BRED "Formal argument \"" << id->strConstVal << "\" in line " << yylineno
                       << " attempts to shadow a library function." RST << std::endl;
 
             return false;
         } else if (symbol_in_table != nullptr) {
-            std::cerr << BRED "Formal argument \"" << id << "\" in line "
+            std::cerr << BRED "Formal argument \"" << id->strConstVal << "\" in line "
                       << yylineno << " attempts to shadow with previous "
                       << symbol_in_table->type_string() << " defined in line "
                       << symbol_in_table->line << "." RST << std::endl;
