@@ -878,6 +878,10 @@ exprValue *Manage_member_lvalueLSBexprRSB(exprValue *lvalue, exprValue *expr) {
     tableitem = new exprValue(TableitemExpr_T);
     tableitem->symbolVal = lvalue->symbolVal;
 
+    if (expr->valType == boolexprExpr_T) {
+        expr = create_shorted_value(expr);
+    }
+
     tableitem->indexVal = expr;
 
     return tableitem;
@@ -894,6 +898,10 @@ exprValue *Manage_member_callLSBexprRSB(exprValue *call, exprValue *expr) {
 
     tableitem = new exprValue(TableitemExpr_T);
     tableitem->symbolVal = call->symbolVal;
+
+    if (expr->valType == boolexprExpr_T) {
+        expr = create_shorted_value(expr);
+    }
 
     tableitem->indexVal = expr;
 
