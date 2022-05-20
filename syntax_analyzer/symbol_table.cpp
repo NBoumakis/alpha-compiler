@@ -20,3 +20,10 @@ bool isLibFunction(std::string name) {
 }
 
 unsigned int funcDepth = 0;
+
+void initSymbolTable() {
+    for (auto &funcName : libFunctions) {
+        Symbol *libFuncSymbol = new Function(funcName, 0, 0, 0, LIB_FUNC, 0, 0);
+        symbolTableObj.insert(funcName, libFuncSymbol, 0);
+    }
+}

@@ -1,5 +1,6 @@
 #include "scope.h"
 #include "scope_space.h"
+#include "symbol_table.h"
 
 #include <fstream>
 #include <iostream>
@@ -38,21 +39,8 @@ int main(int argc, char *argv[]) {
 
     std::ostream &out = (argc > 2) ? outfile : std::cout;
 
-    for (auto &funcName : libFunctions) {
-        // TODO
-        Symbol *libFuncSymbol = new Function(funcName, 0, 0, 0, LIB_FUNC, 0, 0);
-        symbolTableObj.insert(funcName, libFuncSymbol, 0);
-    }
-
-    quad p;
-
-    p.arg1 = nullptr;
-    p.arg2 = nullptr;
-    p.result = nullptr;
-    p.line = -1;
-    p.label = -1;
-
-    quad_vector.push_back(p);
+    initSymbolTable();
+    init_quad_vector();
 
     yyparse();
 

@@ -12,4 +12,6 @@ extern std::unordered_set<std::string> libFunctions;
 bool isLibFunction(std::string name);
 
 extern unsigned int funcDepth;
+
+void initSymbolTable();
 #endif
