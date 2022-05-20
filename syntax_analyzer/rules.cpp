@@ -1145,7 +1145,6 @@ static bool check_funcargs(exprList &idlist) {
 
 void Manage_funcargs(exprList &idlist) {
     ++scopeLevel;
-    enterScopespace();
 
     if (check_funcargs(idlist)) {
         for (auto &id : *idlist) {
@@ -1156,6 +1155,7 @@ void Manage_funcargs(exprList &idlist) {
         }
     }
 
+    enterScopespace();
     resetFunctionLocalOffset();
     --scopeLevel;
 }
