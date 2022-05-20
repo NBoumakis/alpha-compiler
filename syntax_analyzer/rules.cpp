@@ -1225,6 +1225,10 @@ void Manage_idlist(exprList &list) {
 unsigned long Manage_ifprefix(exprValue *expr) {
     exprValue *constboolVal = new exprValue(true);
 
+    if (expr->valType == boolexprExpr_T) {
+        expr = create_shorted_value(expr);
+    }
+
     emit(if_eq_iop, expr, constboolVal, nextQuadLabel() + 2);
 
     unsigned long tmp_nextquad = nextQuadLabel();
