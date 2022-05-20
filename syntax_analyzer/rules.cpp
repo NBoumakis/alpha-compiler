@@ -151,6 +151,23 @@ unsigned long merge_list(unsigned long l1, unsigned long l2) {
     }
 }
 
+exprValue *create_shorted_value(exprValue *expr) {
+    exprValue *assignexprVal = new exprValue(assignexprExpr_T);
+
+    assignexprVal->symbolVal = newTempvar();
+
+    exprValue *trueBool = new exprValue(true), *falseBool = new exprValue(false);
+
+    patchList(expr->truelist, nextQuadLabel());
+    emit(assign_iop, assignexprVal, trueBool, nullptr);
+    emit(jump_iop, nextQuadLabel() + 2);
+
+    patchList(expr->falselist, nextQuadLabel());
+    emit(assign_iop, assignexprVal, falseBool, nullptr);
+
+    return assignexprVal;
+}
+
 stmtValue *Manage_stmtList_stmtList_stmt(stmtValue *nextStmts, stmtValue *stmt) {
     stmtValue *stmtlist = new stmtValue();
 
@@ -687,20 +704,7 @@ exprValue *Manage_assignexpr_lvalueASSIGNexpr(exprValue *lvalue, exprValue *expr
             std::cerr << BRED "Inaccessible " << type_names[symbol->type] << " \"" << symbol->name << "\" in line " << yylineno << RST << std::endl;
         } else {
             if (expr->valType == boolexprExpr_T) {
-                assignexprVal = new exprValue(assignexprExpr_T);
-
-                assignexprVal->symbolVal = newTempvar();
-
-                exprValue *trueBool = new exprValue(true), *falseBool = new exprValue(false);
-
-                patchList(expr->truelist, nextQuadLabel());
-                emit(assign_iop, assignexprVal, trueBool, nullptr);
-                emit(jump_iop, nextQuadLabel() + 2);
-
-                patchList(expr->falselist, nextQuadLabel());
-                emit(assign_iop, assignexprVal, falseBool, nullptr);
-
-                expr = assignexprVal;
+                expr = create_shorted_value(expr);
             }
 
             emit(assign_iop, lvalue, expr, nullptr);
@@ -711,6 +715,10 @@ exprValue *Manage_assignexpr_lvalueASSIGNexpr(exprValue *lvalue, exprValue *expr
             emit(assign_iop, assignexprVal, lvalue, nullptr);
         }
     } else if (lvalue->valType == TableitemExpr_T) {
+        if (expr->valType == boolexprExpr_T) {
+            expr = create_shorted_value(expr);
+        }
+
         emit(table_setelem_iop, expr, lvalue, lvalue->indexVal);
 
         assignexprVal = emit_iftableitem(lvalue);
