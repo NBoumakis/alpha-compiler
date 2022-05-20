@@ -22,4 +22,12 @@ To compile a program stored in file `test.alpha` and to write the quads to file 
 parser --in test.alpha --out quads.txt --quad
 ```
 
-Run and tested in papaya.csd.uoc.gr
+# Notes
+
+-   Run and tested in papaya.csd.uoc.gr
+-   The printed quads follow the RISC-V opcode format. For example:
+    -   `assign res, arg1` means `res = arg1` (assign to res the value of arg1)
+    -   `add res, arg1, arg2` means `res = arg1+arg2` (assign to res the sum arg1 and arg2)
+    -   `table_setelem op1, arg1, arg2` means `arg1[arg2] = op1` (assign op1 to index arg2 of arg1)
+    -   `table_getelem op1, arg1, arg2` means `op1 = arg1[arg2]` (assign to op1 the element at index arg2 of arg1)
+    -   `if_less arg1, arg2, label` means that if arg1 is less than arg2, go to quad label
