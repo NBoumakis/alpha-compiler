@@ -46,12 +46,12 @@ void emit(iopcode opcode, exprValue *arg1, exprValue *result) {
 }
 
 exprValue *emit_iftableitem(exprValue *expr) {
-    if (expr->valType != TableitemExpr_T) {
+    if (!expr->isTableitem()) {
         return expr;
     } else {
         exprValue *result = new exprValue(varExpr_T);
-        result->symbolVal = newTempvar();
-        emit(table_getelem_iop, result, expr, expr->indexVal);
+        result->setSymbol(newTempvar());
+        emit(table_getelem_iop, result, expr, expr->getIndex());
 
         return result;
     }

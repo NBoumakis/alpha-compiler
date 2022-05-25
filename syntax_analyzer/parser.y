@@ -427,7 +427,7 @@ indexedelem:  L_CURLY_BRACKET key expr[value] R_CURLY_BRACKET   {
             ;
 
 key: expr[keyExpr] COLON   {
-                                if ($keyExpr->valType== boolexprExpr_T){
+                                if ($keyExpr->isBoolExpr()){
                                     $key = create_shorted_value($keyExpr);
                                 } else {
                                     $key = $keyExpr;

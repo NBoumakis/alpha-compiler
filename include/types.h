@@ -41,25 +41,55 @@ enum exprType {
 };
 
 struct exprValue {
+protected:
     Symbol *symbolVal;
     exprValue *indexVal;
     double numConstval;
     std::string strConstVal;
     bool boolConstVal;
-
+    unsigned long truelist, falselist;
     exprType valType;
 
-    unsigned long truelist, falselist;
+    friend exprValue *Manage_assignexpr_lvalueASSIGNexpr(exprValue *, exprValue *);
 
+public:
     operator bool() const;
 
-    std::string type_string();
-    std::string to_string();
+    std::string type_string() const;
+    std::string to_string() const;
 
     exprValue(exprType type);
     exprValue(bool value);
     exprValue(std::string value);
     exprValue(double value);
+
+    bool hasSymbol() const;
+
+    Symbol *getSymbol() const;
+    exprValue *getIndex() const;
+    double getNumConst() const;
+    std::string getStrConst() const;
+    bool getBoolConst() const;
+    unsigned long getTruelist() const;
+    unsigned long getFalselist() const;
+
+    void setSymbol(Symbol *);
+    void setIndex(exprValue *);
+    void setNumConst(const double);
+    void setStrConst(const std::string &);
+    void setBoolConst(const bool);
+    void setTruelist(const unsigned long);
+    void setFalselist(const unsigned long);
+
+    bool isOperand() const;
+    bool isTableitem() const;
+    bool isCompileBool() const;
+
+    bool isVariable() const;
+    bool isNumber() const;
+    bool isConstBool() const;
+    bool isBoolExpr() const;
+    bool isNil() const;
 };
 
 struct callValue {

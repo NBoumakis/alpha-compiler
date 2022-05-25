@@ -20,9 +20,7 @@ exprValue::exprValue(double value) {
     this->numConstval = value;
 }
 
-std::string exprValue::to_string() {
-    assert(this);
-
+std::string exprValue::to_string() const {
     switch (this->valType) {
     case varExpr_T:
     case TableitemExpr_T:
@@ -54,9 +52,7 @@ std::string exprValue::to_string() {
     }
 }
 
-std::string exprValue::type_string() {
-    assert(this);
-
+std::string exprValue::type_string() const {
     std::string type_names[] = {"variable",
                                 "table item",
                                 "user function",
@@ -75,8 +71,6 @@ std::string exprValue::type_string() {
 }
 
 exprValue::operator bool() const {
-    assert(this);
-
     switch (this->valType) {
     case userfuncExpr_T:
     case libfuncExpr_T:
@@ -98,4 +92,129 @@ exprValue::operator bool() const {
     default:
         assert(false);
     }
+}
+
+bool exprValue::hasSymbol() const {
+    return (this->valType == varExpr_T ||
+            this->valType == TableitemExpr_T ||
+            this->valType == userfuncExpr_T ||
+            this->valType == libfuncExpr_T ||
+            this->valType == arithmexprExpr_T ||
+            this->valType == boolexprExpr_T ||
+            this->valType == assignexprExpr_T ||
+            this->valType == newtableExpr_T);
+}
+
+Symbol *exprValue::getSymbol() const {
+    assert(hasSymbol());
+
+    return this->symbolVal;
+}
+
+exprValue *exprValue::getIndex() const {
+    assert(this->valType == TableitemExpr_T);
+
+    return this->indexVal;
+}
+
+double exprValue::getNumConst() const {
+    assert(this->valType == constnumExpr_T);
+
+    return this->numConstval;
+}
+std::string exprValue::getStrConst() const {
+    assert(this->valType == conststringExpr_T);
+
+    return this->strConstVal;
+}
+
+bool exprValue::getBoolConst() const {
+    assert(this->valType == constboolExpr_T);
+
+    return this->boolConstVal;
+}
+
+unsigned long exprValue::getTruelist() const {
+    return this->truelist;
+}
+
+unsigned long exprValue::getFalselist() const {
+    return this->falselist;
+}
+
+void exprValue::setSymbol(Symbol *symbol) {
+    assert(hasSymbol());
+
+    this->symbolVal = symbol;
+}
+
+void exprValue::setIndex(exprValue *expr) {
+    assert(this->valType == TableitemExpr_T);
+
+    this->indexVal = expr;
+}
+
+void exprValue::setNumConst(const double num) {
+    assert(this->valType == constnumExpr_T);
+
+    this->numConstval = num;
+}
+void exprValue::setStrConst(const std::string &str) {
+    assert(this->valType == conststringExpr_T);
+
+    this->strConstVal = str;
+}
+void exprValue::setBoolConst(const bool value) {
+    assert(this->valType == constboolExpr_T);
+
+    this->boolConstVal = value;
+}
+
+void exprValue::setTruelist(const unsigned long value) {
+    this->truelist = value;
+}
+
+void exprValue::setFalselist(const unsigned long value) {
+    this->falselist = value;
+}
+
+bool exprValue::isOperand() const {
+    return !(this->valType == userfuncExpr_T || this->valType == libfuncExpr_T ||
+             this->valType == boolexprExpr_T || this->valType == newtableExpr_T ||
+             this->valType == constboolExpr_T || this->valType == conststringExpr_T ||
+             this->valType == nilExpr_T);
+}
+
+bool exprValue::isTableitem() const {
+    return this->valType == TableitemExpr_T;
+}
+
+bool exprValue::isCompileBool() const {
+    return (this->valType == nilExpr_T ||
+            this->valType == libfuncExpr_T ||
+            this->valType == userfuncExpr_T ||
+            this->valType == constnumExpr_T ||
+            this->valType == constboolExpr_T ||
+            this->valType == conststringExpr_T ||
+            this->valType == newtableExpr_T);
+}
+
+bool exprValue::isVariable() const {
+    return this->valType == varExpr_T;
+}
+
+bool exprValue::isNumber() const {
+    return this->valType == constnumExpr_T;
+}
+
+bool exprValue::isConstBool() const {
+    return this->valType == constboolExpr_T;
+}
+
+bool exprValue::isBoolExpr() const {
+    return this->valType == boolexprExpr_T;
+}
+
+bool exprValue::isNil() const {
+    return this->valType == nilExpr_T;
 }
