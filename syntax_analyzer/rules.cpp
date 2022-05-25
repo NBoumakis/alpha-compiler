@@ -672,7 +672,7 @@ exprValue *Manage_assignexpr_lvalueASSIGNexpr(exprValue *lvalue, exprValue *expr
         Symbol *symbol = lvalue->getSymbol();
 
         if (funcDepth != symbol->funcDepth &&
-            static_cast<Variable *>(symbol)->scope != 0) {
+            dynamic_cast<Variable *>(symbol)->scope != 0) {
             ++comp_err;
             std::cerr << BRED "Inaccessible " << symbol->type_string() << " \"" << symbol->name << "\" in line " << yylineno << RST << std::endl;
 
