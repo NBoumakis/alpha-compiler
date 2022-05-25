@@ -56,7 +56,6 @@ void init_quad_vector() {
     p.arg1 = nullptr;
     p.arg2 = nullptr;
     p.result = nullptr;
-    p.line = 0;
     p.label = 0;
 
     quad_vector.push_back(p);
