@@ -83,7 +83,7 @@ static exprValue *expr_relop_emit(iopcode relop, exprValue *expr_left, exprValue
         expr_res->setFalselist(newlist(nextQuadLabel() + 1));
 
         emit(relop, expr_left, expr_right, 0UL);
-        emit(jump_iop, 0);
+        emit(jump_iop, nullptr, nullptr, 0UL);
     } else {
         ++comp_err;
         std::cerr << BRED "Invalid relational operation between " << expr_left->to_string() << " (" << expr_left->type_string() << ") and "
@@ -106,7 +106,7 @@ static exprValue *expr_relop_eq_emit(iopcode relop, exprValue *expr_left, exprVa
     expr_res->setFalselist(newlist(nextQuadLabel() + 1));
 
     emit(relop, expr_left, expr_right, 0UL);
-    emit(jump_iop, 0);
+    emit(jump_iop, nullptr, nullptr, 0UL);
 
     return expr_res;
 }
@@ -135,7 +135,7 @@ exprValue *create_shorted_value(exprValue *expr) {
 
     patchList(expr->getTruelist(), nextQuadLabel());
     emit(assign_iop, assignexprVal, trueBool, nullptr);
-    emit(jump_iop, nextQuadLabel() + 2);
+    emit(jump_iop, nullptr, nullptr, nextQuadLabel() + 2);
 
     patchList(expr->getFalselist(), nextQuadLabel());
     emit(assign_iop, assignexprVal, falseBool, nullptr);
@@ -204,7 +204,7 @@ stmtValue *Manage_stmt_RETURN_ret_SEMICOLON() {
     returnVal->contlist = 0;
     returnVal->returnlist = newlist(nextQuadLabel());
 
-    emit(jump_iop, 0);
+    emit(jump_iop, nullptr, nullptr, 0UL);
 
     return returnVal;
 }
@@ -221,7 +221,7 @@ stmtValue *Manage_stmt_break() {
         std::cerr << BRED "Cannot use break statement while not a loop in line " << yylineno << RST << std::endl;
     }
 
-    emit(jump_iop, 0);
+    emit(jump_iop, nullptr, nullptr, 0UL);
 
     return breakVal;
 }
@@ -237,7 +237,7 @@ stmtValue *Manage_stmt_continue() {
         std::cerr << BRED "Cannot use continue statement while not a loop in line " << yylineno << RST << std::endl;
     }
 
-    emit(jump_iop, 0);
+    emit(jump_iop, nullptr, nullptr, 0UL);
 
     return contVal;
 }
@@ -424,7 +424,7 @@ void short_left(iopcode op, exprValue *&left) {
         left->setFalselist(newlist(nextQuadLabel() + 1));
 
         emit(if_eq_iop, left, trueBool, 0UL);
-        emit(jump_iop, 0);
+        emit(jump_iop, nullptr, nullptr, 0UL);
 
         if (op == and_iop)
             patchList(left->getTruelist(), nextQuadLabel());
@@ -1060,7 +1060,7 @@ Function *Manage_funcprefix(std::string funcName) {
         return nullptr;
     }
 
-    emit(jump_iop, 0);
+    emit(jump_iop, nullptr, nullptr, 0UL);
 
     newFunc = new Function(funcName, scopeLevel, yylineno, funcDepth, USER_FUNC, currScopespaceOffset(), nextQuadLabel());
 
@@ -1219,7 +1219,7 @@ unsigned long Manage_ifprefix(exprValue *expr) {
 
     unsigned long tmp_nextquad = nextQuadLabel();
 
-    emit(jump_iop, 0);
+    emit(jump_iop, nullptr, nullptr, 0UL);
 
     return tmp_nextquad;
 }
@@ -1250,7 +1250,7 @@ stmtValue *Manage_ifstmt_ifprefix_stmt_else_prefix_stmt(unsigned long ifprefix, 
 unsigned long Manage_elseprefix() {
     unsigned long nextquad = nextQuadLabel();
 
-    emit(jump_iop, 0);
+    emit(jump_iop, nullptr, nullptr, 0UL);
 
     return nextquad;
 }
@@ -1276,13 +1276,13 @@ unsigned long Manage_whilecond(exprValue *expr) {
 
     unsigned long whilecond = nextQuadLabel();
 
-    emit(jump_iop, 0);
+    emit(jump_iop, nullptr, nullptr, 0UL);
 
     return whilecond;
 }
 
 stmtValue *Manage_while(unsigned long whilestart, unsigned long whilecond, stmtValue *stmt) {
-    emit(jump_iop, whilestart);
+    emit(jump_iop, nullptr, nullptr, whilestart);
     patchLabel(whilecond, nextQuadLabel());
     patchList(stmt->breaklist, nextQuadLabel());
     patchList(stmt->contlist, whilestart);
@@ -1294,7 +1294,7 @@ stmtValue *Manage_while(unsigned long whilestart, unsigned long whilecond, stmtV
 unsigned long Manage_n() {
     unsigned long nextquad = nextQuadLabel();
 
-    emit(jump_iop, 0);
+    emit(jump_iop, nullptr, nullptr, 0UL);
 
     return nextquad;
 }
@@ -1338,9 +1338,9 @@ void Manage_ret_expr(exprValue *expr) {
         expr = create_shorted_value(expr);
     }
 
-    emit(ret_iop, expr, nullptr);
+    emit(ret_iop, expr, nullptr, nullptr);
 }
 
 void Manage_ret() {
-    emit(ret_iop, nullptr, nullptr);
+    emit(ret_iop, nullptr, nullptr, nullptr);
 }
