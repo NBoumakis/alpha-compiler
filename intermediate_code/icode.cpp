@@ -45,11 +45,18 @@ void emit(iopcode opcode, exprValue *arg1, exprValue *result) {
     emit(opcode, arg1, nullptr, result, 0, 0);
 }
 
-exprValue *emit_iftableitem(exprValue *expr) {
+exprValue *emit_iftableitem(exprValue *expr, bool assign) {
     if (!expr->isTableitem()) {
         return expr;
     } else {
-        exprValue *result = new exprValue(varExpr_T);
+        exprValue *result;
+
+        if (assign) {
+            result = new exprValue(varExpr_T);
+        } else {
+            result = new exprValue(assignexprExpr_T);
+        }
+
         result->setSymbol(newTempvar());
         emit(table_getelem_iop, result, expr, expr->getIndex());
 

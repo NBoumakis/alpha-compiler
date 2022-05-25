@@ -50,8 +50,6 @@ protected:
     unsigned long truelist, falselist;
     exprType valType;
 
-    friend exprValue *Manage_assignexpr_lvalueASSIGNexpr(exprValue *, exprValue *);
-
 public:
     operator bool() const;
 

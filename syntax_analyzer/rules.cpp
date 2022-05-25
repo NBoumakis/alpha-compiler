@@ -696,8 +696,7 @@ exprValue *Manage_assignexpr_lvalueASSIGNexpr(exprValue *lvalue, exprValue *expr
 
         emit(table_setelem_iop, expr, lvalue, lvalue->getIndex());
 
-        assignexprVal = emit_iftableitem(lvalue);
-        assignexprVal->valType = assignexprExpr_T;
+        assignexprVal = emit_iftableitem(lvalue, true);
     } else {
         ++comp_err;
         std::cerr << BRED "Cannot assign to " << lvalue->type_string() << " \"" << lvalue->to_string() << "\" in line " << yylineno << "." RST << std::endl;

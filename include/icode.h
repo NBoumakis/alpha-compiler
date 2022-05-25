@@ -53,7 +53,7 @@ void emit(iopcode opcode, unsigned long label);
 void emit(iopcode opcode, exprValue *arg1, exprValue *arg2, unsigned long label);
 void emit(iopcode opcode, exprValue *arg1, exprValue *result);
 
-exprValue *emit_iftableitem(exprValue *expr);
+exprValue *emit_iftableitem(exprValue *expr, bool assign = false);
 
 void init_quad_vector();
 #endif /* __ICODE_H */
