@@ -440,7 +440,7 @@ exprValue *Manage_expr_expr_AND_expr(exprValue *exprLeft, exprValue *exprRight, 
     exprValue *expr_res;
 
     if (exprLeft->isCompileBool() && exprRight->isCompileBool()) {
-        expr_res = new exprValue(static_cast<bool>(*exprLeft) && static_cast<bool>(*exprRight));
+        expr_res = new exprValue(*exprLeft && *exprRight);
     } else {
         if (!exprRight->isBoolExpr() && !exprRight->isConstBool()) {
             exprValue *trueBool = new exprValue(true);
@@ -465,7 +465,7 @@ exprValue *Manage_expr_expr_OR_expr(exprValue *exprLeft, exprValue *exprRight, u
     exprValue *expr_res;
 
     if (exprLeft->isCompileBool() && exprRight->isCompileBool()) {
-        expr_res = new exprValue(static_cast<bool>(*exprLeft) || static_cast<bool>(*exprRight));
+        expr_res = new exprValue(*exprLeft || *exprRight);
     } else {
         if (!exprRight->isBoolExpr() && !exprRight->isConstBool()) {
             exprValue *trueBool = new exprValue(true);
