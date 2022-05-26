@@ -26,7 +26,7 @@ void emit(iopcode opcode, exprValue *arg1, exprValue *arg2, unsigned long label)
     p.arg1 = arg1;
     p.arg2 = arg2;
     p.result = nullptr;
-    p.label = 0;
+    p.label = label;
 
     quad_vector.push_back(p);
 }
