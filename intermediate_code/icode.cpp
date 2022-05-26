@@ -38,9 +38,9 @@ exprValue *emit_iftableitem(exprValue *expr, bool assign) {
         exprValue *result;
 
         if (assign) {
-            result = new exprValue(varExpr_T);
-        } else {
             result = new exprValue(assignexprExpr_T);
+        } else {
+            result = new exprValue(varExpr_T);
         }
 
         result->setSymbol(newTempvar());
