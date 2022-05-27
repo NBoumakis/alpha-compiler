@@ -172,6 +172,10 @@ stmtValue *Manage_stmt_expr(exprValue *expr) {
     stmt->breaklist = 0;
     stmt->contlist = 0;
 
+    if (expr->isBoolExpr()) {
+        expr = create_shorted_value(expr);
+    }
+
     return stmt;
 }
 
@@ -487,11 +491,19 @@ exprValue *Manage_expr_expr_OR_expr(exprValue *exprLeft, exprValue *exprRight, u
 }
 
 exprValue *Manage_expr_term(exprValue *term) {
+    if (term->isBoolExpr()) {
+        term = create_shorted_value(term);
+    }
+
     return term;
 }
 
 /* Terms */
 exprValue *Manage_term_LPexprRP(exprValue *expr) {
+    if (expr->isBoolExpr()) {
+        expr = create_shorted_value(expr);
+    }
+
     return expr;
 }
 
