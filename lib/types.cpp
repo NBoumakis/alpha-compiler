@@ -1,4 +1,6 @@
 #include "types.h"
+#include "const_pool.h"
+#include "symbol.h"
 #include <cassert>
 
 exprValue::exprValue(exprType type) {
@@ -217,4 +219,67 @@ bool exprValue::isBoolExpr() const {
 
 bool exprValue::isNil() const {
     return this->valType == nilExpr_T;
+}
+
+void exprValue::make_operand(vmarg &arg) {
+    switch (this->valType) {
+    case varExpr_T:
+    case TableitemExpr_T:
+    case arithmexprExpr_T:
+    case boolexprExpr_T:
+    case newtableExpr_T: {
+        Variable *var_value = dynamic_cast<Variable *>(this->getSymbol());
+        assert(var_value);
+
+        arg.val = var_value->offset;
+
+        switch (var_value->space) {
+        case GLOBAL_VAR:
+            arg.type = global_var;
+            break;
+
+        case LOCAL_VAR:
+            arg.type = local_var;
+            break;
+        case FORMAL_ARG:
+            arg.type = formal_arg;
+            break;
+        default:
+            assert(false);
+        }
+        break;
+    }
+
+    case constboolExpr_T:
+        arg.val = this->getBoolConst();
+        arg.type = const_bool;
+        break;
+
+    case conststringExpr_T:
+        arg.val = const_newstring(this->getStrConst());
+        arg.type = const_str;
+        break;
+
+    case constnumExpr_T:
+        arg.val = const_newnumber(this->getNumConst());
+        arg.type = const_num;
+        break;
+
+    case nilExpr_T:
+        arg.type = const_nil;
+        break;
+
+    case userfuncExpr_T:
+        arg.type = user_func;
+        arg.val = dynamic_cast<Function *>(this->getSymbol())->iaddress;
+        break;
+
+    case libfuncExpr_T:
+        arg.type = lib_func;
+        arg.val = libfunc_newused(this->getSymbol()->name);
+        break;
+
+    default:
+        assert(false);
+    }
 }

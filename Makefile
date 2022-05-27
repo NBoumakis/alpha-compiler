@@ -36,7 +36,7 @@ parser:
 
 analyzer:
 	@echo -e "\e[0;33mMaking parser\e[0m"
-	$(CCpp) $(CppOptions)  main.cpp build/*.cpp lib/*.cpp syntax_analyzer/*.cpp intermediate_code/*.cpp -o ./build/parser
+	$(CCpp) $(CppOptions)  main.cpp build/*.cpp lib/*.cpp syntax_analyzer/*.cpp intermediate_code/*.cpp target_code/*.cpp -o ./build/parser
 
 clean:
 	-rm -rf build

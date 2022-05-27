@@ -38,9 +38,8 @@ public:
 };
 
 class Variable : public Symbol {
-    unsigned long offset;
-
 public:
+    unsigned long offset;
     ScopespaceType space;
 
 public:
@@ -56,6 +55,7 @@ public:
 class Function : public Symbol {
 public:
     unsigned long iaddress;
+    unsigned long taddress;
     unsigned long totalLocals;
 
 public:

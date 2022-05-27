@@ -2,6 +2,7 @@
 #define __TYPES_H
 
 #include "symbol.h"
+#include "vmarg.h"
 #include <list>
 #include <string>
 #include <utility>
@@ -88,6 +89,8 @@ public:
     bool isConstBool() const;
     bool isBoolExpr() const;
     bool isNil() const;
+
+    void make_operand(vmarg &);
 };
 
 struct callValue {
