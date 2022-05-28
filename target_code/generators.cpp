@@ -123,18 +123,18 @@ void CALL(quad &q) {
 
 void GET_RETVAL(quad &q) {
     q.taddress = nextInstructionLabel();
-    instruction *t = new instruction(assign_vmiop, new vmarg(dest_register), nullptr, new vmarg(q.result));
+    instruction *t = new instruction(assign_vmiop, new vmarg(dest_register), nullptr, new vmarg(q.arg1));
 
     emit_instruction(t);
 }
 
 void FUNCSTART(quad &q) {
-    Function *func = dynamic_cast<Function *>(q.result->getSymbol());
+    Function *func = dynamic_cast<Function *>(q.arg1->getSymbol());
     assert(func);
     func->taddress = nextInstructionLabel();
     q.taddress = nextInstructionLabel();
 
-    instruction *t = new instruction(funcenter_vmiop, nullptr, nullptr, new vmarg(q.result));
+    instruction *t = new instruction(funcenter_vmiop, nullptr, nullptr, new vmarg(q.arg1));
     emit_instruction(t);
 }
 
