@@ -45,6 +45,7 @@ class instruction {
 
 public:
     instruction(vmopcode, quad &);
+    instruction(vmopcode);
 };
 
 unsigned long nextInstructionLabel();

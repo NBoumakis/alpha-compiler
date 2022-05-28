@@ -10,6 +10,10 @@ instruction::instruction(vmopcode op, quad &quad_e) {
     this->result = vmarg(quad_e.result);
 }
 
+instruction::instruction(vmopcode op) {
+    this->opcode = op;
+}
+
 void emit_instruction(instruction *const &instr) {
     instruction_vector.push_back(instr);
 }
