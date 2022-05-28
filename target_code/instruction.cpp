@@ -1,5 +1,6 @@
 #include <instruction.h>
 
+#undef FIELD_WIDTH
 #define FIELD_WIDTH 15
 
 std::vector<instruction *> instruction_vector;
@@ -8,13 +9,24 @@ std::list<incomplete_jump> ij_list;
 instruction::instruction(vmopcode op, quad &quad_e) {
     this->opcode = op;
 
-    this->arg1 = new vmarg(quad_e.arg1);
-    this->arg2 = new vmarg(quad_e.arg2);
-    this->result = new vmarg(quad_e.result);
+    if (quad_e.arg1)
+        this->arg1 = new vmarg(quad_e.arg1);
+    else
+        this->arg1 = nullptr;
+
+    if (quad_e.arg2)
+        this->arg2 = new vmarg(quad_e.arg2);
+    else
+        this->arg2 = nullptr;
+
+    if (quad_e.result)
+        this->result = new vmarg(quad_e.result);
+    else
+        this->result = nullptr;
 }
 
 instruction::instruction(vmopcode op)
-    : opcode(op) {}
+    : opcode(op), arg1(nullptr), arg2(nullptr), result(nullptr) {}
 
 instruction::instruction(vmopcode op, vmarg *arg1, vmarg *arg2, vmarg *result)
     : opcode(op), arg1(arg1), arg2(arg2), result(result) {}
