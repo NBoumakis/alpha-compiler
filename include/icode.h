@@ -3,9 +3,16 @@
 
 #include "types.h"
 #include <stack>
+#include <vector>
+
+#define FIELD_WIDTH 24
+
+struct quad;
 
 extern unsigned long loopcounter;
 extern std::stack<unsigned long> loopcounterstack;
+
+extern std::vector<quad> quad_vector;
 
 enum iopcode {
     assign_iop,
@@ -50,6 +57,14 @@ void emit(iopcode opcode, exprValue *arg1, exprValue *arg2, exprValue *result);
 void emit(iopcode opcode, exprValue *arg1, exprValue *arg2, unsigned long label);
 
 exprValue *emit_iftableitem(exprValue *expr, bool assign = false);
+
+unsigned long nextQuadLabel();
+
+void patchLabel(unsigned long quadNo, unsigned long label);
+
+void patchList(unsigned long list, unsigned long label);
+
+std::string quad_to_string();
 
 void init_quad_vector();
 #endif /* __ICODE_H */
