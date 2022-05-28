@@ -43,6 +43,7 @@ struct quad {
     exprValue *arg2;
 
     unsigned long label;
+    unsigned long taddress;
 };
 
 void emit(iopcode opcode, exprValue *arg1, exprValue *arg2, exprValue *result);
