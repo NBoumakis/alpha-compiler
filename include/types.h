@@ -2,7 +2,6 @@
 #define __TYPES_H
 
 #include "symbol.h"
-#include "vmarg.h"
 #include <list>
 #include <string>
 #include <utility>
@@ -87,10 +86,14 @@ public:
     bool isVariable() const;
     bool isNumber() const;
     bool isConstBool() const;
+    bool isConstStr() const;
     bool isBoolExpr() const;
     bool isNil() const;
-
-    void make_operand(vmarg &);
+    bool isUserfunc() const;
+    bool isLibfunc() const;
+    bool isArithmExpr() const;
+    bool isAssignExpr() const;
+    bool isNewtable() const;
 };
 
 struct callValue {

@@ -1,5 +1,4 @@
 #include "types.h"
-#include "const_pool.h"
 #include "symbol.h"
 #include <cassert>
 
@@ -213,6 +212,10 @@ bool exprValue::isConstBool() const {
     return this->valType == constboolExpr_T;
 }
 
+bool exprValue::isConstStr() const {
+    return this->valType == conststringExpr_T;
+}
+
 bool exprValue::isBoolExpr() const {
     return this->valType == boolexprExpr_T;
 }
@@ -221,65 +224,21 @@ bool exprValue::isNil() const {
     return this->valType == nilExpr_T;
 }
 
-void exprValue::make_operand(vmarg &arg) {
-    switch (this->valType) {
-    case varExpr_T:
-    case TableitemExpr_T:
-    case arithmexprExpr_T:
-    case boolexprExpr_T:
-    case newtableExpr_T: {
-        Variable *var_value = dynamic_cast<Variable *>(this->getSymbol());
-        assert(var_value);
+bool exprValue::isUserfunc() const {
+    return this->valType == userfuncExpr_T;
+}
+bool exprValue::isLibfunc() const {
+    return this->valType == libfuncExpr_T;
+}
 
-        arg.val = var_value->offset;
+bool exprValue::isArithmExpr() const {
+    return this->valType == arithmexprExpr_T;
+}
 
-        switch (var_value->space) {
-        case GLOBAL_VAR:
-            arg.type = global_var;
-            break;
+bool exprValue::isAssignExpr() const {
+    return this->valType == assignexprExpr_T;
+}
 
-        case LOCAL_VAR:
-            arg.type = local_var;
-            break;
-        case FORMAL_ARG:
-            arg.type = formal_arg;
-            break;
-        default:
-            assert(false);
-        }
-        break;
-    }
-
-    case constboolExpr_T:
-        arg.val = this->getBoolConst();
-        arg.type = const_bool;
-        break;
-
-    case conststringExpr_T:
-        arg.val = const_newstring(this->getStrConst());
-        arg.type = const_str;
-        break;
-
-    case constnumExpr_T:
-        arg.val = const_newnumber(this->getNumConst());
-        arg.type = const_num;
-        break;
-
-    case nilExpr_T:
-        arg.type = const_nil;
-        break;
-
-    case userfuncExpr_T:
-        arg.type = user_func;
-        arg.val = dynamic_cast<Function *>(this->getSymbol())->iaddress;
-        break;
-
-    case libfuncExpr_T:
-        arg.type = lib_func;
-        arg.val = libfunc_newused(this->getSymbol()->name);
-        break;
-
-    default:
-        assert(false);
-    }
+bool exprValue::isNewtable() const {
+    return this->valType == newtableExpr_T;
 }
