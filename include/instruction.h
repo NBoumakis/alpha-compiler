@@ -23,6 +23,7 @@ enum vmopcode {
     and_vmiop,
     or_vmiop,
     not_vmiop,
+    jump_vmiop,
     jeq_vmiop,
     jne_vmiop,
     jle_vmiop,

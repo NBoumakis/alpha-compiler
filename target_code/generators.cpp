@@ -75,13 +75,33 @@ void NOP(quad &q) {
 }
 
 void JUMP(quad &q) {
+    generate_relational(jump_vmiop, q);
 }
-void IF_EQ(quad &q);
-void IF_NOT_EQ(quad &q);
-void IF_GREATER(quad &q);
-void IF_GREATER_EQ(quad &q);
-void IF_LESS(quad &q);
-void IF_LESS_EQ(quad &q);
+
+void IF_EQ(quad &q) {
+    generate_relational(jeq_vmiop, q);
+}
+
+void IF_NOT_EQ(quad &q) {
+    generate_relational(jne_vmiop, q);
+}
+
+void IF_GREATER(quad &q) {
+    generate_relational(jgt_vmiop, q);
+}
+
+void IF_GREATER_EQ(quad &q) {
+    generate_relational(jeq_vmiop, q);
+}
+
+void IF_LESS(quad &q) {
+    generate_relational(jlt_vmiop, q);
+}
+
+void IF_LESS_EQ(quad &q) {
+    generate_relational(jle_vmiop, q);
+}
+
 void NOT(quad &q);
 void OR(quad &q);
 void PARAM(quad &q);
