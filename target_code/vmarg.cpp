@@ -61,6 +61,7 @@ vmarg::vmarg(bool val) {
     this->val = val;
 }
 
-vmarg::vmarg() {
-    this->type = dest_register;
+vmarg::vmarg(vmarg_t type, unsigned long val) {
+    this->type = type;
+    this->val = val;
 }

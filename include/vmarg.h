@@ -18,12 +18,12 @@ enum vmarg_t { instruction_label,
 class vmarg {
 public:
     vmarg_t type;
-    unsigned val;
+    unsigned long val;
 
     vmarg(const exprValue *arg);
     vmarg(double val);
     vmarg(bool val);
-    vmarg();
+    vmarg(vmarg_t type, unsigned long val);
 };
 
 #endif /* __VMARGS_H */

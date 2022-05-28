@@ -38,14 +38,15 @@ enum vmopcode {
 
 class instruction {
     vmopcode opcode;
-    vmarg result;
-    vmarg arg1;
-    vmarg arg2;
+    vmarg *arg1;
+    vmarg *arg2;
+    vmarg *result;
     unsigned srcLine;
 
 public:
-    instruction(vmopcode, quad &);
     instruction(vmopcode);
+    instruction(vmopcode, quad &);
+    instruction(vmopcode, vmarg *, vmarg *, vmarg *);
 };
 
 unsigned long nextInstructionLabel();
