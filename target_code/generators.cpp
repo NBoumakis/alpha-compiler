@@ -146,7 +146,7 @@ void RETURN(quad &q) {
 
 void FUNCEND(quad &q) {
     q.taddress = nextInstructionLabel();
-    instruction *t = new instruction(funcexit_vmiop, nullptr, nullptr, new vmarg(q.result));
+    instruction *t = new instruction(funcexit_vmiop, nullptr, nullptr, new vmarg(q.arg1));
     emit_instruction(t);
 }
 
