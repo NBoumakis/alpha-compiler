@@ -54,6 +54,7 @@ exprValue *emit_iftableitem(exprValue *expr, bool assign) {
 void init_quad_vector() {
     quad p;
 
+    p.opcode = nop_iop;
     p.arg1 = nullptr;
     p.arg2 = nullptr;
     p.result = nullptr;
@@ -80,7 +81,7 @@ void patchList(unsigned long list, unsigned long label) {
     }
 }
 
-std::string opcode_name[] = {"assign", "add", "sub", "mul", "div", "mod", "uminus", "and", "or", "not", "if_eq", "if_not_eq", "if_less_eq", "if_greater_eq", "if_less", "if_greater", "jump", "call", "param", "ret", "get_retval", "funcstart", "funcend", "table_create", "table_getelem", "table_setelem"};
+std::string opcode_name[] = {"assign", "add", "sub", "mul", "div", "mod", "and", "or", "if_eq", "if_not_eq", "if_less_eq", "if_greater_eq", "if_less", "if_greater", "jump", "call", "param", "ret", "get_retval", "funcstart", "funcend", "table_create", "table_getelem", "table_setelem", "nop"};
 
 static inline void pad_to_width(std::string &str, char pad_char) {
     long pad_size = FIELD_WIDTH - static_cast<long>(str.length());

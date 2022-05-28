@@ -21,10 +21,8 @@ enum iopcode {
     mul_iop,
     div_iop,
     mod_iop,
-    uminus_iop,
     and_iop,
     or_iop,
-    not_iop,
     if_eq_iop,
     if_not_eq_iop,
     if_less_eq_iop,
@@ -40,7 +38,8 @@ enum iopcode {
     funcend_iop,
     table_create_iop,
     table_getelem_iop,
-    table_setelem_iop
+    table_setelem_iop,
+    nop_iop
 };
 
 struct quad {
