@@ -1,5 +1,7 @@
 #include "generators.h"
+#include "const_pool.h"
 #include "instruction.h"
+#include <cassert>
 
 static unsigned long processedQuad = 0;
 
@@ -111,6 +113,7 @@ void PARAM(quad &q) {
 
     emit_instruction(t);
 }
+
 void CALL(quad &q) {
 
     q.taddress = nextInstructionLabel();
@@ -118,12 +121,32 @@ void CALL(quad &q) {
 
     emit_instruction(t);
 }
+
 void GET_RETVAL(quad &q) {
     q.taddress = nextInstructionLabel();
     instruction *t = new instruction(assign_vmiop, new vmarg(dest_register), nullptr, new vmarg(q.result));
 
     emit_instruction(t);
 }
-void FUNCSTART(quad &q);
-void RETURN(quad &q);
-void FUNCEND(quad &q);
+
+void FUNCSTART(quad &q) {
+    Function *func = dynamic_cast<Function *>(q.result->getSymbol());
+    assert(func);
+    func->taddress = nextInstructionLabel();
+    q.taddress = nextInstructionLabel();
+
+    instruction *t = new instruction(funcenter_vmiop, nullptr, nullptr, new vmarg(q.result));
+    emit_instruction(t);
+}
+
+void RETURN(quad &q) {
+    q.taddress = nextInstructionLabel();
+    instruction *t = new instruction(assign_vmiop, new vmarg(q.arg1), nullptr, new vmarg(dest_register));
+    emit_instruction(t);
+}
+
+void FUNCEND(quad &q) {
+    q.taddress = nextInstructionLabel();
+    instruction *t = new instruction(funcexit_vmiop, nullptr, nullptr, new vmarg(q.result));
+    emit_instruction(t);
+}
