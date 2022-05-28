@@ -41,15 +41,15 @@ enum vmopcode {
 };
 
 class instruction {
+public:
     vmopcode opcode;
     vmarg *arg1;
     vmarg *arg2;
     vmarg *result;
-    unsigned srcLine;
+    unsigned long srcLine;
 
     friend void patchIncompleteJumps();
 
-public:
     instruction(vmopcode);
     instruction(vmopcode, quad &);
     instruction(vmopcode, vmarg *, vmarg *, vmarg *);
@@ -71,5 +71,7 @@ void patchIncompleteJumps();
 unsigned long nextInstructionLabel();
 
 void emit_instruction(instruction *const &);
+
+std::string target_to_string();
 
 #endif /* __INSTRUCTION_H */
