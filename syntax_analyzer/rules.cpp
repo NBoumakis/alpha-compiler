@@ -671,7 +671,7 @@ exprValue *Manage_term_minusexpr(exprValue *expr) {
     check_arithm(expr);
 
     termVal->setSymbol(newTempvar());
-    emit(uminus_iop, termVal, expr, nullptr);
+    emit(mul_iop, termVal, new exprValue(-1.0), expr);
 
     return termVal;
 }
