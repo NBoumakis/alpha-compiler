@@ -1,3 +1,5 @@
+#include "generators.h"
+#include "instruction.h"
 #include "scope.h"
 #include "scope_space.h"
 #include "symbol_table.h"
@@ -68,6 +70,11 @@ int main(int argc, char *argv[]) {
     if (!comp_err) {
         if (cmdOptionExists(argv, argv + argc, "--quad"))
             out << quad_to_string();
+
+        generate();
+
+        if (cmdOptionExists(argv, argv + argc, "--target"))
+            out << target_to_string();
     } else {
         out << "Compilation failed. " << comp_err << " errors found." << std::endl;
     }
