@@ -183,4 +183,6 @@ void generate() {
         generator_map.at(quad.opcode)(quad);
         processQuad();
     }
+
+    patchIncompleteJumps();
 }
