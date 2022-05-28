@@ -51,14 +51,8 @@ vmarg::vmarg(const exprValue *arg) {
     }
 }
 
-vmarg::vmarg(double val) {
-    this->type = const_num;
-    this->val = const_newnumber(val);
-}
-
-vmarg::vmarg(bool val) {
-    this->type = const_bool;
-    this->val = val;
+vmarg::vmarg(vmarg_t type) {
+    this->type = type;
 }
 
 vmarg::vmarg(vmarg_t type, unsigned long val) {

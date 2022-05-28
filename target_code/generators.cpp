@@ -104,9 +104,26 @@ void IF_LESS_EQ(quad &q) {
 
 void NOT(quad &q);
 void OR(quad &q);
-void PARAM(quad &q);
-void CALL(quad &q);
-void GET_RETVAL(quad &q);
+
+void PARAM(quad &q) {
+    q.taddress = nextInstructionLabel();
+    instruction *t = new instruction(pusharg_vmiop, new vmarg(q.arg1), nullptr, nullptr);
+
+    emit_instruction(t);
+}
+void CALL(quad &q) {
+
+    q.taddress = nextInstructionLabel();
+    instruction *t = new instruction(call_vmiop, new vmarg(q.arg1), nullptr, nullptr);
+
+    emit_instruction(t);
+}
+void GET_RETVAL(quad &q) {
+    q.taddress = nextInstructionLabel();
+    instruction *t = new instruction(assign_vmiop, new vmarg(dest_register), nullptr, new vmarg(q.result));
+
+    emit_instruction(t);
+}
 void FUNCSTART(quad &q);
 void RETURN(quad &q);
 void FUNCEND(quad &q);

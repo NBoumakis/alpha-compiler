@@ -21,8 +21,7 @@ public:
     unsigned long val;
 
     vmarg(const exprValue *arg);
-    vmarg(double val);
-    vmarg(bool val);
+    vmarg(vmarg_t type);
     vmarg(vmarg_t type, unsigned long val);
 };
 
