@@ -24,7 +24,7 @@ void generate_relational(vmopcode op, quad &q) {
     if (q.label < currProcessedQuad())
         res = new vmarg(instruction_label, quad_vector.at(q.label).taddress);
     else
-        add_incomplete_jump(nextInstructionLabel(), q.label);
+        ij_list.push_back(incomplete_jump(nextInstructionLabel(), q.label));
 
     instruction *t = new instruction(op, arg1, arg2, res);
 

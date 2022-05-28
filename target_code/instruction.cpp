@@ -1,6 +1,7 @@
 #include <instruction.h>
 
 std::vector<instruction *> instruction_vector;
+std::list<incomplete_jump> ij_list;
 
 instruction::instruction(vmopcode op, quad &quad_e) {
     this->opcode = op;

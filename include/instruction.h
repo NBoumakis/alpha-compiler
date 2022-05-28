@@ -3,11 +3,14 @@
 
 #include "icode.h"
 #include "vmarg.h"
+#include <list>
 #include <vector>
 
 class instruction;
+class incomplete_jump;
 
 extern std::vector<instruction *> instruction_vector;
+extern std::list<incomplete_jump> ij_list;
 
 enum vmopcode {
     assign_vmiop,
@@ -47,6 +50,15 @@ public:
     instruction(vmopcode);
     instruction(vmopcode, quad &);
     instruction(vmopcode, vmarg *, vmarg *, vmarg *);
+};
+
+class incomplete_jump {
+    unsigned long instrNo;
+    unsigned long iaddress;
+
+public:
+    incomplete_jump(unsigned long instrNo, unsigned long iaddress)
+        : instrNo(instrNo), iaddress(iaddress) {}
 };
 
 unsigned long nextInstructionLabel();
