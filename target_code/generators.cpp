@@ -155,28 +155,29 @@ void FUNCEND(quad &q) {
 
 void generate() {
     std::unordered_map<iopcode, std::function<void(quad &)>> generator_map = {
+        {assign_iop, ASSIGN},
         {add_iop, ADD},
         {sub_iop, SUB},
         {mul_iop, MUL},
         {div_iop, DIV},
         {mod_iop, MOD},
-        {table_create_iop, NEW_TABLE},
-        {table_getelem_iop, TABLE_GET_ELEM},
-        {table_setelem_iop, TABLE_SET_ELEM},
-        {assign_iop, ASSIGN},
-        {jump_iop, JUMP},
         {if_eq_iop, IF_EQ},
         {if_not_eq_iop, IF_NOT_EQ},
         {if_greater_iop, IF_GREATER},
         {if_greater_eq_iop, IF_GREATER_EQ},
         {if_less_iop, IF_LESS},
         {if_less_eq_iop, IF_LESS_EQ},
-        {param_iop, PARAM},
+        {jump_iop, JUMP},
         {call_iop, CALL},
+        {param_iop, PARAM},
+        {ret_iop, RETURN},
         {get_retval_iop, GET_RETVAL},
         {funcstart_iop, FUNCSTART},
-        {ret_iop, RETURN},
-        {funcend_iop, FUNCEND}};
+        {funcend_iop, FUNCEND},
+        {table_create_iop, NEW_TABLE},
+        {table_getelem_iop, TABLE_GET_ELEM},
+        {table_setelem_iop, TABLE_SET_ELEM},
+        {nop_iop, NOP}};
 
     for (auto &quad : quad_vector) {
         generator_map.at(quad.opcode)(quad);
