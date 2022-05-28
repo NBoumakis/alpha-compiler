@@ -2,7 +2,7 @@
 #define __GENERATORS_H
 
 #include "icode.h"
-#include <functional>
-#include <unordered_map>
+
+void generate();
 
 #endif /* __GENERATORS_H */

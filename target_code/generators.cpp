@@ -2,6 +2,8 @@
 #include "const_pool.h"
 #include "instruction.h"
 #include <cassert>
+#include <functional>
+#include <unordered_map>
 
 static unsigned long processedQuad = 0;
 
@@ -104,9 +106,6 @@ void IF_LESS_EQ(quad &q) {
     generate_relational(jle_vmiop, q);
 }
 
-void NOT(quad &q);
-void OR(quad &q);
-
 void PARAM(quad &q) {
     q.taddress = nextInstructionLabel();
     instruction *t = new instruction(pusharg_vmiop, new vmarg(q.arg1), nullptr, nullptr);
@@ -149,4 +148,35 @@ void FUNCEND(quad &q) {
     q.taddress = nextInstructionLabel();
     instruction *t = new instruction(funcexit_vmiop, nullptr, nullptr, new vmarg(q.result));
     emit_instruction(t);
+}
+
+void generate() {
+    std::unordered_map<iopcode, std::function<void(quad &)>> generator_map = {
+        {add_iop, ADD},
+        {sub_iop, SUB},
+        {mul_iop, MUL},
+        {div_iop, DIV},
+        {mod_iop, MOD},
+        {table_create_iop, NEW_TABLE},
+        {table_getelem_iop, TABLE_GET_ELEM},
+        {table_setelem_iop, TABLE_SET_ELEM},
+        {assign_iop, ASSIGN},
+        {jump_iop, JUMP},
+        {if_eq_iop, IF_EQ},
+        {if_not_eq_iop, IF_NOT_EQ},
+        {if_greater_iop, IF_GREATER},
+        {if_greater_eq_iop, IF_GREATER_EQ},
+        {if_less_iop, IF_LESS},
+        {if_less_eq_iop, IF_LESS_EQ},
+        {param_iop, PARAM},
+        {call_iop, CALL},
+        {get_retval_iop, GET_RETVAL},
+        {funcstart_iop, FUNCSTART},
+        {ret_iop, RETURN},
+        {funcend_iop, FUNCEND}};
+
+    for (auto &quad : quad_vector) {
+        generator_map.at(quad.opcode)(quad);
+        processQuad();
+    }
 }
