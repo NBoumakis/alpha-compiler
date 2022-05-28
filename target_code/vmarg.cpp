@@ -50,3 +50,17 @@ vmarg::vmarg(const exprValue *arg) {
         assert(false);
     }
 }
+
+vmarg::vmarg(double val) {
+    this->type = const_num;
+    this->val = const_newnumber(val);
+}
+
+vmarg::vmarg(bool val) {
+    this->type = const_bool;
+    this->val = val;
+}
+
+vmarg::vmarg() {
+    this->type = dest_register;
+}

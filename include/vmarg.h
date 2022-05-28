@@ -21,7 +21,9 @@ public:
     unsigned val;
 
     vmarg(const exprValue *arg);
-    vmarg() = default;
+    vmarg(double val);
+    vmarg(bool val);
+    vmarg();
 };
 
 #endif /* __VMARGS_H */
