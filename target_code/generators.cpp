@@ -23,14 +23,17 @@ void generate(vmopcode op, quad &quad_e) {
 }
 
 void generate_relational(vmopcode op, quad &q) {
-    vmarg *arg1 = new vmarg(q.arg1), *arg2 = new vmarg(q.arg2), *res;
+    instruction *t;
 
-    if (q.label < currProcessedQuad())
-        res = new vmarg(instruction_label, quad_vector.at(q.label).taddress);
-    else
+    if (q.label < currProcessedQuad()) {
+        vmarg *arg1 = (q.arg1) ? new vmarg(q.arg1) : nullptr;
+        vmarg *arg2 = (q.arg2) ? new vmarg(q.arg2) : nullptr;
+        vmarg *res = new vmarg(instruction_label, quad_vector.at(q.label).taddress);
+        t = new instruction(op, arg1, arg2, res);
+    } else {
         ij_list.push_back(incomplete_jump(nextInstructionLabel(), q.label));
-
-    instruction *t = new instruction(op, arg1, arg2, res);
+        t = new instruction(op, q);
+    }
 
     q.taddress = nextInstructionLabel();
     emit_instruction(t);
