@@ -30,7 +30,6 @@ vmarg::vmarg(const exprValue *arg) {
             assert(false);
         }
     } else if (arg->isConstBool()) {
-
         this->val = arg->getBoolConst();
         this->type = const_bool;
     } else if (arg->isConstStr()) {
@@ -43,7 +42,7 @@ vmarg::vmarg(const exprValue *arg) {
         this->type = const_nil;
     } else if (arg->isUserfunc()) {
         this->type = user_func;
-        this->val = dynamic_cast<Function *>(arg->getSymbol())->iaddress;
+        this->val = userfunc_newused(dynamic_cast<Function *>(arg->getSymbol()));
     } else if (arg->isLibfunc()) {
         this->type = lib_func;
         this->val = libfunc_newused(arg->getSymbol()->name);
