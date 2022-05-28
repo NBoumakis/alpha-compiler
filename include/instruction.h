@@ -46,6 +46,8 @@ class instruction {
     vmarg *result;
     unsigned srcLine;
 
+    friend void patchIncompleteJumps();
+
 public:
     instruction(vmopcode);
     instruction(vmopcode, quad &);
@@ -56,10 +58,14 @@ class incomplete_jump {
     unsigned long instrNo;
     unsigned long iaddress;
 
+    friend void patchIncompleteJumps();
+
 public:
-    incomplete_jump(unsigned long instrNo, unsigned long iaddress)
-        : instrNo(instrNo), iaddress(iaddress) {}
+    incomplete_jump(unsigned long instrNo, unsigned long iaddress) : instrNo(instrNo),
+                                                                     iaddress(iaddress) {}
 };
+
+void patchIncompleteJumps();
 
 unsigned long nextInstructionLabel();
 
