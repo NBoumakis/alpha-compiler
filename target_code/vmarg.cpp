@@ -9,7 +9,8 @@ vmarg::vmarg(const exprValue *arg) {
         arg->isTableitem() ||
         arg->isArithmExpr() ||
         arg->isBoolExpr() ||
-        arg->isNewtable()) {
+        arg->isNewtable() ||
+        arg->isAssignExpr()) {
         Variable *var_value = dynamic_cast<Variable *>(arg->getSymbol());
         assert(var_value);
 
@@ -58,4 +59,24 @@ vmarg::vmarg(vmarg_t type) {
 vmarg::vmarg(vmarg_t type, unsigned long val) {
     this->type = type;
     this->val = val;
+}
+
+std::string type_names[] = {
+    "instruction_label",
+    "global_var",
+    "formal_arg",
+    "local_var",
+    "const_num",
+    "const_str",
+    "const_bool",
+    "const_nil",
+    "user_func",
+    "lib_func",
+    "dest_register"};
+
+std::string vmarg::to_string() {
+    if (this->type != const_nil && this->type != dest_register)
+        return std::to_string(this->val) + " (" + type_names[this->type] + ")";
+    else
+        return "";
 }
