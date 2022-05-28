@@ -3,6 +3,11 @@
 
 #include "icode.h"
 #include "vmarg.h"
+#include <vector>
+
+class instruction;
+
+extern std::vector<instruction *> instruction_vector;
 
 enum vmopcode {
     assign_vmiop,
@@ -41,5 +46,9 @@ class instruction {
 public:
     instruction(vmopcode, quad &);
 };
+
+unsigned long nextInstructionLabel();
+
+void emit_instruction(instruction *const &);
 
 #endif /* __INSTRUCTION_H */
