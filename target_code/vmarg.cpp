@@ -75,8 +75,46 @@ std::string type_names[] = {
     "retval"};
 
 std::string vmarg::to_string() {
-    if (this->type != const_nil && this->type != dest_register)
-        return std::to_string(this->val) + " (" + type_names[this->type] + ")";
-    else
-        return "";
+    std::string res = "(" + type_names[this->type] + ")";
+
+    switch (this->type) {
+    case instruction_label:
+    case global_var:
+    case formal_arg:
+    case local_var:
+        res += ": " + std::to_string(this->val);
+        break;
+
+    case const_num:
+        res += ": " + std::to_string(this->val) + std::to_string(number_pool.at(this->val));
+        break;
+
+    case const_str:
+        res += ": " + std::to_string(this->val) + string_pool.at(this->val);
+        break;
+
+    case const_bool:
+        res += ": " + std::to_string(this->val) + ((this->val) ? "true" : "false");
+        break;
+
+    case const_nil:
+        break;
+
+    case user_func:
+        res += ": " + std::to_string(this->val) + userfunc_pool.at(this->val)->name;
+        break;
+
+    case lib_func:
+        res += ": " + std::to_string(this->val) + libfunc_pool.at(this->val);
+        break;
+
+    case retval:
+
+        break;
+
+    default:
+        assert(false);
+    }
+
+    return res;
 }
