@@ -153,7 +153,7 @@ void FUNCEND(quad &q) {
     emit_instruction(t);
 }
 
-void generate() {
+void generate_target_code() {
     std::unordered_map<iopcode, std::function<void(quad &)>> generator_map = {
         {assign_iop, ASSIGN},
         {add_iop, ADD},

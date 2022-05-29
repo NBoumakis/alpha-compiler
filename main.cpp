@@ -71,7 +71,7 @@ int main(int argc, char *argv[]) {
         if (cmdOptionExists(argv, argv + argc, "--quad"))
             out << quad_to_string();
 
-        generate();
+        generate_target_code();
 
         if (cmdOptionExists(argv, argv + argc, "--target"))
             out << target_to_string();

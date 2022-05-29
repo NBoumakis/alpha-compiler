@@ -3,6 +3,6 @@
 
 #include "icode.h"
 
-void generate();
+void generate_target_code();
 
 #endif /* __GENERATORS_H */
