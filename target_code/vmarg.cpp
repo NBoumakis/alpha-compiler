@@ -86,30 +86,27 @@ std::string vmarg::to_string() {
         break;
 
     case const_num:
-        res += ": " + std::to_string(this->val) + std::to_string(number_pool.at(this->val));
+        res += ": " + std::to_string(this->val) + " - " + std::to_string(number_pool.at(this->val));
         break;
 
     case const_str:
-        res += ": " + std::to_string(this->val) + string_pool.at(this->val);
+        res += ": " + std::to_string(this->val) + " - \"" + string_pool.at(this->val) + "\"";
         break;
 
     case const_bool:
-        res += ": " + std::to_string(this->val) + ((this->val) ? "true" : "false");
-        break;
-
-    case const_nil:
+        res += ": " + std::to_string(this->val) + " - " + ((this->val) ? "true" : "false");
         break;
 
     case user_func:
-        res += ": " + std::to_string(this->val) + userfunc_pool.at(this->val)->name;
+        res += ": " + std::to_string(this->val) + " - " + userfunc_pool.at(this->val)->name;
         break;
 
     case lib_func:
-        res += ": " + std::to_string(this->val) + libfunc_pool.at(this->val);
+        res += ": " + std::to_string(this->val) + " - " + libfunc_pool.at(this->val);
         break;
 
+    case const_nil:
     case retval:
-
         break;
 
     default:
