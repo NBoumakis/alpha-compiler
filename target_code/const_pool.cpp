@@ -26,5 +26,5 @@ unsigned long libfunc_newused(const std::string &name) {
 unsigned long userfunc_newused(Function *const &func) {
     userfunc_pool.push_back(func);
 
-    return number_pool.size() - 1;
+    return userfunc_pool.size() - 1;
 }
