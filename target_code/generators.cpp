@@ -126,7 +126,7 @@ void CALL(quad &q) {
 
 void GET_RETVAL(quad &q) {
     q.taddress = nextInstructionLabel();
-    instruction *t = new instruction(assign_vmiop, new vmarg(q.arg1), new vmarg(dest_register), nullptr);
+    instruction *t = new instruction(assign_vmiop, new vmarg(q.arg1), new vmarg(retval), nullptr);
 
     emit_instruction(t);
 }
@@ -143,7 +143,7 @@ void FUNCSTART(quad &q) {
 
 void RETURN(quad &q) {
     q.taddress = nextInstructionLabel();
-    instruction *t = new instruction(assign_vmiop, new vmarg(q.arg1), new vmarg(dest_register), nullptr);
+    instruction *t = new instruction(assign_vmiop, new vmarg(q.arg1), new vmarg(retval), nullptr);
     emit_instruction(t);
 }
 
