@@ -72,7 +72,7 @@ std::string type_names[] = {
     "const_nil",
     "user_func",
     "lib_func",
-    "dest_register"};
+    "retval"};
 
 std::string vmarg::to_string() {
     if (this->type != const_nil && this->type != dest_register)

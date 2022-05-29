@@ -13,7 +13,7 @@ enum vmarg_t { instruction_label,
                const_nil,
                user_func,
                lib_func,
-               dest_register };
+               retval };
 
 class vmarg {
 public:
