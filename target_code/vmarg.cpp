@@ -62,14 +62,14 @@ vmarg::vmarg(vmarg_t type, unsigned long val) {
 }
 
 std::string type_names[] = {
-    "instruction_label",
-    "global_var",
-    "formal_arg",
-    "local_var",
-    "const_num",
-    "const_str",
-    "const_bool",
-    "const_nil",
+    "label",
+    "global",
+    "formal",
+    "local",
+    "num",
+    "str",
+    "bool",
+    "nil",
     "user_func",
     "lib_func",
     "retval"};
