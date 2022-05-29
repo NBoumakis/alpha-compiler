@@ -126,7 +126,7 @@ void CALL(quad &q) {
 
 void GET_RETVAL(quad &q) {
     q.taddress = nextInstructionLabel();
-    instruction *t = new instruction(assign_vmiop, new vmarg(dest_register), nullptr, new vmarg(q.arg1));
+    instruction *t = new instruction(assign_vmiop, new vmarg(q.arg1), new vmarg(dest_register), nullptr);
 
     emit_instruction(t);
 }
@@ -137,19 +137,19 @@ void FUNCSTART(quad &q) {
     func->taddress = nextInstructionLabel();
     q.taddress = nextInstructionLabel();
 
-    instruction *t = new instruction(funcenter_vmiop, nullptr, nullptr, new vmarg(q.arg1));
+    instruction *t = new instruction(funcenter_vmiop, q);
     emit_instruction(t);
 }
 
 void RETURN(quad &q) {
     q.taddress = nextInstructionLabel();
-    instruction *t = new instruction(assign_vmiop, new vmarg(q.arg1), nullptr, new vmarg(dest_register));
+    instruction *t = new instruction(assign_vmiop, new vmarg(q.arg1), new vmarg(dest_register), nullptr);
     emit_instruction(t);
 }
 
 void FUNCEND(quad &q) {
     q.taddress = nextInstructionLabel();
-    instruction *t = new instruction(funcexit_vmiop, nullptr, nullptr, new vmarg(q.arg1));
+    instruction *t = new instruction(funcexit_vmiop, q);
     emit_instruction(t);
 }
 
