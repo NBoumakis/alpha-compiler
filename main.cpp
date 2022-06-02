@@ -74,7 +74,7 @@ std::string lib_functions() {
 std::string code() {
     std::string res = std::to_string(instruction_vector.size()) + '\n';
     for (auto inst : instruction_vector)
-        res += inst->to_string() + "\n";
+        res += inst->target_code_str() + "\n";
 
     return res;
 }

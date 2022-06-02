@@ -53,6 +53,8 @@ public:
     instruction(vmopcode);
     instruction(vmopcode, quad &);
     instruction(vmopcode, vmarg *, vmarg *, vmarg *);
+
+    std::string target_code_str();
 };
 
 class incomplete_jump {

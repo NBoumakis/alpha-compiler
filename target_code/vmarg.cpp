@@ -74,6 +74,10 @@ std::string type_names[] = {
     "lib_func",
     "retval"};
 
+std::string vmarg::target_code_str() {
+    return std::to_string(this->type) + " " + std::to_string(this->val);
+}
+
 std::string vmarg::to_string() {
     std::string res = "(" + type_names[this->type] + ")";
 

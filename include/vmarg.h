@@ -25,6 +25,8 @@ public:
     vmarg(const exprValue *arg);
     vmarg(vmarg_t type);
     vmarg(vmarg_t type, unsigned long val);
+
+    std::string target_code_str();
 };
 
 #endif /* __VMARGS_H */

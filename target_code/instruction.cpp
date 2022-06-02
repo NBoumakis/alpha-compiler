@@ -3,6 +3,32 @@
 #undef FIELD_WIDTH
 #define FIELD_WIDTH 15
 
+std::string vmopcode_name[] = {"assign",
+                               "add",
+                               "sub",
+                               "mul",
+                               "div",
+                               "mod",
+                               "uminus",
+                               "and",
+                               "or",
+                               "not",
+                               "jump",
+                               "jeq",
+                               "jne",
+                               "jle",
+                               "jge",
+                               "jlt",
+                               "jgt",
+                               "call",
+                               "pusharg",
+                               "funcenter",
+                               "funcexit",
+                               "newtable",
+                               "table_getelem",
+                               "table_setelem",
+                               "nop"};
+
 std::vector<instruction *> instruction_vector;
 std::list<incomplete_jump> ij_list;
 
@@ -31,6 +57,31 @@ instruction::instruction(vmopcode op)
 instruction::instruction(vmopcode op, vmarg *arg1, vmarg *arg2, vmarg *result)
     : opcode(op), arg1(arg1), arg2(arg2), result(result) {}
 
+std::string instruction::target_code_str() {
+    std::string res = "";
+    res += std::to_string(this->opcode);
+
+    if (this->arg1) {
+        res += " " + this->arg1->target_code_str();
+    } else {
+        res += " -1 -1";
+    }
+
+    if (this->arg2) {
+        res += " " + this->arg2->target_code_str();
+    } else {
+        res += " -1 -1";
+    }
+
+    if (this->result) {
+        res += " " + this->result->target_code_str();
+    } else {
+        res += " -1 -1";
+    }
+
+    return res;
+}
+
 void patchIncompleteJumps() {
     for (auto &jump : ij_list) {
         if (jump.iaddress == quad_vector.size()) {
@@ -50,32 +101,6 @@ void emit_instruction(instruction *const &instr) {
 unsigned long nextInstructionLabel() {
     return instruction_vector.size();
 }
-
-std::string vmopcode_name[] = {"assign",
-                               "add",
-                               "sub",
-                               "mul",
-                               "div",
-                               "mod",
-                               "uminus",
-                               "and",
-                               "or",
-                               "not",
-                               "jump",
-                               "jeq",
-                               "jne",
-                               "jle",
-                               "jge",
-                               "jlt",
-                               "jgt",
-                               "call",
-                               "pusharg",
-                               "funcenter",
-                               "funcexit",
-                               "newtable",
-                               "table_getelem",
-                               "table_setelem",
-                               "nop"};
 
 static inline void pad_to_width(std::string &str, char pad_char) {
     long pad_size = FIELD_WIDTH - static_cast<long>(str.length());
