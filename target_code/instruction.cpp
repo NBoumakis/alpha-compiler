@@ -61,22 +61,43 @@ std::string instruction::target_code_str() {
     std::string res = "";
     res += std::to_string(this->opcode);
 
+    // Create the field types
     if (this->arg1) {
-        res += " " + this->arg1->target_code_str();
+        res += " " + std::to_string(this->arg1->type);
     } else {
-        res += " -1 -1";
+        res += " -1";
     }
 
     if (this->arg2) {
-        res += " " + this->arg2->target_code_str();
+        res += " " + std::to_string(this->arg2->type);
     } else {
-        res += " -1 -1";
+        res += " -1";
     }
 
     if (this->result) {
-        res += " " + this->result->target_code_str();
+        res += " " + std::to_string(this->result->type);
     } else {
-        res += " -1 -1";
+        res += " -1";
+    }
+
+    res += "\t";
+
+    if (this->arg1) {
+        res += " " + std::to_string(this->arg1->val);
+    } else {
+        res += " -1";
+    }
+
+    if (this->arg2) {
+        res += " " + std::to_string(this->arg2->val);
+    } else {
+        res += " -1";
+    }
+
+    if (this->result) {
+        res += " " + std::to_string(this->result->val);
+    } else {
+        res += " -1";
     }
 
     return res;
