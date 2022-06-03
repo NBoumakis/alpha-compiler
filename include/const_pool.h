@@ -1,14 +1,15 @@
 #ifndef __CONST_POOL_H
 #define __CONST_POOL_H
 
+#include "bimap.h"
 #include "symbol.h"
 #include <string>
 #include <vector>
 
-extern std::vector<std::string> string_pool;
-extern std::vector<double> number_pool;
-extern std::vector<std::string> libfunc_pool;
-extern std::vector<Function *> userfunc_pool;
+extern bimap<std::string> string_pool;
+extern bimap<double> number_pool;
+extern bimap<std::string> libfunc_pool;
+extern bimap<Function *> userfunc_pool;
 
 unsigned long const_newstring(const std::string &);
 unsigned long const_newnumber(const double);

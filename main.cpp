@@ -41,32 +41,34 @@ unsigned long magic_number() {
 
 std::string const_strings() {
     std::string res = std::to_string(string_pool.size()) + '\n';
-    for (auto &str : string_pool)
-        res += std::to_string(str.size()) + " " + str + "\n";
+    for (auto &str : string_pool.get_straight())
+        res += std::to_string(str.second.size()) + " " + str.second + "\n";
 
     return res;
 }
 
 std::string const_numbers() {
     std::string res = std::to_string(number_pool.size()) + '\n';
-    for (auto &num : number_pool)
-        res += std::to_string(num) + "\n";
+    for (auto &num : number_pool.get_straight())
+        res += std::to_string(num.second) + "\n";
 
     return res;
 }
 
 std::string user_functions() {
     std::string res = std::to_string(userfunc_pool.size()) + '\n';
-    for (auto func : userfunc_pool)
-        res += std::to_string(func->iaddress) + " " + std::to_string(func->totalLocals) + " " + func->name + "\n";
+    for (auto func : userfunc_pool.get_straight())
+        res += std::to_string(func.second->iaddress) + " " +
+               std::to_string(func.second->totalLocals) + " " +
+               func.second->name + "\n";
 
     return res;
 }
 
 std::string lib_functions() {
     std::string res = std::to_string(libfunc_pool.size()) + '\n';
-    for (auto &func : libfunc_pool)
-        res += std::to_string(func.size()) + " " + func + "\n";
+    for (auto &func : libfunc_pool.get_straight())
+        res += std::to_string(func.second.size()) + " " + func.second + "\n";
 
     return res;
 }
