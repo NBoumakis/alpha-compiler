@@ -17,6 +17,7 @@ public:
     void hide(unsigned int scopeLevel);
     Symbol *lookup_scope(std::string key, unsigned int scope);
     auto lookup_symbol(std::string key);
+    const std::list<Symbol *> &get_scope(unsigned int scope);
     void get_symbols_scope_order();
     Symbol *erase(std::string key);
     void clear();

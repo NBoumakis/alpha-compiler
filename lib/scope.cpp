@@ -74,3 +74,7 @@ Symbol *Scope::erase(std::string key) {
         }
     }
 }
+
+const std::list<Symbol *> &Scope::get_scope(unsigned int scope) {
+    return scope_lists.at(scope);
+}

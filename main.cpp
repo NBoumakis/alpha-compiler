@@ -81,10 +81,16 @@ std::string code() {
     return res;
 }
 
+unsigned long global_count() {
+    return symbolTableObj.get_scope(0).size();
+}
+
 void create_target(std::ofstream &out_file) {
     generate_target_code();
 
     out_file << magic_number() << std::endl
+             << std::endl;
+    out_file << global_count() << std::endl
              << std::endl;
     out_file << const_strings() << std::endl;
     out_file << const_numbers() << std::endl;
