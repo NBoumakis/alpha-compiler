@@ -143,7 +143,7 @@ void FUNCSTART(quad &q) {
 
 void RETURN(quad &q) {
     q.taddress = nextInstructionLabel();
-    instruction *t = new instruction(assign_vmiop, new vmarg(q.arg1), new vmarg(retval), nullptr);
+    instruction *t = new instruction(assign_vmiop, new vmarg(retval), new vmarg(q.arg1), nullptr);
     emit_instruction(t);
 }
 
