@@ -18,5 +18,7 @@ unsigned long libfunc_newused(const std::string &name) {
 }
 
 unsigned long userfunc_newused(Function *const &func) {
-    return userfunc_pool.insert(func);
+    userfunc_pool.insert(func);
+
+    return func->taddress;
 }
