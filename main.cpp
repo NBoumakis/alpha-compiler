@@ -60,6 +60,7 @@ std::string user_functions() {
     for (auto func : userfunc_pool.get_straight())
         res += std::to_string(func.second->iaddress) + " " +
                std::to_string(func.second->totalLocals) + " " +
+               std::to_string(func.second->name.size()) + " " +
                func.second->name + "\n";
 
     return res;
@@ -82,7 +83,16 @@ std::string code() {
 }
 
 unsigned long global_count() {
-    return symbolTableObj.get_scope(0).size();
+    auto global_list = symbolTableObj.get_scope(0);
+
+    unsigned long count = 0;
+
+    for (auto &i : global_list) {
+        if (i->type == VARIABLE)
+            ++count;
+    }
+
+    return count;
 }
 
 void create_target(std::ofstream &out_file) {
