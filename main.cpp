@@ -161,7 +161,7 @@ void create_binary_target(std::ofstream &out_file) {
             out_file.write(reinterpret_cast<char *>(&inst->arg1->type), sizeof(inst->arg1->type));
         } else {
             // Possible bug
-            unsigned long invType = -1;
+            unsigned invType = -1;
             out_file.write(reinterpret_cast<char *>(&invType), sizeof(vmarg_t));
         }
 
@@ -169,7 +169,7 @@ void create_binary_target(std::ofstream &out_file) {
             out_file.write(reinterpret_cast<char *>(&inst->arg2->type), sizeof(inst->arg2->type));
         } else {
             // Possible bug
-            unsigned long invType = -1;
+            unsigned invType = -1;
             out_file.write(reinterpret_cast<char *>(&invType), sizeof(vmarg_t));
         }
 
@@ -177,7 +177,7 @@ void create_binary_target(std::ofstream &out_file) {
             out_file.write(reinterpret_cast<char *>(&inst->result->type), sizeof(inst->result->type));
         } else {
             // Possible bug
-            unsigned long invType = -1;
+            unsigned invType = -1;
             out_file.write(reinterpret_cast<char *>(&invType), sizeof(vmarg_t));
         }
 
