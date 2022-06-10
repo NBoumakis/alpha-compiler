@@ -6,6 +6,7 @@
 #include "symbol_table.h"
 
 #include <algorithm>
+#include <cassert>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -162,6 +163,7 @@ void create_binary_target(std::ofstream &out_file) {
         } else {
             // Possible bug
             int invType = -1;
+            assert(sizeof(invType) == sizeof(vmarg_t));
             out_file.write(reinterpret_cast<char *>(&invType), sizeof(vmarg_t));
         }
 
@@ -170,6 +172,7 @@ void create_binary_target(std::ofstream &out_file) {
         } else {
             // Possible bug
             int invType = -1;
+            assert(sizeof(invType) == sizeof(vmarg_t));
             out_file.write(reinterpret_cast<char *>(&invType), sizeof(vmarg_t));
         }
 
@@ -178,6 +181,7 @@ void create_binary_target(std::ofstream &out_file) {
         } else {
             // Possible bug
             int invType = -1;
+            assert(sizeof(invType) == sizeof(vmarg_t));
             out_file.write(reinterpret_cast<char *>(&invType), sizeof(vmarg_t));
         }
 
