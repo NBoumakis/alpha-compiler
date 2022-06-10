@@ -187,14 +187,23 @@ void create_binary_target(std::ofstream &out_file) {
 
         if (inst->arg1) {
             out_file.write(reinterpret_cast<char *>(&inst->arg1->val), sizeof(inst->arg1->val));
+        } else {
+            unsigned long invValue = -1;
+            out_file.write(reinterpret_cast<char *>(&invValue), sizeof(invValue));
         }
 
         if (inst->arg2) {
             out_file.write(reinterpret_cast<char *>(&inst->arg2->val), sizeof(inst->arg2->val));
+        } else {
+            unsigned long invValue = -1;
+            out_file.write(reinterpret_cast<char *>(&invValue), sizeof(invValue));
         }
 
         if (inst->result) {
             out_file.write(reinterpret_cast<char *>(&inst->result->val), sizeof(inst->result->val));
+        } else {
+            unsigned long invValue = -1;
+            out_file.write(reinterpret_cast<char *>(&invValue), sizeof(invValue));
         }
     }
 }
