@@ -191,13 +191,14 @@ bool exprValue::isTableitem() const {
 }
 
 bool exprValue::isCompileBool() const {
-    return (this->valType == nilExpr_T ||
+    return false;
+    /*return (this->valType == nilExpr_T ||
             this->valType == libfuncExpr_T ||
             this->valType == userfuncExpr_T ||
             this->valType == constnumExpr_T ||
             this->valType == constboolExpr_T ||
             this->valType == conststringExpr_T ||
-            this->valType == newtableExpr_T);
+            this->valType == newtableExpr_T);*/
 }
 
 bool exprValue::isVariable() const {

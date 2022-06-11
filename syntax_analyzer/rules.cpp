@@ -131,15 +131,19 @@ exprValue *create_shorted_value(exprValue *expr) {
 
     assignexprVal->setSymbol(newTempvar());
 
-    exprValue *trueBool = new exprValue(true), *falseBool = new exprValue(false);
+    if (expr->isBoolExpr()) {
+        exprValue *trueBool = new exprValue(true), *falseBool = new exprValue(false);
 
-    patchList(expr->getTruelist(), nextQuadLabel());
-    emit(assign_iop, assignexprVal, trueBool, nullptr);
-    emit(jump_iop, nullptr, nullptr, nextQuadLabel() + 2);
+        patchList(expr->getTruelist(), nextQuadLabel());
+        emit(assign_iop, assignexprVal, trueBool, nullptr);
+        emit(jump_iop, nullptr, nullptr, nextQuadLabel() + 2);
 
-    patchList(expr->getFalselist(), nextQuadLabel());
-    emit(assign_iop, assignexprVal, falseBool, nullptr);
-
+        patchList(expr->getFalselist(), nextQuadLabel());
+        emit(assign_iop, assignexprVal, falseBool, nullptr);
+    } else if (expr->isConstBool()) {
+        patchList(expr->getFalselist(), nextQuadLabel());
+        emit(assign_iop, assignexprVal, expr, nullptr);
+    }
     return assignexprVal;
 }
 
@@ -170,7 +174,7 @@ stmtValue *Manage_stmt_expr(exprValue *expr) {
     stmt->breaklist = 0;
     stmt->contlist = 0;
 
-    if (expr->isBoolExpr()) {
+    if (expr->isBoolExpr() || expr->isConstBool()) {
         expr = create_shorted_value(expr);
     }
 
@@ -489,7 +493,7 @@ exprValue *Manage_expr_expr_OR_expr(exprValue *exprLeft, exprValue *exprRight, u
 }
 
 exprValue *Manage_expr_term(exprValue *term) {
-    if (term->isBoolExpr()) {
+    if (term->isBoolExpr() || term->isConstBool()) {
         term = create_shorted_value(term);
     }
 
@@ -498,7 +502,7 @@ exprValue *Manage_expr_term(exprValue *term) {
 
 /* Terms */
 exprValue *Manage_term_LPexprRP(exprValue *expr) {
-    if (expr->isBoolExpr()) {
+    if (expr->isBoolExpr() || expr->isConstBool()) {
         expr = create_shorted_value(expr);
     }
 
@@ -508,7 +512,7 @@ exprValue *Manage_term_LPexprRP(exprValue *expr) {
 exprValue *Manage_term_notexpr(exprValue *expr) {
     exprValue *termVal;
 
-    if (!expr->isBoolExpr()) {
+    if (!expr->isBoolExpr() && !expr->isConstBool()) {
         exprValue *trueBool = new exprValue(true);
 
         expr = expr_relop_eq_emit(if_eq_iop, expr, trueBool);
@@ -688,7 +692,7 @@ exprValue *Manage_assignexpr_lvalueASSIGNexpr(exprValue *lvalue, exprValue *expr
 
             assignexprVal = new exprValue(nilExpr_T);
         } else {
-            if (expr->isBoolExpr()) {
+            if (expr->isBoolExpr() || expr->isConstBool()) {
                 expr = create_shorted_value(expr);
             }
 
@@ -700,7 +704,7 @@ exprValue *Manage_assignexpr_lvalueASSIGNexpr(exprValue *lvalue, exprValue *expr
             emit(assign_iop, assignexprVal, lvalue, nullptr);
         }
     } else if (lvalue->isTableitem()) {
-        if (expr->isBoolExpr()) {
+        if (expr->isBoolExpr() || expr->isConstBool()) {
             expr = create_shorted_value(expr);
         }
 
@@ -870,7 +874,7 @@ exprValue *Manage_member_lvalueLSBexprRSB(exprValue *lvalue, exprValue *expr) {
     tableitem = new exprValue(TableitemExpr_T);
     tableitem->setSymbol(lvalue->getSymbol());
 
-    if (expr->isBoolExpr()) {
+    if (expr->isBoolExpr() || expr->isConstBool()) {
         expr = create_shorted_value(expr);
     }
 
@@ -891,7 +895,7 @@ exprValue *Manage_member_callLSBexprRSB(exprValue *call, exprValue *expr) {
     tableitem = new exprValue(TableitemExpr_T);
     tableitem->setSymbol(call->getSymbol());
 
-    if (expr->isBoolExpr()) {
+    if (expr->isBoolExpr() || expr->isConstBool()) {
         expr = create_shorted_value(expr);
     }
 
@@ -969,7 +973,7 @@ exprList Manage_elist() {
 
 /* Expression optional and repeatable */
 void Manage_exprOptRpt_expr_exprOptRpt(exprValue *expr, exprList &list) {
-    if (expr->isBoolExpr()) {
+    if (expr->isBoolExpr() || expr->isConstBool()) {
         expr = create_shorted_value(expr);
     }
 
@@ -979,7 +983,7 @@ void Manage_exprOptRpt_expr_exprOptRpt(exprValue *expr, exprList &list) {
 void Manage_exprOptRpt_expr(exprValue *expr, exprList &list) {
     list = new std::list<exprValue *>();
 
-    if (expr->isBoolExpr()) {
+    if (expr->isBoolExpr() || expr->isConstBool()) {
         expr = create_shorted_value(expr);
     }
 
@@ -1032,7 +1036,7 @@ void Manage_indexed_indexedelem(indexedList &indexed_l, exprPair *elem) {
 exprPair *Manage_indexedelem_LCB_expr_COLON_expr_RCB(exprValue *key, exprValue *value) {
     exprPair *elemVal = new exprPair();
 
-    if (value->isBoolExpr()) {
+    if (value->isBoolExpr() || value->isConstBool()) {
         value = create_shorted_value(value);
     }
 
@@ -1221,7 +1225,7 @@ void Manage_idlist(exprList &list) {
 unsigned long Manage_ifprefix(exprValue *expr) {
     exprValue *constboolVal = new exprValue(true);
 
-    if (expr->isBoolExpr()) {
+    if (expr->isBoolExpr() || expr->isConstBool()) {
         expr = create_shorted_value(expr);
     }
 
@@ -1278,7 +1282,7 @@ unsigned long Manage_whilestart() {
 unsigned long Manage_whilecond(exprValue *expr) {
     exprValue *constbool = new exprValue(true);
 
-    if (expr->isBoolExpr()) {
+    if (expr->isBoolExpr() || expr->isConstBool()) {
         expr = create_shorted_value(expr);
     }
 
@@ -1316,7 +1320,7 @@ unsigned long Manage_m() {
 forprefixValue *Manage_forprefix(unsigned long m, exprValue *expr) {
     forprefixValue *forprefix = new forprefixValue();
 
-    if (expr->isBoolExpr()) {
+    if (expr->isBoolExpr() || expr->isConstBool()) {
         expr = create_shorted_value(expr);
     }
 
@@ -1344,7 +1348,7 @@ stmtValue *Manage_for(forprefixValue *forprefix, unsigned long n1, unsigned long
 
 /* Return */
 void Manage_ret_expr(exprValue *expr) {
-    if (expr->isBoolExpr()) {
+    if (expr->isBoolExpr() || expr->isConstBool()) {
         expr = create_shorted_value(expr);
     }
 
