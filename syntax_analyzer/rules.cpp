@@ -141,7 +141,6 @@ exprValue *create_shorted_value(exprValue *expr) {
         patchList(expr->getFalselist(), nextQuadLabel());
         emit(assign_iop, assignexprVal, falseBool, nullptr);
     } else if (expr->isConstBool()) {
-        patchList(expr->getFalselist(), nextQuadLabel());
         emit(assign_iop, assignexprVal, expr, nullptr);
     }
     return assignexprVal;
