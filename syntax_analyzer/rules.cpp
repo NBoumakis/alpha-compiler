@@ -165,8 +165,6 @@ stmtValue *Manage_stmtList_stmt() {
 
 /* Statements */
 stmtValue *Manage_stmt_expr(exprValue *expr) {
-    resettemp();
-
     stmtValue *stmt = new stmtValue();
 
     stmt->breaklist = 0;
