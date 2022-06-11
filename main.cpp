@@ -83,23 +83,8 @@ std::string code() {
     return res;
 }
 
-unsigned long global_count() {
-    auto global_list = symbolTableObj.get_scope(0);
-
-    unsigned long count = 0;
-
-    for (auto &i : global_list) {
-        if (i->type == VARIABLE)
-            ++count;
-    }
-
-    return count;
-}
-
 void create_text_target(std::ofstream &out_file) {
     out_file << magic_number() << std::endl
-             << std::endl;
-    out_file << global_count() << std::endl
              << std::endl;
     out_file << const_strings() << std::endl;
     out_file << const_numbers() << std::endl;
@@ -110,9 +95,6 @@ void create_text_target(std::ofstream &out_file) {
 
 void create_binary_target(std::ofstream &out_file) {
     unsigned long ulong = magic_number();
-    out_file.write(reinterpret_cast<char *>(&ulong), sizeof(ulong));
-
-    ulong = global_count();
     out_file.write(reinterpret_cast<char *>(&ulong), sizeof(ulong));
 
     ulong = string_pool.size();
